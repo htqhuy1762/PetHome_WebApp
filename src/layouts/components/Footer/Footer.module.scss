@@ -1,0 +1,31 @@
+.wrapper {
+    height: 300px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #ccc;
+}
+
+.inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 1200px;
+    background-color: #fff;
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+
+}
+
+.logo {
+    height: 100px;
+    width: 100px;
+}
+
+.logo-title {
+    height: 70px;
+    width: 150px;
+}

@@ -1,5 +1,5 @@
 // Layouts
-import { HeaderOnly } from '~/layouts';
+import { HeaderOnly, FooterOnly } from '~/layouts';
 
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
@@ -8,7 +8,7 @@ import Profile from '~/pages/Profile';
 
 const publicRoutes = [
     { path: '/', component: Home },
-    { path: '/login', component: Login, layout: null },
+    { path: '/login', component: Login, layout: FooterOnly },
     { path: '/register', component: Register, layout: null },
     { path: '/profile', component: Profile, layout: HeaderOnly },
 ];

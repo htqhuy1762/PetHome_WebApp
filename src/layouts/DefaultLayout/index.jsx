@@ -2,14 +2,18 @@ import PropTypes from 'prop-types';
 import Header from "~/layouts/components/Header";
 import Footer from "~/layouts/components/Footer";
 import NavBar from "~/layouts/components/NavBar";
+import styles from './DefaultLayout.module.scss';
+import classNames from 'classnames/bind';
+
+const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
     return (
-        <div>
+        <div className={cx('wrapper')}>
             <Header />
-            <div className="container">
+            <div className={cx('container')}>
                 <NavBar />
-                {children}
+                <div className={cx('content')}>{children}</div>
             </div>
             <Footer />
         </div>
