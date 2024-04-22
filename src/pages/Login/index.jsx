@@ -50,7 +50,7 @@ function Login() {
                         </a>
                     </Form.Item>
                     <Form.Item>
-                        <Button size="large" type="primary" htmlType="submit" style={{ width: '100%', fontSize: '1.7rem' }}>
+                        <Button size="large" type="primary" htmlType="submit" style={{ backgroundColor: 'var(--color-button)', width: '100%', fontSize: '1.7rem' }}>
                             Đăng nhập
                         </Button>
                     </Form.Item>
