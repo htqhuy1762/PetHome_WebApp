@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import OtpInput from 'react-otp-input';
 import styles from './Register.module.scss';
 import classNames from 'classnames/bind';
 import logo from '../../assets/images/logo.png';
 import logotitle from '../../assets/images/logo-title.png';
 import { Form, Input, Button } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, LeftOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 
 function InputEmail({ onNext }) {
     const [email, setEmail] = useState('');
+    const navigate = useNavigate();
+    const onBack = () => {
+        navigate('/login');
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -20,6 +25,9 @@ function InputEmail({ onNext }) {
             </div>
 
             <div className={cx('form_container')}>
+                <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
+                    <LeftOutlined />
+                </Button>
                 <Form
                     className={cx('form')}
                     name="input-email-form"
@@ -56,8 +64,34 @@ function InputEmail({ onNext }) {
     );
 }
 
-function InputOTP({ onNext }) {
+function InputOTP({ onNext, onBack }) {
     const [otp, setOtp] = useState('');
+    const [resendDisabled, setResendDisabled] = useState(false);
+    const [countdown, setCountdown] = useState(60);
+
+    const resendOTP = () => {
+        if (!resendDisabled) {
+            // Logic gửi lại mã OTP của bạn ở đây
+            console.log('Resending OTP...');
+
+            // Bắt đầu đếm ngược
+            setResendDisabled(true);
+            setCountdown(60);
+        }
+    };
+
+    useEffect(() => {
+        if (resendDisabled && countdown > 0) {
+            const timer = setTimeout(() => {
+                setCountdown(countdown - 1);
+            }, 1000);
+
+            // Dọn dẹp khi unmount
+            return () => clearTimeout(timer);
+        } else if (countdown === 0) {
+            setResendDisabled(false);
+        }
+    }, [resendDisabled, countdown]);
 
     return (
         <div className={cx('wrapper')}>
@@ -67,6 +101,9 @@ function InputOTP({ onNext }) {
             </div>
 
             <div className={cx('form_container')}>
+                <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
+                    <LeftOutlined />
+                </Button>
                 <Form className={cx('form')} name="input-otp-form" initialValues={{ remember: true }} layout="vertical">
                     <h1 style={{ textAlign: 'center', fontSize: '5rem' }}>Nhập mã OTP</h1>
                     <Form.Item
@@ -106,13 +143,23 @@ function InputOTP({ onNext }) {
                             Tiếp tục
                         </Button>
                     </Form.Item>
+                    <Form.Item style={{ textAlign: 'center' }}>
+                        <Button
+                            style={{ color: resendDisabled ? 'gray' : 'var(--color-button)', fontSize: '1.7rem' }}
+                            type="text"
+                            disabled={resendDisabled}
+                            onClick={resendOTP}
+                        >
+                            {resendDisabled ? `Gửi lại mã OTP trong (${countdown} s)` : 'Gửi lại mã OTP'}
+                        </Button>
+                    </Form.Item>
                 </Form>
             </div>
         </div>
     );
 }
 
-function RegisterForm() {
+function RegisterForm({ onBack }) {
     const onFinish = (values) => {
         console.log('Received values:', values);
     };
@@ -125,6 +172,9 @@ function RegisterForm() {
             </div>
 
             <div className={cx('form_container')}>
+                <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
+                    <LeftOutlined />
+                </Button>
                 <Form
                     className={cx('form')}
                     name="register-form"
@@ -185,11 +235,15 @@ function Register() {
         setStep(step + 1);
     };
 
+    const handleBack = () => {
+        setStep(step - 1);
+    };
+
     return (
         <>
             {step === 1 && <InputEmail onNext={handleNext} />}
-            {step === 2 && <InputOTP onNext={handleNext} />}
-            {step === 3 && <RegisterForm />}
+            {step === 2 && <InputOTP onNext={handleNext} onBack={handleBack} />}
+            {step === 3 && <RegisterForm onBack={handleBack} />}
         </>
     );
 }

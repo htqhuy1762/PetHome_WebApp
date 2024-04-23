@@ -6,12 +6,14 @@ const cx = classNames.bind(styles);
 
 function Navbar() {
     return (
-        <Menu mode="horizontal">
-            <Menu.Item key="home">Pet</Menu.Item>
-            <Menu.Item key="items">Items</Menu.Item>
-            <Menu.Item key="services">Services</Menu.Item>
-            <Menu.Item key="pethome">PetHome</Menu.Item>
-        </Menu>
+        <div className={cx('wrapper')}>
+            <Menu mode="horizontal">
+                <Menu.Item key="home">Thú cưng</Menu.Item>
+                <Menu.Item key="items">Vật phẩm</Menu.Item>
+                <Menu.Item key="services">Dịch vụ</Menu.Item>
+                <Menu.Item key="blog">Blog</Menu.Item>
+            </Menu>
+        </div>
     );
 }
 
