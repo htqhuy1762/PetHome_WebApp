@@ -52,7 +52,7 @@ function InputEmail({ onNext }) {
                         <Button
                             size="large"
                             type="primary"
-                            style={{ backgroundColor: 'var(--color-button)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
                             onClick={() => onNext()}
                         >
                             Gửi mã OTP
@@ -137,7 +137,7 @@ function InputOTP({ onNext, onBack }) {
                         <Button
                             size="large"
                             type="primary"
-                            style={{ backgroundColor: 'var(--color-button)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
                             onClick={() => onNext()}
                         >
                             Tiếp tục
@@ -145,7 +145,7 @@ function InputOTP({ onNext, onBack }) {
                     </Form.Item>
                     <Form.Item style={{ textAlign: 'center' }}>
                         <Button
-                            style={{ color: resendDisabled ? 'gray' : 'var(--color-button)', fontSize: '1.7rem' }}
+                            style={{ color: resendDisabled ? 'gray' : 'var(--button-color)', fontSize: '1.7rem' }}
                             type="text"
                             disabled={resendDisabled}
                             onClick={resendOTP}
@@ -216,7 +216,7 @@ function RegisterForm({ onBack }) {
                             size="large"
                             type="primary"
                             htmlType="submit"
-                            style={{ backgroundColor: 'var(--color-button)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
                         >
                             Đăng ký
                         </Button>

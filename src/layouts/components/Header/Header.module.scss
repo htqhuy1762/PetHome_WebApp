@@ -3,7 +3,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background-image: linear-gradient(to right, #add8e6, #90ee90);
+    background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
 }
 
 .inner {
@@ -39,18 +39,18 @@
     align-items: center;
 
     .cart {
-        margin-right: 15px;
+        margin-right: 35px;
 
         .cart-btn:hover {
             color: #fff;
-            background-color: var(--color-button);
+            background-color: var(--button-color);
         }
     }
 
     .user {
         .user-btn:hover {
             color: #fff;
-            background-color: var(--color-button);
+            background-color: var(--button-color);
         }
     }
 }

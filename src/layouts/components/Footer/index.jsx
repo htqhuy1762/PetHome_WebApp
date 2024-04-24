@@ -35,7 +35,7 @@ function Footer() {
                         <p>Huỳnh Minh Tú</p>
                         <p style={{fontWeight: 'bold'}}>GVHD: Ths. Nguyễn Lê Hoàng Dũng</p>
                     </div>
-                    <p>© Copyright University of Science - VNUHCM, All rights reserved</p>
+                    <p style={{color: 'rgba(0, 0, 0, .54)'}}>© Copyright University of Science - VNUHCM, All rights reserved</p>
                 </div>
 
                 <div className={cx('element3')}>
