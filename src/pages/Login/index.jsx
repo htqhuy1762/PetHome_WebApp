@@ -6,12 +6,19 @@ import google_logo from '../../assets/images/Google_Logo.png';
 import facebook_logo from '../../assets/images/Facebook_Logo.png';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import * as authServices from '~/services/authServices'; 
 
 const cx = classNames.bind(styles);
 
 function Login() {
-    const onFinish = (values) => {
-        console.log('Received values:', values);
+    const onFinish = async (data) => {
+        try {
+            const response = await authServices.login(data);
+            console.log('login successfully:', response);
+        }
+        catch(error) {
+            console.log('login failed:', error);
+        }
     };
 
     return (

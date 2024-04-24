@@ -3,7 +3,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background-color: var(--primary);
     background-image: linear-gradient(to right, #add8e6, #90ee90);
 }
 
@@ -12,35 +11,49 @@
     align-items: center;
     height: 100%;
     width: 1200px;
-    background-color: var(--primary);
-    background-image: linear-gradient(to right, #add8e6, #90ee90);
+    justify-content: space-between;
 }
 
 .logo-wrapper {
     display: flex;
     align-items: center;
 
+    .logo {
+        height: 100px;
+        width: 100px;
+    }
+    
+    .logo-title {
+        height: 70px;
+        width: 150px;
+    }
 }
 
-.logo {
-    height: 100px;
-    width: 100px;
+.search-container {
+    width: 60%;
+    margin: 0 20px;
 }
 
-.logo-title {
-    height: 70px;
-    width: 150px;
+.right-menu {
+    display: flex;
+    align-items: center;
+
+    .cart {
+        margin-right: 15px;
+
+        .cart-btn:hover {
+            color: #fff;
+            background-color: var(--color-button);
+        }
+    }
+
+    .user {
+        .user-btn:hover {
+            color: #fff;
+            background-color: var(--color-button);
+        }
+    }
 }
 
-.search-bar {
-    flex-grow: 1; /* Cho phép thanh tìm kiếm mở rộng theo chiều ngang */
-    margin: 0 20px; /* Khoảng cách giữa logo và thanh tìm kiếm */
-}
 
-.search-bar .ant-input-search {
-    width: 100%; /* Lấp đầy phần còn trống trong thanh tìm kiếm */
-}
 
-.right-menu button {
-    margin-left: 10px; /* Khoảng cách giữa các nút trong menu bên phải */
-}

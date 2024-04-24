@@ -3,29 +3,69 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background-color: #ccc;
+    background-color: #fff;
 }
 
 .inner {
     display: flex;
-    align-items: center;
     height: 100%;
     width: 1200px;
     background-color: #fff;
+    justify-content: space-between;
 }
 
-.logo-wrapper {
+.element1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    .ggplayicon {
+        height: '80px';
+        width: '208px';
+        margin-bottom: 30px;
+    }
+
+    .logo-wrapper {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        .logo {
+            height: 100px;
+            width: 100px;
+        }
+
+        .logo-title {
+            height: 70px;
+            width: 150px;
+        }
+    }
+}
+
+.element2 {
     display: flex;
     align-items: center;
-
+    flex-direction: column;
+    justify-content: space-around;
+    .listsv {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
-.logo {
-    height: 100px;
-    width: 100px;
-}
+.element3 {
+    display: flex;
+    flex-direction: column;
 
-.logo-title {
-    height: 70px;
-    width: 150px;
+    .title3 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .social-icons {
+        display: flex;
+        width: 200px;
+        font-size: 3rem;
+        justify-content: space-between;
+    }
 }
