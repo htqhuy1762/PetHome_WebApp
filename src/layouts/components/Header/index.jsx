@@ -9,6 +9,8 @@ const cx = classNames.bind(styles);
 
 function Header() {
     const onSearch = (value, _e, info) => console.log(info?.source, value);
+    const currentUser = true;
+    console.log(currentUser);
 
     return (
         <header className={cx('wrapper')}>
@@ -28,14 +30,37 @@ function Header() {
                     />
                 </div>
                 <div className={cx('right-menu')}>
-                    <div className={cx('cart')}>
-                        <Badge count={5}>
-                            <Button className={cx('cart-btn')} size="large" shape="circle" icon={<ShoppingCartOutlined />} />
-                        </Badge>
-                    </div>
-                    <div className={cx('user')}>
-                        <Button className={cx('user-btn')} size="large" shape="circle" icon={<UserOutlined />} />
-                    </div>
+                    {!currentUser ? (
+                        <>
+                            <Button className={cx('auth-btn')} size="large" type="primary">
+                                Đăng nhập
+                            </Button>
+                            <Button size="large" type="primary">
+                                Đăng ký
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <div className={cx('cart')}>
+                                <Badge count={5}>
+                                    <Button
+                                        className={cx('cart-btn')}
+                                        size="large"
+                                        shape="circle"
+                                        icon={<ShoppingCartOutlined />}
+                                    />
+                                </Badge>
+                            </div>
+                            <div className={cx('user')}>
+                                <Button
+                                    className={cx('user-btn')}
+                                    size="large"
+                                    shape="circle"
+                                    icon={<UserOutlined />}
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </header>

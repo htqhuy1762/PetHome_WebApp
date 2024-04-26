@@ -1,8 +1,12 @@
-import * as httpRequest from '~/utils/httpRequest';
+import * as httpRequestAuth from '~/utils/httpRequestAuth';
 
 export const login = async (data) => {
     try {
-        const response = await httpRequest.post('/jwt/login', data);
+        const response = await httpRequestAuth.post('/jwt/login', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return response;
     }
     catch (error) {
@@ -10,9 +14,57 @@ export const login = async (data) => {
     }
 };
 
+export const refreshToken = async (data) => {
+    try {
+        const response = await httpRequestAuth.post('/refresh', data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': data.refreshToken
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}
+
 export const register = async (data) => {
     try {
-        const response = await httpRequest.post('/auth/register', data);
+        const response = await httpRequestAuth.post('/jwt/register', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}
+
+export const sendCodeEmail = async (data) => {
+    try {
+        const response = await httpRequestAuth.post('/jwt/send_code', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}
+
+export const verifyCodeEmail = async (data, token) => {
+    try {
+        const response = await httpRequestAuth.post('/jwt/verify_code', data, {
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        });
         return response;
     }
     catch (error) {

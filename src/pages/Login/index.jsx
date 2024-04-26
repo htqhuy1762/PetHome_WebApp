@@ -6,17 +6,28 @@ import google_logo from '../../assets/images/Google_Logo.png';
 import facebook_logo from '../../assets/images/Facebook_Logo.png';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import * as authServices from '~/services/authServices'; 
+import * as authServices from '~/services/authServices';
+import { AuthContext } from '../../components/AuthProvider';
+import { useContext } from 'react';
+import Cookies from 'universal-cookie';
 
 const cx = classNames.bind(styles);
+const cookies = new Cookies();
 
 function Login() {
+    const { setAccessToken } = useContext(AuthContext);
     const onFinish = async (data) => {
         try {
             const response = await authServices.login(data);
-            console.log('login successfully:', response);
-        }
-        catch(error) {
+            if (response.status === 200) {
+                const accessToken = response.data.accessToken;
+                setAccessToken(accessToken);
+                console.log('login success:', response);
+            }
+            else {
+                console.log('login failed:', response);
+            }
+        } catch (error) {
             console.log('login failed:', error);
         }
     };
@@ -38,26 +49,36 @@ function Login() {
                 >
                     <h1 style={{ textAlign: 'center', fontSize: '5rem' }}>Đăng nhập</h1>
                     <Form.Item
-                        label={<label style={{fontSize: '1.6rem'}}>Tài khoản</label>}
+                        label={<label style={{ fontSize: '1.6rem' }}>Tài khoản</label>}
                         name="email"
                         rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
                     >
-                        <Input size="large" prefix={<UserOutlined />} placeholder="Email" />
+                        <Input size="large" prefix={<UserOutlined />} placeholder="Email" autoComplete="username" />
                     </Form.Item>
                     <Form.Item
-                        label={<label style={{fontSize: '1.6rem'}}>Mật khẩu</label>}
+                        label={<label style={{ fontSize: '1.6rem' }}>Mật khẩu</label>}
                         name="password"
                         rules={[{ required: true, message: 'Vui lòng nhập mật khẩu của bạn!' }]}
                     >
-                        <Input.Password size="large" prefix={<LockOutlined />} placeholder="Mật khẩu" />
+                        <Input.Password
+                            size="large"
+                            prefix={<LockOutlined />}
+                            placeholder="Mật khẩu"
+                            autoComplete="current-password"
+                        />
                     </Form.Item>
                     <Form.Item>
-                        <a style={{fontSize: '1.6rem'}} className={cx('forgot_password')} href="/forgot-password">
+                        <a style={{ fontSize: '1.6rem' }} className={cx('forgot_password')} href="/forgot-password">
                             Quên mật khẩu
                         </a>
                     </Form.Item>
                     <Form.Item>
-                        <Button size="large" type="primary" htmlType="submit" style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}>
+                        <Button
+                            size="large"
+                            type="primary"
+                            htmlType="submit"
+                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
+                        >
                             Đăng nhập
                         </Button>
                     </Form.Item>
@@ -71,10 +92,10 @@ function Login() {
                                     <img
                                         src={google_logo}
                                         alt="Google"
-                                        style={{ height: '2.5rem', marginRight: '10px'}}
+                                        style={{ height: '2.5rem', marginRight: '10px' }}
                                     />
                                 }
-                                style={{ marginRight: '10px' , fontSize: '1.7rem'}}
+                                style={{ marginRight: '10px', fontSize: '1.7rem' }}
                             >
                                 Google
                             </Button>
@@ -85,10 +106,10 @@ function Login() {
                                     <img
                                         src={facebook_logo}
                                         alt="Google"
-                                        style={{ height: '2.5rem', marginRight: '10px'}}
+                                        style={{ height: '2.5rem', marginRight: '10px' }}
                                     />
                                 }
-                                style={{ fontSize: '1.7rem'}}
+                                style={{ fontSize: '1.7rem' }}
                             >
                                 Facebook
                             </Button>
