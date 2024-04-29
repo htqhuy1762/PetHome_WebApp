@@ -8,17 +8,18 @@ import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const onSearch = (value, _e, info) => console.log(info?.source, value);
+    const onSearch = (value, _e, info) => {};
     const currentUser = true;
-    console.log(currentUser);
 
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <div className={cx('logo-wrapper')}>
-                    <img className={cx('logo')} src={logo} alt="" />
-                    <img className={cx('logo-title')} src={logotitle} alt="" />
-                </div>
+                <a href="/">
+                    <div className={cx('logo-wrapper')}>
+                        <img className={cx('logo')} src={logo} alt="" />
+                        <img className={cx('logo-title')} src={logotitle} alt="" />
+                    </div>
+                </a>
 
                 <div className={cx('search-container')}>
                     <Input.Search

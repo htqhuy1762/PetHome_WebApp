@@ -13,10 +13,12 @@ function Footer() {
         <footer className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <div className={cx('element1')}>
-                    <div className={cx('logo-wrapper')}>
-                        <img className={cx('logo')} src={logo} alt="" />
-                        <img className={cx('logo-title')} src={logotitle} alt="" />
-                    </div>
+                    <a href="/">
+                        <div className={cx('logo-wrapper')}>
+                            <img className={cx('logo')} src={logo} alt="" />
+                            <img className={cx('logo-title')} src={logotitle} alt="" />
+                        </div>
+                    </a>
                     <p>Download the app by clicking the link below:</p>
                     <Button
                         className={cx('ggplayicon')}
@@ -26,21 +28,23 @@ function Footer() {
 
                 <div className={cx('element2')}>
                     <div className={cx('title2')}>
-                        <p style={{fontWeight: 'bold', fontSize: '3rem', marginLeft: '15px'}}>Đồ án tốt nghiệp</p>
+                        <p style={{ fontWeight: 'bold', fontSize: '3rem', marginLeft: '15px' }}>Đồ án tốt nghiệp</p>
                     </div>
                     <div className={cx('listsv')}>
                         <p>Lê Xuân Huy</p>
                         <p>Huỳnh Trần Quang Huy</p>
                         <p>Trần Hân Du</p>
                         <p>Huỳnh Minh Tú</p>
-                        <p style={{fontWeight: 'bold'}}>GVHD: Ths. Nguyễn Lê Hoàng Dũng</p>
+                        <p style={{ fontWeight: 'bold' }}>GVHD: Ths. Nguyễn Lê Hoàng Dũng</p>
                     </div>
-                    <p style={{color: 'rgba(0, 0, 0, .54)'}}>© Copyright University of Science - VNUHCM, All rights reserved</p>
+                    <p style={{ color: 'rgba(0, 0, 0, .54)' }}>
+                        © Copyright University of Science - VNUHCM, All rights reserved
+                    </p>
                 </div>
 
                 <div className={cx('element3')}>
                     <div className={cx('title3')}>
-                        <p style={{fontWeight: 'bold', fontSize: '3rem'}}>Social media</p>
+                        <p style={{ fontWeight: 'bold', fontSize: '3rem' }}>Social media</p>
                     </div>
                     <div className={cx('social-icons')}>
                         <FacebookFilled />
@@ -49,7 +53,6 @@ function Footer() {
                         <InstagramFilled />
                     </div>
                 </div>
-
             </div>
         </footer>
     );

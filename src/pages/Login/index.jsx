@@ -9,10 +9,8 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
 import { AuthContext } from '../../components/AuthProvider';
 import { useContext } from 'react';
-import Cookies from 'universal-cookie';
 
 const cx = classNames.bind(styles);
-const cookies = new Cookies();
 
 function Login() {
     const { setAccessToken } = useContext(AuthContext);

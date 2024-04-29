@@ -1,0 +1,20 @@
+.wrapper {
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    .pagination {
+        font-size: 2rem; // Adjust this to change the size of the text
+    }
+}
