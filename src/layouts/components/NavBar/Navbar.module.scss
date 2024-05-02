@@ -1,24 +1,9 @@
 .wrapper {
     display: flex;
     width: 1200px;
-    height: 60px;
+    height: 56px;
     align-items: center;
     background-color: var(--navbar-color);
-    border-radius: 10px;
+    border-radius: 5px;
     margin: 125px 0 5px 0;
-    .menu {
-        margin-left: 20px;
-        background-color: var(--navbar-color);
-        .menu-item {
-            font-size: 2rem;
-            margin-right: 1rem;
-            cursor: pointer;
-            color: white;
-
-            &:hover {
-                border: 0.2rem solid white;
-                color: white !important;
-            }
-        }
-    }
 }

@@ -71,3 +71,23 @@ export const verifyCodeEmail = async (data, token) => {
         return error.response;
     }
 }
+
+export const getNewAccessToken = async () => {
+    try {
+        const response = await httpRequestAuth.post('/web/refresh');
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}
+
+export const logout = async () => {
+    try {
+        const response = await httpRequestAuth.get('/jwt/logout');
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}

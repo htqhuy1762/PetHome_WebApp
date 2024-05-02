@@ -1,8 +1,8 @@
 import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
 
-export const getPets = async (data) => {
+export const getItems = async (data) => {
     try {
-        const response = await httpRequestPetHome.get('/pets', { params: data });
+        const response = await httpRequestPetHome.get('/items', { params: data });
         return response;
     }
     catch (error) {
@@ -10,9 +10,9 @@ export const getPets = async (data) => {
     }
 }
 
-export const getPetDetail = async (id) => {
+export const getItemDetail = async (id) => {
     try {
-        const response = await httpRequestPetHome.get(`/pets/${id}`);
+        const response = await httpRequestPetHome.get(`/items/${id}`);
         return response;
     }
     catch (error) {

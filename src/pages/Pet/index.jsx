@@ -1,4 +1,4 @@
-import CardPet from '~/layouts/components/CardPet';
+import CardPet from '~/components/CardPet';
 import styles from './Pet.module.scss';
 import classNames from 'classnames/bind';
 import { Pagination } from 'antd';
@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 function Pet() {
     const [data, setData] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 15;
+    const limit = 20;
     const [total, setTotal] = useState(0);
 
     useEffect(() => {

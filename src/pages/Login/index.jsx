@@ -4,26 +4,34 @@ import logo from '../../assets/images/logo.png';
 import logotitle from '../../assets/images/logo-title.png';
 import google_logo from '../../assets/images/Google_Logo.png';
 import facebook_logo from '../../assets/images/Facebook_Logo.png';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
-import { AuthContext } from '../../components/AuthProvider';
-import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Login() {
-    const { setAccessToken } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const onFinish = async (data) => {
         try {
             const response = await authServices.login(data);
             if (response.status === 200) {
                 const accessToken = response.data.accessToken;
-                setAccessToken(accessToken);
-                console.log('login success:', response);
-            }
-            else {
-                console.log('login failed:', response);
+                const expiredAt = response.data.expiredAt;
+
+                // Save accessToken to localStorage
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('expiredAt', expiredAt);
+
+                navigate('/');
+            } else {
+                notification.error({
+                    message: 'Error',
+                    description: 'Đăng nhập thất bại',
+                });
+                return;
             }
         } catch (error) {
             console.log('login failed:', error);

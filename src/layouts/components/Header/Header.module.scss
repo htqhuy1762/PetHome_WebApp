@@ -1,4 +1,4 @@
-.wrapper {
+.wrapperfixed {
     height: 120px;
     width: 100%;
     display: flex;
@@ -10,9 +10,18 @@
     background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
 }
 
+.wrappernonfixed {
+    height: 120px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
+}
+
 .inner {
     display: flex;
     align-items: center;
+    position: relative;
     height: 100%;
     width: 1200px;
     justify-content: space-between;
@@ -41,17 +50,21 @@
 .right-menu {
     display: flex;
     align-items: center;
+    height: 120px;
 
     .cart {
         margin-right: 35px;
+        margin-top: 7px;
 
         .cart-btn:hover {
-            color: #fff;
-            background-color: var(--button-color);
+            background-color: initial !important;
         }
     }
 
     .user {
+        position: absolute;
+        top: 0;
+        right: 0;
         .user-btn:hover {
             color: #fff;
             background-color: var(--button-color);
@@ -62,6 +75,3 @@
         margin-right: 10px;
     }
 }
-
-
-
