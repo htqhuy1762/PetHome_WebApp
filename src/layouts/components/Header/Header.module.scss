@@ -1,5 +1,5 @@
 .wrapperfixed {
-    height: 120px;
+    height: 100px;
     width: 100%;
     display: flex;
     position: fixed;
@@ -11,7 +11,7 @@
 }
 
 .wrappernonfixed {
-    height: 120px;
+    height: 100px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -24,7 +24,6 @@
     position: relative;
     height: 100%;
     width: 1200px;
-    justify-content: space-between;
 }
 
 .logo-wrapper {
@@ -37,20 +36,21 @@
     }
     
     .logo-title {
-        height: 70px;
-        width: 150px;
+        height: 60px;
+        width: 140px;
     }
 }
 
 .search-container {
     width: 60%;
-    margin: 0 20px;
+    margin-left: 50px;
 }
 
 .right-menu {
     display: flex;
     align-items: center;
     height: 120px;
+    margin-left: 75px;
 
     .cart {
         margin-right: 35px;
@@ -69,9 +69,5 @@
             color: #fff;
             background-color: var(--button-color);
         }
-    }
-
-    .auth-btn {
-        margin-right: 10px;
     }
 }

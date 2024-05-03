@@ -10,7 +10,7 @@ export const getPets = async (data) => {
     }
 }
 
-export const getPetDetail = async (id) => {
+export const getPetDetailById = async (id) => {
     try {
         const response = await httpRequestPetHome.get(`/pets/${id}`);
         return response;

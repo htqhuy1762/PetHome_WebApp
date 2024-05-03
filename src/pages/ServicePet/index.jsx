@@ -1,5 +1,9 @@
 function ServicePet() {
-    return <h2>ServicePet page</h2>
+    return (
+        <div>
+            <h2>Service Pet</h2>
+        </div>
+    );
 }
 
 export default ServicePet;

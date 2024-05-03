@@ -24,21 +24,32 @@ function Header({ fixedHeader }) {
     };
     const [loading, setLoading] = useState(false);
 
-    const userMenu = (
-        <Menu>
-            <Menu.Item key={1}>
-                <a href="/profile">Đơn hàng của tôi</a>
-            </Menu.Item>
-            <Menu.Item key={2} onClick={logout}>
-                Đăng xuất
-            </Menu.Item>
-        </Menu>
-    );
+    const items = [
+        {
+            key: '1',
+            label: <a href="/profile">Đơn hàng của tôi</a>,
+        },
+        {
+            key: '2',
+            label: (
+                <a
+                    href="#"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        logout();
+                    }}
+                >
+                    Đăng xuất
+                </a>
+            ),
+        },
+    ];
+
+    let token = localStorage.getItem('accessToken');
 
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
-            let token = localStorage.getItem('accessToken');
             const expiredAt = localStorage.getItem('expiredAt');
 
             // Check if token exists and is not expired
@@ -51,7 +62,7 @@ function Header({ fixedHeader }) {
                 } catch (error) {
                     // Handle error
                 }
-            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()){
+            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()) {
                 // Refresh the token
                 const response = await authServices.getNewAccessToken();
                 // Save new token and its expiry time to localStorage
@@ -62,9 +73,9 @@ function Header({ fixedHeader }) {
 
             setLoading(false);
         };
-        
+
         getUser();
-    }, []);
+    }, [token]);
 
     if (loading) {
         return <Loading />; // Replace with your loading component or spinner
@@ -107,9 +118,9 @@ function Header({ fixedHeader }) {
                     ) : (
                         <>
                             <div className={cx('cart')}>
-                                <Badge count={5}>
+                                <Badge size='small' count={5}>
                                     <Button
-                                        style={{ border: 'none', width: '5rem', height: '4rem' }}
+                                        style={{ border: 'none', width: '4rem', height: '3rem' }}
                                         className={cx('cart-btn')}
                                         size="large"
                                         type="text"
@@ -118,7 +129,7 @@ function Header({ fixedHeader }) {
                                 </Badge>
                             </div>
                             <div className={cx('user')}>
-                                <Dropdown overlay={userMenu} placement="bottom" arrow>
+                                <Dropdown menu={{ items }} placement="bottom" arrow>
                                     <a
                                         style={{ color: 'white' }}
                                         className="ant-dropdown-link"

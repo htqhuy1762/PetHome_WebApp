@@ -4,7 +4,7 @@ import { Card } from 'antd';
 
 const cx = classNames.bind(styles);
 
-function CardPet({ pet }) {
+function CardPet({ pet, onClick }) {
     return (
         <>
             <Card
@@ -21,6 +21,7 @@ function CardPet({ pet }) {
                     />
                 }
                 style={{padding: '0px'}}
+                onClick={onClick}
             >
                 <Card.Meta title={<span>{pet.name}</span>} description={pet.shop_name} />
                 <Card.Meta title={<span style={{ color: 'red' }}>{pet.price.toLocaleString('vi-VN')}đ</span>} />

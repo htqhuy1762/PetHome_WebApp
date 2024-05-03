@@ -1,14 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Navbar.module.scss';
-import { Segmented} from 'antd';
+import { Segmented } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaw, faBlog, faBagShopping, faHouseMedical } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 
-
 const cx = classNames.bind(styles);
-
 
 function Navbar() {
     const [selectedValue, setSelectedValue] = useState('pets');
@@ -22,8 +20,8 @@ function Navbar() {
             options={[
                 {
                     label: (
-                        <div style={{fontSize: '2rem', color: selectedValue === 'pets' ? 'black' : 'white'}}>
-                            <FontAwesomeIcon icon={faPaw} />
+                        <div style={{ fontSize: '1.8rem', padding: '3px 0', color: selectedValue === 'pets' ? 'black' : 'white' }}>
+                            <FontAwesomeIcon style={{ fontSize: '2rem' }} icon={faPaw} />
                             <div>Thú cưng</div>
                         </div>
                     ),
@@ -31,8 +29,8 @@ function Navbar() {
                 },
                 {
                     label: (
-                        <div style={{fontSize: '2rem', color: selectedValue === 'items' ? 'black' : 'white'}}>
-                            <FontAwesomeIcon icon={faBagShopping} />
+                        <div style={{ fontSize: '1.8rem', padding: '3px 0', color: selectedValue === 'items' ? 'black' : 'white' }}>
+                            <FontAwesomeIcon style={{ fontSize: '2rem' }} icon={faBagShopping} />
                             <div>Vật phẩm</div>
                         </div>
                     ),
@@ -40,8 +38,8 @@ function Navbar() {
                 },
                 {
                     label: (
-                        <div style={{fontSize: '2rem', color: selectedValue === 'services' ? 'black' : 'white'}}>
-                            <FontAwesomeIcon icon={faHouseMedical} />
+                        <div style={{ fontSize: '1.8rem', padding: '3px 0', color: selectedValue === 'services' ? 'black' : 'white' }}>
+                            <FontAwesomeIcon style={{ fontSize: '2rem' }} icon={faHouseMedical} />
                             <div>Dịch vụ</div>
                         </div>
                     ),
@@ -49,8 +47,8 @@ function Navbar() {
                 },
                 {
                     label: (
-                        <div style={{fontSize: '2rem', color: selectedValue === 'blogs' ? 'black' : 'white'}}>
-                            <FontAwesomeIcon icon={faBlog} />
+                        <div style={{ fontSize: '1.8rem', padding: '3px 0', color: selectedValue === 'blogs' ? 'black' : 'white' }}>
+                            <FontAwesomeIcon style={{ fontSize: '2rem' }} icon={faBlog} />
                             <div>Blog</div>
                         </div>
                     ),
