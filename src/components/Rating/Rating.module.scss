@@ -1,0 +1,29 @@
+.wrapper {
+    padding: 20px;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.username {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.star-rating {
+    color: #fadb14;
+    margin: 10px 0;
+}
+
+.date {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.comment {
+    margin-top: 20px;
+    //line-height: 1.5;
+}

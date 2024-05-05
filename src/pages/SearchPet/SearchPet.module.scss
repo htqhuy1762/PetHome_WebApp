@@ -1,6 +1,13 @@
 .wrapper {
-    margin-bottom: 20px;
+    margin: 20px 0;
     height: 1450px;
+    position: relative;
+    display: flex;
+}
+
+.contents {
+    display: flex;
+    flex-direction: column;
     position: relative;
 }
 

@@ -7,23 +7,50 @@ import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
 import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
+import Rating from '~/components/Rating';
+import nocomment from '~/assets/images/nocomment.png';
 
 const cx = classNames.bind(styles);
 
 function PetDetail() {
     const { id } = useParams();
     const [petData, setPetData] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 4;
+    const [total, setTotal] = useState(0);
+    const [dataRating, setDataRating] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await petServices.getPetDetailById(id);
             if (response.status === 200) {
                 setPetData(response.data);
+                setTotal(response.data.ratings.rating_count);
             }
         };
 
         fetchData();
     }, [id]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!dataRating[currentPage]) {
+                const response = await petServices.getPetRatings(id, {
+                    limit: limit,
+                    start: (currentPage - 1) * limit,
+                });
+                if (response.status === 200) {
+                    setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
+                }
+            }
+        };
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     const items = useMemo(() => {
         if (!petData) {
@@ -61,7 +88,11 @@ function PetDetail() {
                         title: <a href="/">Pets</a>,
                     },
                     {
-                        title: <a style={{color: 'black'}} href={`/pets/${id}`}>{petData.name}</a>,
+                        title: (
+                            <a style={{ color: 'black' }} href={`/pets/${id}`}>
+                                {petData.name}
+                            </a>
+                        ),
                     },
                 ]}
             />
@@ -110,7 +141,11 @@ function PetDetail() {
                     <Avatar src={logo} size={100} style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }} />
                     <div className={cx('pet-detail-shop-info')}>
                         <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{petData.shop.name}</p>
-                        <Button size="large" style={{ width: '200px' }} icon={<WechatOutlined />}>
+                        <Button
+                            size="large"
+                            style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
+                            icon={<WechatOutlined />}
+                        >
                             Chat ngay
                         </Button>
                     </div>
@@ -125,19 +160,34 @@ function PetDetail() {
                     <p>{petData.description}</p>
                 </div>
             </div>
-            <div className={cx('pet-detail-rating')}>
-                <h2>Đánh giá sản phẩm</h2>
-                <div className={cx('pagination-container')}>
-                    <Pagination
-                        className={cx('pagination')}
-                        size="medium"
-                        defaultPageSize={5}
-                        defaultCurrent={1}
-                        total={10}
-                        current={1}
-                        onChange={(page) => console.log(page)}
-                    />
-                </div>
+            <div
+                className={cx('pet-detail-rating')}
+                style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? '930px' : '400px' }}
+            >
+                <h2 style={{ marginBottom: '20px' }}>Đánh giá sản phẩm</h2>
+                {dataRating[currentPage] && dataRating[currentPage].length > 0 ? (
+                    <>
+                        {dataRating[currentPage].map((rate) => (
+                            <Rating key={rate.id_rate} data={rate} />
+                        ))}
+                        <div className={cx('pagination-container')}>
+                            <Pagination
+                                className={cx('pagination')}
+                                size="medium"
+                                defaultPageSize={limit}
+                                defaultCurrent={1}
+                                total={total}
+                                current={currentPage}
+                                onChange={handlePageChange}
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                        <img src={nocomment} />
+                        <p>Chưa có đánh giá</p>
+                    </div>
+                )}
             </div>
         </div>
     ) : (

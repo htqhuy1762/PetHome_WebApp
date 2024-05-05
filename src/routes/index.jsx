@@ -10,6 +10,7 @@ import Item from '~/pages/Item';
 import ServicePet from '~/pages/ServicePet';
 import PetDetail from '~/pages/PetDetail';
 import Cart from '~/pages/Cart';
+import SearchPet from '~/pages/SearchPet';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -22,6 +23,7 @@ const publicRoutes = [
     { path: '/pets', component: Pet },
     { path: '/pets/:id', component: PetDetail, layout: HeaderFooter},
     { path: '/cart', component: Cart, layout: HeaderFooter},
+    { path: '/search/pets/', component: SearchPet, layout: HeaderFooter},
 ];
 
 const privateRoutes = [];

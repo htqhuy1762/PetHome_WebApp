@@ -109,4 +109,15 @@
     padding: 20px;
     background-color: white;
     margin: 0 0 20px 0;
+    position: relative;
+}
+
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    margin-top: 20px;
+    bottom: 1;
+    width: 100%;
 }

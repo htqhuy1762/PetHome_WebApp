@@ -9,10 +9,11 @@ function Rating({ data }) {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('username')}>{data.user_name}</div>
-            <div className={cx('date')}>{date.toLocaleDateString()}</div>
+            
             <div className={cx('star-rating')}>
                 <Rate disabled defaultValue={data.rate} />
             </div>
+            <div className={cx('date')}>{date.toLocaleDateString('vi-VN')}</div>
             <div className={cx('comment')}>
                 <p>{data.comment}</p>
             </div>

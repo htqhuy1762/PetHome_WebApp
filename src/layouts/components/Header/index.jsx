@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import logo from '../../../assets/images/logo.png';
 import logotitle from '../../../assets/images/logo-title.png';
-import { Input, Badge, Button, Dropdown, Menu, Avatar } from 'antd';
+import { Input, Badge, Button, Dropdown, Avatar } from 'antd';
 import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,9 @@ const cx = classNames.bind(styles);
 
 function Header({ fixedHeader }) {
     const navigate = useNavigate();
-    const onSearch = (value, _e, info) => {};
+    const onSearch = (value) => {
+        navigate(`/search/pets?q=${value}`);
+    };
     const [currentUser, setCurrentUser] = useState(null);
     const logout = async () => {
         await authServices.logout();
