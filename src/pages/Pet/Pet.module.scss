@@ -1,6 +1,6 @@
 .wrapper {
     margin-bottom: 20px;
-    height: 1450px;
+    height: auto;
     position: relative;
 }
 
@@ -14,7 +14,5 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    position: absolute;
-    bottom: 0;
     width: 100%;
 }

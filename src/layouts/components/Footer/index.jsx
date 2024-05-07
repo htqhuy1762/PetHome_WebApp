@@ -19,7 +19,7 @@ function Footer() {
                             <img className={cx('logo-title')} src={logotitle} alt="" />
                         </div>
                     </a>
-                    <p>Download the app by clicking the link below:</p>
+                    <p>Tải xuống ứng dụng bằng cách nhấp vào liên kết bên dưới:</p>
                     <Button
                         className={cx('ggplayicon')}
                         icon={<img style={{ height: '80px', width: '208px' }} src={googlePlayIcon}></img>}
@@ -27,16 +27,6 @@ function Footer() {
                 </div>
 
                 <div className={cx('element2')}>
-                    <div className={cx('title2')}>
-                        <p style={{ fontWeight: 'bold', fontSize: '3rem', marginLeft: '15px' }}>Đồ án tốt nghiệp</p>
-                    </div>
-                    <div className={cx('listsv')}>
-                        <p>Lê Xuân Huy</p>
-                        <p>Huỳnh Trần Quang Huy</p>
-                        <p>Trần Hân Du</p>
-                        <p>Huỳnh Minh Tú</p>
-                        <p style={{ fontWeight: 'bold' }}>GVHD: Ths. Nguyễn Lê Hoàng Dũng</p>
-                    </div>
                     <p style={{ color: 'rgba(0, 0, 0, .54)' }}>
                         © Copyright University of Science - VNUHCM, All rights reserved
                     </p>
@@ -44,7 +34,7 @@ function Footer() {
 
                 <div className={cx('element3')}>
                     <div className={cx('title3')}>
-                        <p style={{ fontWeight: 'bold', fontSize: '3rem' }}>Social media</p>
+                        <p style={{ fontWeight: 'bold', fontSize: '3rem' }}>Truyền thông xã hội</p>
                     </div>
                     <div className={cx('social-icons')}>
                         <FacebookFilled />

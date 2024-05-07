@@ -81,7 +81,7 @@
     display: flex;
     background-color: white;
     margin: 0 0 20px 0;
-    padding: 20px;
+    padding: 30px;
     .pet-detail-shop-left {
         display: flex;
         align-items: center;
@@ -101,12 +101,16 @@
 
 .pet-detail-description {
     background-color: white;
-    padding: 20px;
+    padding: 30px;
     margin: 0 0 20px 0;
+
+    .pet-detail-description-content {
+        margin-top: 15px;
+    }
 }
 
 .pet-detail-rating {
-    padding: 20px;
+    padding: 30px;
     background-color: white;
     margin: 0 0 20px 0;
     position: relative;
@@ -116,8 +120,6 @@
 .pagination-container {
     display: flex;
     justify-content: center;
-    position: absolute;
     margin-top: 20px;
-    bottom: 1;
     width: 100%;
 }

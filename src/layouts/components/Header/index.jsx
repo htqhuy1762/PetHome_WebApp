@@ -3,8 +3,8 @@ import styles from './Header.module.scss';
 import logo from '../../../assets/images/logo.png';
 import logotitle from '../../../assets/images/logo-title.png';
 import { Input, Badge, Button, Dropdown, Avatar } from 'antd';
-import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { ShoppingCartOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
@@ -13,9 +13,18 @@ import Loading from '~/components/Loading';
 const cx = classNames.bind(styles);
 
 function Header({ fixedHeader }) {
+    const searchRef = useRef(null);
     const navigate = useNavigate();
     const onSearch = (value) => {
-        navigate(`/search/pets?q=${value}`);
+        if (value.trim() === '') {
+            navigate('/');
+        } else {
+            navigate(`/search/pets?q=${value}`);
+        }
+
+        if (searchRef.current) {
+            searchRef.current.blur();
+        }
     };
     const [currentUser, setCurrentUser] = useState(null);
     const logout = async () => {
@@ -24,6 +33,12 @@ function Header({ fixedHeader }) {
         localStorage.removeItem('expiredAt');
         navigate('/login');
     };
+    const onChange = (e) => {
+        setSearchValue(e.target.value);
+    };
+
+    const urlParams = new URLSearchParams(location.search);
+    const [searchValue, setSearchValue] = useState(urlParams.get('q') || '');
     const [loading, setLoading] = useState(false);
 
     const items = [
@@ -79,6 +94,11 @@ function Header({ fixedHeader }) {
         getUser();
     }, [token]);
 
+    useEffect(() => {
+        // Update the search value when the URL changes
+        setSearchValue(urlParams.get('q') || '');
+    }, [location.search]);
+
     if (loading) {
         return <Loading />; // Replace with your loading component or spinner
     }
@@ -95,32 +115,30 @@ function Header({ fixedHeader }) {
 
                 <div className={cx('search-container')}>
                     <Input.Search
+                        ref={searchRef}
                         size="large"
                         placeholder="Tìm thú cưng, vật phẩm, dịch vụ, ..."
                         onSearch={onSearch}
-                        enterButton
+                        enterButton = {<Button style={{color: 'var(--button-color)', backgroundColor: 'var(--end-color)', width: '60px', height: '39px'}} type="primary" icon={<SearchOutlined />}></Button>}
                         allowClear
+                        value={searchValue}
+                        onChange={onChange}
                     />
                 </div>
                 <div className={cx('right-menu')}>
                     {!currentUser ? (
                         <>
-                            <Button
-                                className={cx('auth-btn')}
-                                size="large"
-                                type="primary"
-                                onClick={() => navigate('/login')}
-                            >
+                            <Button className={cx('auth-btn')} size="large" onClick={() => navigate('/login')}>
                                 Đăng nhập
                             </Button>
-                            <Button size="large" type="primary" onClick={() => navigate('/register')}>
+                            <Button className={cx('auth-btn')} size="large" onClick={() => navigate('/register')}>
                                 Đăng ký
                             </Button>
                         </>
                     ) : (
                         <>
                             <div className={cx('cart')}>
-                                <Badge size='small' count={5}>
+                                <Badge size="small" count={5}>
                                     <Button
                                         style={{ border: 'none', width: '4rem', height: '3rem' }}
                                         className={cx('cart-btn')}

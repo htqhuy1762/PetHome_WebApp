@@ -9,6 +9,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
+import React from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -157,12 +158,19 @@ function PetDetail() {
             <div className={cx('pet-detail-description')}>
                 <h2>Mô tả sản phẩm</h2>
                 <div className={cx('pet-detail-description-content')}>
-                    <p>{petData.description}</p>
+                    <p>
+                        {petData.description.split('\n').map((line, index) => (
+                            <React.Fragment key={index}>
+                                {line}
+                                <br />
+                            </React.Fragment>
+                        ))}
+                    </p>
                 </div>
             </div>
             <div
                 className={cx('pet-detail-rating')}
-                style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? '930px' : '400px' }}
+                style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? 'auto' : '300px' }}
             >
                 <h2 style={{ marginBottom: '20px' }}>Đánh giá sản phẩm</h2>
                 {dataRating[currentPage] && dataRating[currentPage].length > 0 ? (
@@ -183,7 +191,14 @@ function PetDetail() {
                         </div>
                     </>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
                         <img src={nocomment} />
                         <p>Chưa có đánh giá</p>
                     </div>

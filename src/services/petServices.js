@@ -39,3 +39,13 @@ export const getPetSpecies = async () => {
         return error.response;
     }
 }
+
+export const getPetAges = async () => {
+    try {
+        const response = await httpRequestPetHome.get('/pet/ages');
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}

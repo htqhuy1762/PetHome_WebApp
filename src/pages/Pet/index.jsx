@@ -31,6 +31,7 @@ function Pet() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        window.scrollTo(0, 0);
     };
 
     const goToPetDetail = (id) => {

@@ -8,8 +8,8 @@
 
 .container {
     width: 1200px;
-    min-height: 1000px;
     display: flex;
     flex-direction: column;
     background-color: #e5e1da;
+    min-height: calc(100vh - 480px);
 }
