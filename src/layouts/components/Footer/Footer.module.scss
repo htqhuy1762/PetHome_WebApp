@@ -45,12 +45,8 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    justify-content: space-around;
-    .listsv {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+    justify-content: end;
+    margin-bottom: 20px;
 }
 
 .element3 {
@@ -67,5 +63,19 @@
         width: 200px;
         font-size: 3rem;
         justify-content: space-between;
+    }
+}
+
+.list-button {
+    display: flex;
+
+    .appstoreicon {
+        margin-left: 20px;
+        width: 184px;
+        height: 55px;
+    }
+    .ggplayicon {
+        width: 184px;
+        height: 55px;
     }
 }

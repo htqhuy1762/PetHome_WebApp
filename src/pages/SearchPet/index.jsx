@@ -15,7 +15,7 @@ const provinces = [
     { id: 1, name: 'Hải Phòng' },
     { id: 2, name: 'Hà Nội' },
     { id: 3, name: 'Đà Nẵng' },
-    { id: 4, name: 'TP Hồ Chí Minh' },
+    { id: 4, name: 'Hồ Chí Minh' },
     { id: 5, name: 'Cần Thơ' },
     { id: 6, name: 'An Giang' },
     { id: 7, name: 'Bà Rịa - Vũng Tàu' },
@@ -141,7 +141,7 @@ function SearchPet() {
     const filteredData = data[currentPage]?.filter(pet =>
         (selectedSpecies.length === 0 || selectedSpecies.includes(pet.specie_id)) &&
         (selectedAges.length === 0 || selectedAges.includes(pet.age_id)) &&
-        (selectedProvinces.length === 0 || selectedProvinces.some(id => pet.areas.includes(id)))
+        (selectedProvinces.length === 0 || pet.areas.some(area => selectedProvinces.includes(area)))
     );
     
 
@@ -215,7 +215,7 @@ function SearchPet() {
                                 <h3>Khu vực</h3>
                                 <Checkbox.Group onChange={handleProvincesChange}>
                                     {provinces.slice(0, displayCount).map((item, index) => (
-                                        <Checkbox key={index} value={item.id}>
+                                        <Checkbox key={index} value={item.name}>
                                             {item.name}
                                         </Checkbox>
                                     ))}

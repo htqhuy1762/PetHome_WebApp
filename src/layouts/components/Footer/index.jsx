@@ -4,6 +4,7 @@ import logo from '../../../assets/images/logo.png';
 import logotitle from '../../../assets/images/logo-title.png';
 import { Button } from 'antd';
 import googlePlayIcon from '~/assets/images/GooglePlay.png';
+import appStoreIcon from '~/assets/images/AppStore.png';
 import { FacebookFilled, YoutubeFilled, LinkedinFilled, InstagramFilled } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
@@ -20,13 +21,20 @@ function Footer() {
                         </div>
                     </a>
                     <p>Tải xuống ứng dụng bằng cách nhấp vào liên kết bên dưới:</p>
-                    <Button
-                        className={cx('ggplayicon')}
-                        icon={<img style={{ height: '80px', width: '208px' }} src={googlePlayIcon}></img>}
-                    />
+                    <div className={cx('list-button')}>
+                        <Button
+                            className={cx('ggplayicon')}
+                            icon={<img style={{ height: '80px', width: '208px' }} src={googlePlayIcon}></img>}
+                        />
+                        <Button
+                            className={cx('appstoreicon')}
+                            icon={<img style={{ height: '55px', width: '184px' }} src={appStoreIcon}></img>}
+                        />
+                    </div>
                 </div>
 
                 <div className={cx('element2')}>
+                    
                     <p style={{ color: 'rgba(0, 0, 0, .54)' }}>
                         © Copyright University of Science - VNUHCM, All rights reserved
                     </p>
@@ -34,7 +42,7 @@ function Footer() {
 
                 <div className={cx('element3')}>
                     <div className={cx('title3')}>
-                        <p style={{ fontWeight: 'bold', fontSize: '3rem' }}>Truyền thông xã hội</p>
+                        <p style={{ fontWeight: 'bold', fontSize: '3rem' }}>Social Media</p>
                     </div>
                     <div className={cx('social-icons')}>
                         <FacebookFilled />

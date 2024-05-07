@@ -29,7 +29,7 @@ function Login() {
             } else {
                 notification.error({
                     message: 'Error',
-                    description: 'Đăng nhập thất bại',
+                    description: "Vui lòng kiểm tra lại email hoặc mật khẩu!",
                 });
                 return;
             }
