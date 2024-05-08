@@ -4,22 +4,24 @@ import logo from '../../../assets/images/logo.png';
 import logotitle from '../../../assets/images/logo-title.png';
 import { Input, Badge, Button, Dropdown, Avatar } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import Loading from '~/components/Loading';
+import { TabContext } from '~/components/TabProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function Header({ fixedHeader }) {
+    const { currentTab } = useContext(TabContext);
     const searchRef = useRef(null);
     const navigate = useNavigate();
     const onSearch = (value) => {
         if (value.trim() === '') {
             navigate('/');
         } else {
-            navigate(`/search/pets?q=${value}`);
+            navigate(`/${currentTab}/search?q=${value}`);
         }
 
         if (searchRef.current) {
@@ -119,7 +121,18 @@ function Header({ fixedHeader }) {
                         size="large"
                         placeholder="Tìm thú cưng, vật phẩm, dịch vụ, ..."
                         onSearch={onSearch}
-                        enterButton = {<Button style={{color: 'var(--button-color)', backgroundColor: 'var(--end-color)', width: '60px', height: '39px'}} type="primary" icon={<SearchOutlined />}></Button>}
+                        enterButton={
+                            <Button
+                                style={{
+                                    color: 'var(--button-color)',
+                                    backgroundColor: 'var(--end-color)',
+                                    width: '60px',
+                                    height: '39px',
+                                }}
+                                type="primary"
+                                icon={<SearchOutlined />}
+                            ></Button>
+                        }
                         allowClear
                         value={searchValue}
                         onChange={onChange}
@@ -156,7 +169,12 @@ function Header({ fixedHeader }) {
                                         onClick={(e) => e.preventDefault()}
                                     >
                                         {currentUser?.email}
-                                        <Avatar style={{ marginLeft: '0.7rem' }} size={30} icon={<UserOutlined />} />
+                                        <Avatar
+                                            style={{ marginLeft: '0.7rem' }}
+                                            size={30}
+                                            src={currentUser?.avatar ? currentUser.avatar : null}
+                                            icon={!currentUser?.avatar ? <UserOutlined /> : null}
+                                        />
                                     </a>
                                 </Dropdown>
                             </div>

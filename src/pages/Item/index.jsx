@@ -4,10 +4,12 @@ import classNames from 'classnames/bind';
 import { Pagination } from 'antd';
 import * as itemServices from '~/services/itemServices';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Item() {
+    const navigate = useNavigate();
     const [data, setData] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 20;
@@ -31,11 +33,15 @@ function Item() {
         setCurrentPage(page);
     };
 
+    const goToItemDetail = (id) => {
+        navigate(`/items/${id}`);
+    }
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
                 {data[currentPage]?.map((item) => (
-                    <CardItems key={item.id_item} item={item} />
+                    <CardItems key={item.id_item} item={item} onClick={() => goToItemDetail(item.id_item)} />
                 ))}
             </div>
             <div className={cx('pagination-container')}>

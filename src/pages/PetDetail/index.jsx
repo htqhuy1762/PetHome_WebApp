@@ -1,10 +1,10 @@
-import { Button, Image, Pagination, Rate, Avatar, Descriptions, Breadcrumb } from 'antd';
+import { Button, Image, Pagination, Rate, Avatar, Descriptions, Breadcrumb, Modal, Input, message } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './PetDetail.module.scss';
-import logo from '../../assets/images/logo.png';
-import { ShoppingCartOutlined, WechatOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
+import * as authServices from '~/services/petServices';
 import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
@@ -14,12 +14,32 @@ import React from 'react';
 const cx = classNames.bind(styles);
 
 function PetDetail() {
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi.open({
+          type: 'success',
+          content: 'Gửi đánh giá thành công',
+        });
+      };
+    
+      const errorMessage = () => {
+        messageApi.open({
+          type: 'error',
+          content: 'Gửi đánh giá thất bại',
+        });
+      };
     const { id } = useParams();
     const [petData, setPetData] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 4;
     const [total, setTotal] = useState(0);
     const [dataRating, setDataRating] = useState({});
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [review, setReview] = useState('');
+    const [hasReviewed, setHasReviewed] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,8 +69,67 @@ function PetDetail() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
 
+    let token = localStorage.getItem('accessToken');
+
+    useEffect(() => {
+        const checkRating = async () => {
+            const expiredAt = localStorage.getItem('expiredAt');
+
+            // Check if token exists and is not expired
+            if (token && new Date().getTime() < new Date(expiredAt).getTime()) {
+                try {
+                    const response = await petServices.checkRatedOrNot(id, token);
+                    if (response.status === 200) {
+                        setHasReviewed(response.data.status);
+                    }
+                } catch (error) {
+                    // Handle error
+                }
+            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()) {
+                // Refresh the token
+                const response = await authServices.getNewAccessToken();
+                // Save new token and its expiry time to localStorage
+                localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('expiredAt', response.expiredIn);
+                token = response.data.accessToken;
+            }
+        };
+
+        checkRating();
+    }, [token, hasReviewed]);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const handleReviewClick = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleOk = async () => {
+        try {
+            // Replace with your actual API call
+            await petServices.postPetRating(id, { rate: rating, comment: review }, token);
+            setIsModalVisible(false);
+            setHasReviewed('rated');
+            success();
+
+            // Refresh the list of reviews
+            const response = await petServices.getPetRatings(id, {
+                limit: limit,
+                start: (currentPage - 1) * limit,
+            });
+            if (response.status === 200) {
+                setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
+            }
+        } catch (error) {
+            console.error(error);
+            errorMessage();
+        }
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
     };
 
     const items = useMemo(() => {
@@ -79,6 +158,7 @@ function PetDetail() {
 
     return petData ? (
         <div className={cx('wrapper')}>
+            {contextHolder}
             <Breadcrumb
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
@@ -139,7 +219,12 @@ function PetDetail() {
             </div>
             <div className={cx('pet-detail-shop')}>
                 <div className={cx('pet-detail-shop-left')}>
-                    <Avatar src={logo} size={100} style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }} />
+                    <Avatar
+                        src={petData.shop?.avatar ? petData.shop.avatar : null}
+                        icon={!petData.shop?.avatar ? <UserOutlined /> : null}
+                        size={100}
+                        style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
+                    />
                     <div className={cx('pet-detail-shop-info')}>
                         <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{petData.shop.name}</p>
                         <Button
@@ -172,7 +257,29 @@ function PetDetail() {
                 className={cx('pet-detail-rating')}
                 style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? 'auto' : '300px' }}
             >
-                <h2 style={{ marginBottom: '20px' }}>Đánh giá sản phẩm</h2>
+                <div className={cx('header-rating')}>
+                    <h2>Đánh giá sản phẩm</h2>
+                    {hasReviewed === 'not rated' ? (
+                        <Button className={cx('Button-rating')} size="large" onClick={handleReviewClick}>
+                            Đánh giá
+                        </Button>
+                    ) : hasReviewed === 'rated' ? (
+                        <div className={cx('rated-text')}>Bạn đã đánh giá sản phẩm!</div>
+                    ) : null}
+
+                    <Modal title="Viết đánh giá" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                        <Rate size="large" style={{ margin: '5px 0 20px 0' }} onChange={setRating} value={rating} />
+                        <Input.TextArea
+                            autoSize="true"
+                            placeholder="Viết đánh giá"
+                            onChange={(e) => setReview(e.target.value)}
+                            value={review}
+                            maxLength={200}
+                            showCount
+                            style={{ marginBottom: '25px' }}
+                        />
+                    </Modal>
+                </div>
                 {dataRating[currentPage] && dataRating[currentPage].length > 0 ? (
                     <>
                         {dataRating[currentPage].map((rate) => (

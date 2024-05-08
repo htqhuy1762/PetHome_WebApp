@@ -3,16 +3,16 @@
     flex-direction: column;
 }
 
-.pet-detail-information {
+.item-detail-information {
     display: flex;
     margin: 20px 0;
     background-color: white;
     padding: 15px;
-    .pet-detail-info {
+    .item-detail-info {
         padding: 20px;
         flex-grow: 1;
 
-        .pet-detail-info-desc {
+        .item-detail-info-desc {
             display: flex;
             align-items: center;
             margin-top: 2rem;
@@ -37,7 +37,7 @@
             align-items: center;
         }
 
-        .pet-state {
+        .item-state {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -77,66 +77,43 @@
     }
 }
 
-.pet-detail-shop {
+.item-detail-shop {
     display: flex;
     background-color: white;
     margin: 0 0 20px 0;
     padding: 30px;
-    .pet-detail-shop-left {
+    .item-detail-shop-left {
         display: flex;
         align-items: center;
         border-right: 1px solid rgba(0, 0, 0, 0.1);
         padding: 0 25px 0 0;
 
-        .pet-detail-shop-info {
+        .item-detail-shop-info {
             height: 100%;
             padding: 20px 0 0 10px;
         }
     }
 
-    .pet-detail-shop-right {
+    .item-detail-shop-right {
         padding: 0 0 0 25px;
     }
 }
 
-.pet-detail-description {
+.item-detail-description {
     background-color: white;
     padding: 30px;
     margin: 0 0 20px 0;
 
-    .pet-detail-description-content {
+    .item-detail-description-content {
         margin-top: 15px;
     }
 }
 
-.pet-detail-rating {
+.item-detail-rating {
     padding: 30px;
     background-color: white;
     margin: 0 0 20px 0;
     position: relative;
-
-    .header-rating {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    .Button-rating {
-        position: absolute;
-        right: 30px;
-        top: 30px;
-        width: 200px;
-        height: 40px;
-        background-color: var(--start-color);
-        color: white;
-    }
-
-    .rated-text {
-        position: absolute;
-        right: 35px;
-        top: 30px;
-        color: red;
-    }
 }
 
 

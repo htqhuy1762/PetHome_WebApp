@@ -136,16 +136,16 @@ function SearchPet() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, location.search]);
 
-    console.log(data[currentPage])
+    console.log(data[currentPage]);
 
-    const filteredData = data[currentPage]?.filter(pet =>
-        (selectedSpecies.length === 0 || selectedSpecies.includes(pet.specie_id)) &&
-        (selectedAges.length === 0 || selectedAges.includes(pet.age_id)) &&
-        (selectedProvinces.length === 0 || pet.areas.some(area => selectedProvinces.includes(area)))
+    const filteredData = data[currentPage]?.filter(
+        (pet) =>
+            (selectedSpecies.length === 0 || selectedSpecies.includes(pet.specie_id)) &&
+            (selectedAges.length === 0 || selectedAges.includes(pet.age_id)) &&
+            (selectedProvinces.length === 0 || pet.areas.some((area) => selectedProvinces.includes(area))),
     );
-    
 
-    console.log(filteredData)
+    console.log(filteredData);
 
     const handleExpandClick = () => {
         if (isExpanded) {
@@ -234,21 +234,27 @@ function SearchPet() {
             </div>
             <div className={cx('contents')}>
                 <div className={cx('container')}>
-                    {filteredData?.map((pet) => (
-                        <CardPet key={pet.id_pet} pet={pet} onClick={() => goToPetDetail(pet.id_pet)} />
-                    ))}
+                    {filteredData?.length > 0 ? (
+                        filteredData.map((pet) => (
+                            <CardPet key={pet.id_pet} pet={pet} onClick={() => goToPetDetail(pet.id_pet)} />
+                        ))
+                    ) : (
+                        <div style={{display:'flex', justifyContent:'center', width: '965px'}}>Danh sách trống</div>
+                    )}
                 </div>
-                <div className={cx('pagination-container')}>
-                    <Pagination
-                        className={cx('pagination')}
-                        size="medium"
-                        defaultPageSize={limit}
-                        defaultCurrent={1}
-                        total={total}
-                        current={currentPage}
-                        onChange={handlePageChange}
-                    />
-                </div>
+                {filteredData?.length > 0 && (
+                    <div className={cx('pagination-container')}>
+                        <Pagination
+                            className={cx('pagination')}
+                            size="medium"
+                            defaultPageSize={limit}
+                            defaultCurrent={1}
+                            total={total}
+                            current={currentPage}
+                            onChange={handlePageChange}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

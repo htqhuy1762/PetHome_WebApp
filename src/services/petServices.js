@@ -49,3 +49,31 @@ export const getPetAges = async () => {
         return error.response;
     }
 }
+
+export const checkRatedOrNot = async (id, token) => {
+    try {
+        const response = await httpRequestPetHome.get(`/api/pets/${id}/rate`, {
+            headers: {
+                'Authorization': token
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}
+
+export const postPetRating = async (id, data, token) => {
+    try {
+        const response = await httpRequestPetHome.post(`/api/pets/${id}/rate`, data, {
+            headers: {
+                'Authorization': token
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}

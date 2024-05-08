@@ -1,20 +1,29 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Navbar.module.scss';
 import { Segmented } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaw, faBlog, faBagShopping, faHouseMedical } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { TabContext } from '~/components/TabProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function Navbar() {
-    const [selectedValue, setSelectedValue] = useState('pets');
+    const { setCurrentTab } = useContext(TabContext);
+    const [selectedValue, setSelectedValue] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const currentPath = location.pathname.slice(1);
+        setSelectedValue(currentPath || 'pets');
+    }, [location]);
+
     return (
         <Segmented
             className={cx('wrapper')}
-            defaultValue={'pets'}
+            value={selectedValue || 'pets'}
             block
             size="medium"
             options={[
@@ -57,11 +66,13 @@ function Navbar() {
             ]}
             onChange={(value) => {
                 setSelectedValue(value);
-                if (value === 'pets') {
-                    navigate('/');
-                } else {
-                    navigate(`/${value}`);
-                }
+                setCurrentTab(value);
+                // if (value === 'pets') {
+                //     navigate('/');
+                // } else {
+                //     navigate(`/${value}`);
+                // }
+                navigate(`/${value}`);
             }}
         />
     );

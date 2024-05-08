@@ -9,6 +9,7 @@ import Blog from '~/pages/Blog';
 import Item from '~/pages/Item';
 import ServicePet from '~/pages/ServicePet';
 import PetDetail from '~/pages/PetDetail';
+import ItemDetail from '~/pages/ItemDetail';
 import Cart from '~/pages/Cart';
 import SearchPet from '~/pages/SearchPet';
 
@@ -22,6 +23,7 @@ const publicRoutes = [
     { path: '/blogs', component: Blog },
     { path: '/pets', component: Pet },
     { path: '/pets/:id', component: PetDetail, layout: HeaderFooter},
+    { path: '/items/:id', component: ItemDetail, layout: HeaderFooter},
     { path: '/cart', component: Cart, layout: HeaderFooter},
     { path: '/search/pets/', component: SearchPet, layout: HeaderFooter},
 ];
