@@ -69,7 +69,7 @@ function PetDetail() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
 
-    let token = localStorage.getItem('accessToken');
+    const [token, setToken] = useState(localStorage.getItem('accessToken'));
 
     useEffect(() => {
         const checkRating = async () => {
@@ -91,7 +91,7 @@ function PetDetail() {
                 // Save new token and its expiry time to localStorage
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('expiredAt', response.expiredIn);
-                token = response.data.accessToken;
+                setToken(response.data.accessToken);
             }
         };
 

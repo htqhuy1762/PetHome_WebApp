@@ -21,7 +21,7 @@ function Header({ fixedHeader }) {
         if (value.trim() === '') {
             navigate('/');
         } else {
-            navigate(`/${currentTab}/search?q=${value}`);
+            navigate(`/search/${currentTab}?q=${value}`);
         }
 
         if (searchRef.current) {
@@ -46,7 +46,7 @@ function Header({ fixedHeader }) {
     const items = [
         {
             key: '1',
-            label: <a href="/profile">Đơn hàng của tôi</a>,
+            label: <a href="/user/account/profile">Đơn hàng của tôi</a>,
         },
         {
             key: '2',
@@ -64,7 +64,7 @@ function Header({ fixedHeader }) {
         },
     ];
 
-    let token = localStorage.getItem('accessToken');
+    const [token, setToken] = useState(localStorage.getItem('accessToken'));
 
     useEffect(() => {
         const getUser = async () => {
@@ -87,7 +87,7 @@ function Header({ fixedHeader }) {
                 // Save new token and its expiry time to localStorage
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('expiredAt', response.expiredIn);
-                token = response.data.accessToken;
+                setToken(response.data.accessToken);
             }
 
             setLoading(false);

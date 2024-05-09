@@ -1,0 +1,23 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #e5e1da;
+}
+
+.container {
+    width: 1200px;
+    display: flex;
+    background-color: #e5e1da;
+    min-height: calc(100vh - 480px);
+    margin: 20px 0;
+}
+
+.content {
+    display: flex;
+    margin-left: 15px;
+    padding: 0px 30px 10px 30px;
+    background-color: white;
+    width: 100%;
+}
