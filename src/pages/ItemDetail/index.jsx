@@ -1,10 +1,10 @@
-import { Button, Image, Pagination, Rate, Avatar, Descriptions, Breadcrumb } from 'antd';
+import { Button, Image, Pagination, Rate, Avatar, Descriptions, Breadcrumb, Modal, Input, message } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './ItemDetail.module.scss';
-import logo from '../../assets/images/logo.png';
-import { ShoppingCartOutlined, WechatOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as itemServices from '~/services/itemServices';
+import * as authServices from '~/services/petServices';
 import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
@@ -14,12 +14,39 @@ import React from 'react';
 const cx = classNames.bind(styles);
 
 function ItemDetail() {
+    const [messageApi, contextHolder] = message.useMessage();
+    const [options, setOptions] = useState(null);
+
+    const [selectedItem, setSelectedItem] = useState(null);
+
+    const handleButtonClick = (value, price, instock) => {
+        setSelectedItem({ size: value, price: price, instock: instock });
+    };
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Gửi đánh giá thành công',
+        });
+    };
+
+    const errorMessage = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Gửi đánh giá thất bại',
+        });
+    };
     const { id } = useParams();
     const [itemData, setItemData] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 4;
     const [total, setTotal] = useState(0);
     const [dataRating, setDataRating] = useState({});
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [review, setReview] = useState('');
+    const [hasReviewed, setHasReviewed] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,6 +59,19 @@ function ItemDetail() {
 
         fetchData();
     }, [id]);
+
+    useEffect(() => {
+        if (itemData) {
+            setOptions(itemData.details);
+            console.log(options);
+        }
+    }, [itemData]);
+
+    useEffect(() => {
+        if (options && options.length > 0) {
+            handleButtonClick(options[0].size, options[0].price, options[0].instock);
+        }
+    }, [options]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,8 +89,62 @@ function ItemDetail() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
 
+    const [token, setToken] = useState(localStorage.getItem('accessToken'));
+
+    useEffect(() => {
+        const checkRating = async () => {
+            const expiredAt = localStorage.getItem('expiredAt');
+
+            if (token && new Date().getTime() < new Date(expiredAt).getTime()) {
+                try {
+                    const response = await itemServices.checkRatedOrNot(id, token);
+                    if (response.status === 200) {
+                        setHasReviewed(response.data.status);
+                    }
+                } catch (error) {
+                    // Handle error
+                }
+            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()) {
+                const response = await authServices.getNewAccessToken();
+                localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('expiredAt', response.expiredIn);
+                setToken(response.data.accessToken);
+            }
+        };
+
+        checkRating();
+    }, [token, hasReviewed]);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const handleReviewClick = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleOk = async () => {
+        try {
+            await itemServices.postItemRating(id, { rate: rating, comment: review }, token);
+            setIsModalVisible(false);
+            setHasReviewed('rated');
+            success();
+
+            const response = await itemServices.getItemRatings(id, {
+                limit: limit,
+                start: (currentPage - 1) * limit,
+            });
+            if (response.status === 200) {
+                setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
+            }
+        } catch (error) {
+            console.error(error);
+            errorMessage();
+        }
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
     };
 
     const items = useMemo(() => {
@@ -79,6 +173,7 @@ function ItemDetail() {
 
     return itemData ? (
         <div className={cx('wrapper')}>
+            {contextHolder}
             <Breadcrumb
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
@@ -113,7 +208,7 @@ function ItemDetail() {
                                     fontSize: '2rem',
                                 }}
                             >
-                                {itemData.ratings.average_rating}
+                                {itemData.ratings.average_rating.toFixed(1)}
                             </p>
                             <Rate disabled defaultValue={itemData.ratings.average_rating} />
                         </div>
@@ -122,10 +217,35 @@ function ItemDetail() {
                         </div>
                     </div>
                     <div className={cx('price')}>
-                        <p style={{ color: 'red', marginLeft: '20px' }}>{itemData.price.toLocaleString('vi-VN')} đ</p>
+                        {selectedItem && (
+                            <p style={{ color: 'red', marginLeft: '20px' }}>
+                                {selectedItem.price?.toLocaleString('vi-VN')} đ
+                            </p>
+                        )}
                     </div>
-                    <div className={cx('item-state', itemData.instock ? 'in-stock' : 'out-of-stock')}>
-                        <p>{itemData.instock ? 'Còn hàng' : 'Hết hàng'}</p>
+                    <div className={cx('type')}>
+                        {options?.map((option, index) => (
+                            <Button
+                                key={index}
+                                style={{
+                                    height: '40px',
+                                    width: '80px',
+                                    marginRight: '10px',
+                                    backgroundColor:
+                                        selectedItem && selectedItem.size === option.size
+                                            ? 'var(--button-color)'
+                                            : 'white',
+                                    color: selectedItem && selectedItem.size === option.size ? 'white' : 'black',
+                                    border: '2px solid var(--button-color)',
+                                }}
+                                onClick={() => handleButtonClick(option.size, option.price, option.instock)}
+                            >
+                                {option.size} {itemData.unit}
+                            </Button>
+                        ))}
+                    </div>
+                    <div className={cx('item-state', selectedItem?.instock ? 'in-stock' : 'out-of-stock')}>
+                        <p>{selectedItem?.instock ? 'Còn hàng' : 'Hết hàng'}</p>
                     </div>
                     <div className={cx('list-button')}>
                         <Button className={cx('button1')} icon={<ShoppingCartOutlined />} size="large">
@@ -139,7 +259,12 @@ function ItemDetail() {
             </div>
             <div className={cx('item-detail-shop')}>
                 <div className={cx('item-detail-shop-left')}>
-                    <Avatar src={logo} size={100} style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }} />
+                    <Avatar
+                        src={itemData.shop?.avatar ? itemData.shop.avatar : null}
+                        icon={!itemData.shop?.avatar ? <UserOutlined /> : null}
+                        size={100}
+                        style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
+                    />
                     <div className={cx('item-detail-shop-info')}>
                         <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{itemData.shop.name}</p>
                         <Button
@@ -172,7 +297,29 @@ function ItemDetail() {
                 className={cx('item-detail-rating')}
                 style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? 'auto' : '300px' }}
             >
-                <h2 style={{ marginBottom: '20px' }}>Đánh giá sản phẩm</h2>
+                <div className={cx('header-rating')}>
+                    <h2>Đánh giá sản phẩm</h2>
+                    {hasReviewed === 'not rated' ? (
+                        <Button className={cx('Button-rating')} size="large" onClick={handleReviewClick}>
+                            Đánh giá
+                        </Button>
+                    ) : hasReviewed === 'rated' ? (
+                        <div className={cx('rated-text')}>Bạn đã đánh giá sản phẩm!</div>
+                    ) : null}
+
+                    <Modal title="Viết đánh giá" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                        <Rate size="large" style={{ margin: '5px 0 20px 0' }} onChange={setRating} value={rating} />
+                        <Input.TextArea
+                            autoSize="true"
+                            placeholder="Viết đánh giá"
+                            onChange={(e) => setReview(e.target.value)}
+                            value={review}
+                            maxLength={200}
+                            showCount
+                            style={{ marginBottom: '25px' }}
+                        />
+                    </Modal>
+                </div>
                 {dataRating[currentPage] && dataRating[currentPage].length > 0 ? (
                     <>
                         {dataRating[currentPage].map((rate) => (

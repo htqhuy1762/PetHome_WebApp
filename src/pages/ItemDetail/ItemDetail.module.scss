@@ -37,6 +37,10 @@
             align-items: center;
         }
 
+        .type {
+            margin-top: 2.5rem;
+        }
+
         .item-state {
             display: flex;
             justify-content: center;
@@ -114,6 +118,29 @@
     background-color: white;
     margin: 0 0 20px 0;
     position: relative;
+
+    .header-rating {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .Button-rating {
+        position: absolute;
+        right: 30px;
+        top: 30px;
+        width: 200px;
+        height: 40px;
+        background-color: var(--start-color);
+        color: white;
+    }
+
+    .rated-text {
+        position: absolute;
+        right: 35px;
+        top: 30px;
+        color: red;
+    }
 }
 
 

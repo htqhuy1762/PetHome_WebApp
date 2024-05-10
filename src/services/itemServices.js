@@ -29,3 +29,17 @@ export const getItemRatings = async (id, data) => {
         return error.response;
     }
 }
+
+export const checkRatedOrNot = async (id, token) => {
+    try {
+        const response = await httpRequestPetHome.get(`/api/items/${id}/rate`, {
+            headers: {
+                'Authorization': token
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}

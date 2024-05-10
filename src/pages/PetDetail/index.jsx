@@ -18,17 +18,17 @@ function PetDetail() {
 
     const success = () => {
         messageApi.open({
-          type: 'success',
-          content: 'Gửi đánh giá thành công',
+            type: 'success',
+            content: 'Gửi đánh giá thành công',
         });
-      };
-    
-      const errorMessage = () => {
+    };
+
+    const errorMessage = () => {
         messageApi.open({
-          type: 'error',
-          content: 'Gửi đánh giá thất bại',
+            type: 'error',
+            content: 'Gửi đánh giá thất bại',
         });
-      };
+    };
     const { id } = useParams();
     const [petData, setPetData] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -193,7 +193,7 @@ function PetDetail() {
                                     fontSize: '2rem',
                                 }}
                             >
-                                {petData.ratings.average_rating}
+                                {petData.ratings.average_rating.toFixed(1)}
                             </p>
                             <Rate disabled defaultValue={petData.ratings.average_rating} />
                         </div>
@@ -210,9 +210,6 @@ function PetDetail() {
                     <div className={cx('list-button')}>
                         <Button className={cx('button1')} icon={<ShoppingCartOutlined />} size="large">
                             Thêm vào giỏ hàng
-                        </Button>
-                        <Button className={cx('button2')} size="large">
-                            Mua ngay
                         </Button>
                     </div>
                 </div>
