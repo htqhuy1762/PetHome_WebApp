@@ -1,4 +1,16 @@
-import { Button, Image, Pagination, Rate, Avatar, Descriptions, Breadcrumb, Modal, Input, message } from 'antd';
+import {
+    Button,
+    Image,
+    Pagination,
+    Rate,
+    Avatar,
+    Descriptions,
+    Breadcrumb,
+    Modal,
+    Input,
+    message,
+    Carousel,
+} from 'antd';
 import classNames from 'classnames/bind';
 import styles from './PetDetail.module.scss';
 import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
@@ -92,6 +104,7 @@ function PetDetail() {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('expiredAt', response.expiredIn);
                 setToken(response.data.accessToken);
+                checkRating();
             }
         };
 
@@ -179,7 +192,18 @@ function PetDetail() {
             />
             <div className={cx('pet-detail-information')}>
                 <div className={cx('pet-detail-image')}>
-                    <Image style={{ width: '500px', height: '500px' }} src={petData.picture} alt="" />
+                    <Carousel
+                        style={{ height: '500px', width: '500px' }}
+                        autoplay={true}
+                        autoplaySpeed={3000}
+                        infinite={true}
+                        arrows={true}
+                    >
+                        <Image height={500} style={{ width: '100%', height: '100%' }} src={petData.picture} alt="" />
+                        {petData.images.map((image, index) => (
+                            <Image height={500} style={{ width: '100%', height: '100%' }} key={index} src={image} alt="" />
+                        ))}
+                    </Carousel>
                 </div>
                 <div className={cx('pet-detail-info')}>
                     <p style={{ fontSize: '2.5rem', fontWeight: '500', lineHeight: '30px' }}>{petData.name}</p>

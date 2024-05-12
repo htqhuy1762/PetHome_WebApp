@@ -1,0 +1,21 @@
+.wrapper {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+    height: 80%;
+    width: 50%;
+    margin-right: 10px;
+}
+
+.wrapper-hidden {
+    height: 0;
+    overflow: hidden;
+}
+
+.button-x-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+}

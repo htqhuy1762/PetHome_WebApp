@@ -9,3 +9,13 @@ export const searchPets = async (data) => {
         return error.response;
     }
 }
+
+export const searchItems = async (data) => {
+    try {
+        const response = await httpRequestPetHome.get('/items', { params: data });
+        return response;
+    }
+    catch (error) {
+        return error.response;
+    }
+}

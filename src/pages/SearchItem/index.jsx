@@ -1,9 +1,8 @@
 import classNames from 'classnames/bind';
-import styles from './SearchPet.module.scss';
+import styles from './SearchItem.module.scss';
 import { useLocation } from 'react-router-dom';
 import * as searchServices from '~/services/searchServices';
-import * as petServices from '~/services/petServices';
-import CardPet from '~/components/CardPet';
+import CardItems from '~/components/CardItems';
 import { useState, useEffect } from 'react';
 import { Pagination, Checkbox, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -77,11 +76,9 @@ const provinces = [
     { id: 63, name: 'Yên Bái' },
 ];
 
-function SearchPet() {
+function SearchItem() {
     const navigate = useNavigate();
     const location = useLocation();
-    const [species, setSpecies] = useState([]);
-    const [age, setAge] = useState([]);
     const [displayCount, setDisplayCount] = useState(5);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -91,17 +88,8 @@ function SearchPet() {
     const [total, setTotal] = useState(0);
     const [lastQuery, setLastQuery] = useState(null);
 
-    const [selectedSpecies, setSelectedSpecies] = useState([]);
-    const [selectedAges, setSelectedAges] = useState([]);
     const [selectedProvinces, setSelectedProvinces] = useState([]);
 
-    const handleSpeciesChange = (checkedValues) => {
-        setSelectedSpecies(checkedValues);
-    };
-
-    const handleAgesChange = (checkedValues) => {
-        setSelectedAges(checkedValues);
-    };
 
     const handleProvincesChange = (checkedValues) => {
         setSelectedProvinces(checkedValues);
@@ -111,15 +99,15 @@ function SearchPet() {
         setCurrentPage(page);
     };
 
-    const goToPetDetail = (id) => {
-        navigate(`/pets/${id}`);
+    const goToItemDetail = (id) => {
+        navigate(`/items/${id}`);
     };
 
     useEffect(() => {
         const fetchData = async () => {
             const query = new URLSearchParams(location.search).get('q');
             if (query !== lastQuery || !data[currentPage]) {
-                const response = await searchServices.searchPets({
+                const response = await searchServices.searchItems({
                     name: query,
                     limit: limit,
                     start: (currentPage - 1) * limit,
@@ -136,13 +124,11 @@ function SearchPet() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, location.search]);
 
-
     const filteredData = data[currentPage]?.filter(
-        (pet) =>
-            (selectedSpecies.length === 0 || selectedSpecies.includes(pet.specie_id)) &&
-            (selectedAges.length === 0 || selectedAges.includes(pet.age_id)) &&
-            (selectedProvinces.length === 0 || pet.areas.some((area) => selectedProvinces.includes(area))),
+        (item) =>
+            (selectedProvinces.length === 0 || item.areas.some((area) => selectedProvinces.includes(area))),
     );
+
 
     const handleExpandClick = () => {
         if (isExpanded) {
@@ -152,29 +138,6 @@ function SearchPet() {
         }
         setIsExpanded(!isExpanded); // toggle expanded state
     };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [speciesResponse, ageResponse] = await Promise.all([
-                    petServices.getPetSpecies(),
-                    petServices.getPetAges(),
-                ]);
-
-                if (speciesResponse.status === 200) {
-                    setSpecies(speciesResponse.data);
-                }
-                if (ageResponse.status === 200) {
-                    setAge(ageResponse.data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch data: ', error);
-                // Handle error appropriately in your app
-            }
-        };
-
-        fetchData();
-    }, []);
 
     return (
         <div className={cx('wrapper')}>
@@ -186,28 +149,6 @@ function SearchPet() {
                     </div>
                     <div className={cx('content')}>
                         <div>
-                            <div>
-                                <h3>Loại thú cưng: </h3>
-                                <Checkbox.Group onChange={handleSpeciesChange}>
-                                    {species?.map((item, index) => (
-                                        <Checkbox key={index} value={item.id_pet_specie}>
-                                            {item.name}
-                                        </Checkbox>
-                                    ))}
-                                </Checkbox.Group>
-                            </div>
-
-                            <div style={{ marginTop: '20px' }}>
-                                <h3>Tuổi: </h3>
-                                <Checkbox.Group onChange={handleAgesChange}>
-                                    {age?.map((item, index) => (
-                                        <Checkbox key={index} value={item.id_pet_age}>
-                                            {item.name}
-                                        </Checkbox>
-                                    ))}
-                                </Checkbox.Group>
-                            </div>
-
                             <div style={{ marginTop: '20px' }}>
                                 <h3>Khu vực</h3>
                                 <Checkbox.Group onChange={handleProvincesChange}>
@@ -232,8 +173,8 @@ function SearchPet() {
             <div className={cx('contents')}>
                 <div className={cx('container')}>
                     {filteredData?.length > 0 ? (
-                        filteredData.map((pet) => (
-                            <CardPet key={pet.id_pet} pet={pet} onClick={() => goToPetDetail(pet.id_pet)} />
+                        filteredData.map((item) => (
+                            <CardItems key={item.id_item} item={item} onClick={() => goToItemDetail(item.id_item)} />
                         ))
                     ) : (
                         <div style={{display:'flex', justifyContent:'center', width: '965px'}}>Danh sách trống</div>
@@ -257,4 +198,4 @@ function SearchPet() {
     );
 }
 
-export default SearchPet;
+export default SearchItem;

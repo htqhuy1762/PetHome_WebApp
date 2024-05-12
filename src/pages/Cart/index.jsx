@@ -4,7 +4,11 @@ import styles from './Cart.module.scss';
 const cx = classNames.bind(styles);
 
 function Cart() {
-    return <div></div>;
+    return <div className={cx('wrapper')}>
+        <div className={cx('cart-header')}>
+            
+        </div>
+    </div>;
 }
 
 export default Cart;

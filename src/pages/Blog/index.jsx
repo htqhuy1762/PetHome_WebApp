@@ -1,3 +1,4 @@
+import Post from '../../components/Post';
 import classNames from 'classnames/bind';
 import styles from './Blog.module.scss';
 import { Tabs } from 'antd';
@@ -9,7 +10,7 @@ function Blog() {
         {
             key: '1',
             label: 'Mạng xã hội',
-            children: 'Content of Tab Pane 1',
+            children: <Post />,
         },
         {
             key: '2',
@@ -18,7 +19,9 @@ function Blog() {
         }
     ];
     return (
-        <Tabs defaultActiveKey="1" items={items} />
+        <div className={cx('wrapper')}>
+            <Tabs defaultActiveKey="1" items={items} />
+        </div>
     );
 }
 

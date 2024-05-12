@@ -10,11 +10,13 @@ import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import Loading from '~/components/Loading';
 import { TabContext } from '~/components/TabProvider/index.jsx';
+import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function Header({ fixedHeader }) {
     const { currentTab } = useContext(TabContext);
+    const { setIsLoggedIn } = useContext(AuthContext);
     const searchRef = useRef(null);
     const navigate = useNavigate();
     const onSearch = (value) => {
@@ -33,6 +35,7 @@ function Header({ fixedHeader }) {
         await authServices.logout();
         localStorage.removeItem('accessToken');
         localStorage.removeItem('expiredAt');
+        setIsLoggedIn(false);
         navigate('/login');
     };
     const onChange = (e) => {
@@ -88,6 +91,7 @@ function Header({ fixedHeader }) {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('expiredAt', response.expiredIn);
                 setToken(response.data.accessToken);
+                getUser();
             }
 
             setLoading(false);
@@ -156,8 +160,9 @@ function Header({ fixedHeader }) {
                                         style={{ border: 'none', width: '4rem', height: '3rem' }}
                                         className={cx('cart-btn')}
                                         size="large"
-                                        type="text"
+                                        type="link"
                                         icon={<ShoppingCartOutlined style={{ fontSize: '4rem', color: 'white' }} />}
+                                        onClick={() => navigate('/cart')}
                                     />
                                 </Badge>
                             </div>

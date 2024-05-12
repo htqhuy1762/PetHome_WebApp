@@ -62,6 +62,7 @@ function SidebarUser() {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('expiredAt', response.expiredIn);
                 setToken(response.data.accessToken);
+                getUser();
             }
 
             setLoading(false);

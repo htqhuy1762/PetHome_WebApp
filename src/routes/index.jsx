@@ -12,6 +12,7 @@ import PetDetail from '~/pages/PetDetail';
 import ItemDetail from '~/pages/ItemDetail';
 import Cart from '~/pages/Cart';
 import SearchPet from '~/pages/SearchPet';
+import SearchItem from '~/pages/SearchItem';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -25,8 +26,12 @@ const publicRoutes = [
     { path: '/items/:id', component: ItemDetail, layout: HeaderFooter },
     { path: '/cart', component: Cart, layout: HeaderFooter },
     { path: '/search/pets/', component: SearchPet, layout: HeaderFooter },
+    { path: '/search/items/', component: SearchItem, layout: HeaderFooter },
 ];
 
-const privateRoutes = [{ path: '/user/account/profile', component: Profile, layout: UserLayout }];
+const privateRoutes = [
+    { path: '/user/account/profile', component: Profile, layout: UserLayout },
+    { path: '/cart', component: Cart, layout: HeaderFooter },
+];
 
 export { publicRoutes, privateRoutes };

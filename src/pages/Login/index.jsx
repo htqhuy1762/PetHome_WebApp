@@ -8,11 +8,15 @@ import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import { useContext } from 'react';
+
 
 const cx = classNames.bind(styles);
 
 function Login() {
     const navigate = useNavigate();
+    const { setIsLoggedIn } = useContext(AuthContext);
 
     const onFinish = async (data) => {
         try {
@@ -24,6 +28,8 @@ function Login() {
                 // Save accessToken to localStorage
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('expiredAt', expiredAt);
+
+                setIsLoggedIn(true);
 
                 navigate('/');
             } else {

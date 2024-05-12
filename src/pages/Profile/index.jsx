@@ -38,6 +38,7 @@ function Profile() {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('expiredAt', response.expiredIn);
                 setToken(response.data.accessToken);
+                getUser();
             }
 
             setLoading(false);
@@ -59,11 +60,7 @@ function Profile() {
     }, [userData, form]);
 
     if (loading) {
-        return (
-            <div className={cx('wrapper')}>
-                <Loading />
-            </div>
-        ); // Replace with your loading component or spinner
+        return <Loading />; // Replace with your loading component or spinner
     }
 
     return (
@@ -77,7 +74,7 @@ function Profile() {
                     form={form}
                     className={cx('form')}
                     name="user-info-form"
-                    initialValues={{ 
+                    initialValues={{
                         remember: true,
                         email: userData?.email,
                         name: userData?.name,
@@ -104,7 +101,6 @@ function Profile() {
                     <Form.Item
                         label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Số điện thoại</label>}
                         name="phonenumber"
-                        
                     >
                         <Input
                             style={{ width: '100%' }}
@@ -121,9 +117,9 @@ function Profile() {
                         label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Giới tính</label>}
                         name="gender"
                     >
-                        <Radio.Group >
-                            <Radio value={"male"}>Nam</Radio>
-                            <Radio value={"female"}>Nữ</Radio>
+                        <Radio.Group>
+                            <Radio value={'male'}>Nam</Radio>
+                            <Radio value={'female'}>Nữ</Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item

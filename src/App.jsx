@@ -2,6 +2,7 @@ import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from './layouts';
+import ChatBox from '~/components/ChatBox';
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ function App() {
     return (
         <Router>
             <div className="App">
+                <ChatBox />
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         let Layout = DefaultLayout;
