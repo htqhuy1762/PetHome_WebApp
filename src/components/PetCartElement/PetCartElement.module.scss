@@ -1,0 +1,33 @@
+.cart-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    margin: 0 0 20px 0;
+}
+
+.pet-name {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.shop-name {
+
+}
+
+.price {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+.stock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem;
+    color: white;
+    width: 100px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: green;
+}

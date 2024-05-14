@@ -62,7 +62,8 @@ function ItemDetail() {
 
     useEffect(() => {
         if (itemData) {
-            setOptions(itemData.details);
+            const sortedOptions = [...itemData.details].sort((a, b) => a.order_item - b.order_item);
+            setOptions(sortedOptions);
         }
     }, [itemData]);
 

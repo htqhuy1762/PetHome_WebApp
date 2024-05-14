@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import * as searchServices from '~/services/searchServices';
 import CardItems from '~/components/CardItems';
 import { useState, useEffect } from 'react';
-import { Pagination, Checkbox, Button } from 'antd';
+import { Pagination, Checkbox, Button, Empty } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -90,7 +90,6 @@ function SearchItem() {
 
     const [selectedProvinces, setSelectedProvinces] = useState([]);
 
-
     const handleProvincesChange = (checkedValues) => {
         setSelectedProvinces(checkedValues);
     };
@@ -125,10 +124,8 @@ function SearchItem() {
     }, [currentPage, location.search]);
 
     const filteredData = data[currentPage]?.filter(
-        (item) =>
-            (selectedProvinces.length === 0 || item.areas.some((area) => selectedProvinces.includes(area))),
+        (item) => selectedProvinces.length === 0 || item.areas.some((area) => selectedProvinces.includes(area)),
     );
-
 
     const handleExpandClick = () => {
         if (isExpanded) {
@@ -177,7 +174,9 @@ function SearchItem() {
                             <CardItems key={item.id_item} item={item} onClick={() => goToItemDetail(item.id_item)} />
                         ))
                     ) : (
-                        <div style={{display:'flex', justifyContent:'center', width: '965px'}}>Danh sách trống</div>
+                        <div style={{ display: 'flex', justifyContent: 'center', width: '965px' }}>
+                            <Empty description="Danh sách trống" />
+                        </div>
                     )}
                 </div>
                 {filteredData?.length > 0 && (

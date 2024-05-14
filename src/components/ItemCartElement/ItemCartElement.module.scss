@@ -1,0 +1,56 @@
+.cart-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    margin: 0 0 20px 0;
+}
+
+.item-name {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.type {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+.type-item, .type {
+    text-align: center;
+    width: 100%;
+}
+
+.price {
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+}
+
+.stock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem;
+    color: white;
+    width: 100px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: green;
+    margin: 0 auto;
+}
+
+.input-num {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 35px;
+    background-color: white;
+}
+
+.remove-btn {
+    display: flex;
+    margin: auto;
+}

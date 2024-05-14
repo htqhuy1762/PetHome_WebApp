@@ -2,28 +2,32 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import logo from '../../../assets/images/logo.png';
 import logotitle from '../../../assets/images/logo-title.png';
-import { Input, Badge, Button, Dropdown, Avatar } from 'antd';
+import { Input, Badge, Button, Dropdown, Avatar, Select } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import Loading from '~/components/Loading';
-import { TabContext } from '~/components/TabProvider/index.jsx';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function Header({ fixedHeader }) {
-    const { currentTab } = useContext(TabContext);
+    const [selectValue, setSelectValue] = useState(localStorage.getItem('selectValue') || 'pets');
+    const handleSelectChange = (value) => {
+        setSelectValue(value);
+        localStorage.setItem('selectValue', value);
+    };
     const { setIsLoggedIn } = useContext(AuthContext);
     const searchRef = useRef(null);
     const navigate = useNavigate();
+    const { Option } = Select;
     const onSearch = (value) => {
         if (value.trim() === '') {
             navigate('/');
         } else {
-            navigate(`/search/${currentTab}?q=${value}`);
+            navigate(`/search/${selectValue}?q=${value}`);
         }
 
         if (searchRef.current) {
@@ -35,6 +39,7 @@ function Header({ fixedHeader }) {
         await authServices.logout();
         localStorage.removeItem('accessToken');
         localStorage.removeItem('expiredAt');
+        localStorage.removeItem('selectValue');
         setIsLoggedIn(false);
         navigate('/login');
     };
@@ -122,8 +127,23 @@ function Header({ fixedHeader }) {
                 <div className={cx('search-container')}>
                     <Input.Search
                         ref={searchRef}
+                        addonBefore={
+                            <Select
+                                style={{
+                                    backgroundColor: '#e6e6e6',
+                                    width: '110px',
+                                    height: '39px',
+                                    borderRadius: '8px',
+                                }}
+                                value={selectValue}
+                                onChange={handleSelectChange}
+                            >
+                                <Option value="pets">Thú cưng</Option>
+                                <Option value="items">Vật phẩm</Option>
+                            </Select>
+                        }
                         size="large"
-                        placeholder="Tìm thú cưng, vật phẩm, dịch vụ, ..."
+                        placeholder="Tìm kiếm"
                         onSearch={onSearch}
                         enterButton={
                             <Button
@@ -160,7 +180,8 @@ function Header({ fixedHeader }) {
                                         style={{ border: 'none', width: '4rem', height: '3rem' }}
                                         className={cx('cart-btn')}
                                         size="large"
-                                        type="link"
+                                        type="text"
+                                        shape='circle'
                                         icon={<ShoppingCartOutlined style={{ fontSize: '4rem', color: 'white' }} />}
                                         onClick={() => navigate('/cart')}
                                     />

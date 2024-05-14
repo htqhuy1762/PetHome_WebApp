@@ -129,8 +129,8 @@ function ChatBox() {
                 <Button
                     style={{
                         position: 'fixed',
-                        bottom: '10px',
-                        right: '10px',
+                        bottom: '5px',
+                        right: '5px',
                         color: 'orange',
                         fontWeight: 'bold',
                         fontSize: '2.4rem',

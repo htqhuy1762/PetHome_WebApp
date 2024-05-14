@@ -5,7 +5,7 @@ import * as searchServices from '~/services/searchServices';
 import * as petServices from '~/services/petServices';
 import CardPet from '~/components/CardPet';
 import { useState, useEffect } from 'react';
-import { Pagination, Checkbox, Button } from 'antd';
+import { Pagination, Checkbox, Button, Empty } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -236,7 +236,9 @@ function SearchPet() {
                             <CardPet key={pet.id_pet} pet={pet} onClick={() => goToPetDetail(pet.id_pet)} />
                         ))
                     ) : (
-                        <div style={{display:'flex', justifyContent:'center', width: '965px'}}>Danh sách trống</div>
+                        <div style={{ display: 'flex', justifyContent: 'center', width: '965px' }}>
+                            <Empty description="Danh sách trống" />
+                        </div>
                     )}
                 </div>
                 {filteredData?.length > 0 && (

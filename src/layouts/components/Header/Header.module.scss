@@ -7,7 +7,8 @@
     left: 0;
     z-index: 10;
     justify-content: center;
-    background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
+    background-color: var(--mid-color);
+    //background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
 }
 
 .wrappernonfixed {
@@ -15,7 +16,8 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
+    background-color: var(--mid-color);
+    //background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
 }
 
 .inner {
