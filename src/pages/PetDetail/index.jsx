@@ -17,6 +17,7 @@ import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
 import * as authServices from '~/services/petServices';
+import * as cartServices from '~/services/cartServices';
 import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
@@ -41,6 +42,21 @@ function PetDetail() {
             content: 'Gửi đánh giá thất bại',
         });
     };
+
+    const cartSuccess = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Thêm vào giỏ hàng thành công',
+        });
+    };
+
+    const cartError = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Thêm vào giỏ hàng thất bại',
+        });
+    };
+
     const { id } = useParams();
     const [petData, setPetData] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -145,6 +161,25 @@ function PetDetail() {
         setIsModalVisible(false);
     };
 
+    const handleAddToCart = async () => {
+        try {
+            const response = await cartServices.addPetToCart(
+                {
+                    id_pet: id,
+                },
+                token,
+            );
+            if (response.status === 200) {
+                cartSuccess();
+            } else {
+                cartError();
+            }
+        } catch (error) {
+            console.error('Exception adding to cart:', error);
+            cartError();
+        }
+    };
+
     const items = useMemo(() => {
         if (!petData) {
             return [];
@@ -246,7 +281,7 @@ function PetDetail() {
                         <p>{petData.instock ? 'Còn hàng' : 'Hết hàng'}</p>
                     </div>
                     <div className={cx('list-button')}>
-                        <Button className={cx('button1')} icon={<ShoppingCartOutlined />} size="large">
+                        <Button className={cx('button1')} icon={<ShoppingCartOutlined />} size="large" onClick={handleAddToCart}>
                             Thêm vào giỏ hàng
                         </Button>
                     </div>

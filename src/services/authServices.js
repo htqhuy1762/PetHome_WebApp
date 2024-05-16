@@ -1,5 +1,7 @@
 import * as httpRequestAuth from '~/utils/httpRequestAuth';
 
+
+
 export const login = async (data) => {
     try {
         const response = await httpRequestAuth.post('/jwt/login', data, {
@@ -20,7 +22,8 @@ export const refreshToken = async (data) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': data.refreshToken
-            }
+            },
+            withCredentials: true
         });
         return response;
     }

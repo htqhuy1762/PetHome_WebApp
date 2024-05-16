@@ -1,6 +1,9 @@
 import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
 
 export const getUser = async (accessToken) => {
+    //
+    
+    //
     try {
         const response = await httpRequestPetHome.get('/api/user', {
             headers: {

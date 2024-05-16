@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaw, faBlog, faBagShopping, faHouseMedical } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import * as petServices from '~/services/petServices';
+import * as itemServices from '~/services/itemServices';
+
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +24,8 @@ function Navbar() {
             label: 'Vật phẩm',
             key: 'items',
             icon: <FontAwesomeIcon style={{ fontSize: '1.6rem' }} icon={faBagShopping} />,
+            theme: 'light',
+            //children: [],
         },
         {
             label: 'Dịch vụ',
@@ -41,6 +45,7 @@ function Navbar() {
     useEffect(() => {
         const fetchPetSpecies = async () => {
             const species = await petServices.getPetSpecies();
+            const itemTypes = await itemServices.getItemTypes();
             setItems((prevItems) => {
                 const newItems = [...prevItems];
                 newItems[0].children = species.data.map((spec) => ({

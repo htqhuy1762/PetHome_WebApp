@@ -21,7 +21,8 @@ function Login() {
     const onFinish = async (data) => {
         try {
             const response = await authServices.login(data);
-            if (response.status === 200) {
+
+            if (response && response.status === 200) {
                 const accessToken = response.data.accessToken;
                 const expiredAt = response.data.expiredAt;
 

@@ -3,13 +3,13 @@
     align-items: center;
     border: 1px solid #e0e0e0;
     margin: 0 0 20px 0;
+    height: 200px;
 }
 
 .item-name {
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 30px;
-    text-align: center;
 }
 .type {
     font-size: 1.6rem;
@@ -33,12 +33,20 @@
     justify-content: center;
     align-items: center;
     font-size: 1.6rem;
-    color: white;
     width: 100px;
     height: 35px;
     border-radius: 10px;
-    background-color: green;
     margin: 0 auto;
+}
+
+.in-stock {
+    background-color: green;
+    color: white;
+}
+
+.out-of-stock {
+    background-color: red;
+    color: white;
 }
 
 .input-num {
@@ -48,6 +56,10 @@
     width: 150px;
     height: 35px;
     background-color: white;
+}
+
+.input-quantity {
+    justify-content: center;
 }
 
 .remove-btn {

@@ -89,7 +89,7 @@ function Header({ fixedHeader }) {
                 } catch (error) {
                     // Handle error
                 }
-            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()) {
+            } else if (token && new Date().getTime() >= new Date(expiredAt).getTime()) {
                 // Refresh the token
                 const response = await authServices.getNewAccessToken();
                 // Save new token and its expiry time to localStorage
