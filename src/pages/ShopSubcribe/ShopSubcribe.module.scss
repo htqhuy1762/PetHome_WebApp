@@ -1,0 +1,23 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 15px;
+}
+
+.image-container {
+    margin: 10px auto 30px auto;
+}
+
+.sign-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.sign-btn:hover {
+    opacity: 0.9;
+}

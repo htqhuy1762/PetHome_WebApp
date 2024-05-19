@@ -1,51 +1,52 @@
 import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import * as userServices from '~/services/userServices';
-import * as authServices from '~/services/authServices';
 import Loading from '~/components/Loading';
 import { Form, Button, Input, DatePicker, Radio } from 'antd';
 import moment from 'moment';
+import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
+    const { refreshAccessToken } = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
-
-    const [token, setToken] = useState(localStorage.getItem('accessToken'));
-
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
             const expiredAt = localStorage.getItem('expiredAt');
+            const accessToken = localStorage.getItem('accessToken');
 
             // Check if token exists and is not expired
-            if (token && new Date().getTime() < new Date(expiredAt).getTime()) {
+            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
                 try {
-                    const response = await userServices.getUser(token);
+                    const response = await userServices.getUser(accessToken);
                     if (response.status === 200) {
                         setUserData(response.data);
                     }
                 } catch (error) {
                     // Handle error
                 }
-            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()) {
-                // Refresh the token
-                const response = await authServices.getNewAccessToken();
-                // Save new token and its expiry time to localStorage
-                localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('expiredAt', response.expiredIn);
-                setToken(response.data.accessToken);
-                getUser();
+            } else if (accessToken && new Date().getTime() > new Date(expiredAt).getTime()) {
+                await refreshAccessToken();
+                try {
+                    const response = await userServices.getUser(localStorage.getItem('accessToken'));
+                    if (response.status === 200) {
+                        setUserData(response.data);
+                    }
+                } catch (error) {
+                    // Handle error
+                }
             }
 
             setLoading(false);
         };
 
         getUser();
-    }, [token]);
+    }, []);
 
     useEffect(() => {
         if (userData) {
@@ -133,7 +134,7 @@ function Profile() {
                             size="medium"
                             type="primary"
                             htmlType="submit"
-                            style={{ backgroundColor: 'var(--button-color)', width: '100px', marginLeft: '180px' }}
+                            style={{ backgroundColor: 'var(--button-next-color)', width: '100px', marginLeft: '180px' }}
                             disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
                         >
                             Lưu

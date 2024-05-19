@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const request = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_URL_AUTH,
+    withCredentials: true,
 });
 
 export const get = async (path, option = {}) => {

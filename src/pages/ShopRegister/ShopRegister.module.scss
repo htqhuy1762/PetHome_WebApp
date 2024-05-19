@@ -1,0 +1,28 @@
+.wrapper {
+    width: 100%;
+}
+
+.btn-next:hover {
+    opacity: 0.9;
+}
+
+.form_container {
+    margin-top: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    //margin-top: 50px;
+    margin-right: 100px;
+    padding: 20px 20px;
+    width: 100%;
+}
+
+.btn-back {
+    margin-right: 15px;
+}
+
+.btn-back:hover {
+    opacity: 0.9;
+}

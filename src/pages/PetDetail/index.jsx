@@ -10,24 +10,26 @@ import {
     Input,
     message,
     Carousel,
+    ConfigProvider,
 } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './PetDetail.module.scss';
 import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
-import * as authServices from '~/services/petServices';
 import * as cartServices from '~/services/cartServices';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
+import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function PetDetail() {
     const [messageApi, contextHolder] = message.useMessage();
+    const { refreshAccessToken } = useContext(AuthContext);
 
     const success = () => {
         messageApi.open({
@@ -97,35 +99,36 @@ function PetDetail() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
 
-    const [token, setToken] = useState(localStorage.getItem('accessToken'));
-
     useEffect(() => {
         const checkRating = async () => {
             const expiredAt = localStorage.getItem('expiredAt');
+            const accessToken = localStorage.getItem('accessToken');
 
             // Check if token exists and is not expired
-            if (token && new Date().getTime() < new Date(expiredAt).getTime()) {
+            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
                 try {
-                    const response = await petServices.checkRatedOrNot(id, token);
+                    const response = await petServices.checkRatedOrNot(id, accessToken);
                     if (response.status === 200) {
                         setHasReviewed(response.data.status);
                     }
                 } catch (error) {
                     // Handle error
                 }
-            } else if (token && new Date().getTime() > new Date(expiredAt).getTime()) {
-                // Refresh the token
-                const response = await authServices.getNewAccessToken();
-                // Save new token and its expiry time to localStorage
-                localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('expiredAt', response.expiredIn);
-                setToken(response.data.accessToken);
-                checkRating();
+            } else if (accessToken && new Date().getTime() > new Date(expiredAt).getTime()) {
+                await refreshAccessToken();
+                try {
+                    const response = await petServices.checkRatedOrNot(id, localStorage.getItem('accessToken'));
+                    if (response.status === 200) {
+                        setHasReviewed(response.data.status);
+                    }
+                } catch (error) {
+                    // Handle error
+                }
             }
         };
 
         checkRating();
-    }, [token, hasReviewed]);
+    }, [hasReviewed]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -138,7 +141,7 @@ function PetDetail() {
     const handleOk = async () => {
         try {
             // Replace with your actual API call
-            await petServices.postPetRating(id, { rate: rating, comment: review }, token);
+            await petServices.postPetRating(id, { rate: rating, comment: review }, localStorage.getItem('accessToken'));
             setIsModalVisible(false);
             setHasReviewed('rated');
             success();
@@ -167,7 +170,7 @@ function PetDetail() {
                 {
                     id_pet: id,
                 },
-                token,
+                localStorage.getItem('accessToken'),
             );
             if (response.status === 200) {
                 cartSuccess();
@@ -281,9 +284,30 @@ function PetDetail() {
                         <p>{petData.instock ? 'Còn hàng' : 'Hết hàng'}</p>
                     </div>
                     <div className={cx('list-button')}>
-                        <Button className={cx('button1')} icon={<ShoppingCartOutlined />} size="large" onClick={handleAddToCart}>
-                            Thêm vào giỏ hàng
-                        </Button>
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'var(--button-next-color)',
+                                        defaultBg: 'var(--button-back-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-back-color)',
+                                        defaultHoverColor: 'var(--button-next-color)',
+                                    },
+                                },
+                            }}
+                        >
+                            <Button
+                                className={cx('button1')}
+                                icon={<ShoppingCartOutlined />}
+                                size="large"
+                                onClick={handleAddToCart}
+                                type='default'
+                            >
+                                Thêm vào giỏ hàng
+                            </Button>
+                        </ConfigProvider>
                     </div>
                 </div>
             </div>

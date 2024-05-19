@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
 import { useContext } from 'react';
 
-
 const cx = classNames.bind(styles);
 
 function Login() {
@@ -36,7 +35,7 @@ function Login() {
             } else {
                 notification.error({
                     message: 'Error',
-                    description: "Vui lòng kiểm tra lại email hoặc mật khẩu!",
+                    description: 'Vui lòng kiểm tra lại email hoặc mật khẩu!',
                 });
                 return;
             }
@@ -90,7 +89,7 @@ function Login() {
                             size="large"
                             type="primary"
                             htmlType="submit"
-                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                         >
                             Đăng nhập
                         </Button>

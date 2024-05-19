@@ -137,7 +137,7 @@ function ItemCart() {
                 </Col>
                 <Col span={5} style={{ display: 'flex', alignItems: 'center' }}>
                     <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                        <p style={{ fontSize: '2.4rem', color: 'var(--button-color)', fontWeight: '500' }}>
+                        <p style={{ fontSize: '2.4rem', color: 'var(--button-next-color)', fontWeight: '500' }}>
                             {total.toLocaleString('it-IT')} đ
                         </p>
                     </Row>

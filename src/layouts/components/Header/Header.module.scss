@@ -36,7 +36,7 @@
         height: 100px;
         width: 100px;
     }
-    
+
     .logo-title {
         height: 60px;
         width: 140px;
@@ -69,7 +69,7 @@
         right: 0;
         .user-btn:hover {
             color: #fff;
-            background-color: var(--button-color);
+            background-color: var(--button-next-color);
         }
     }
 }
@@ -77,6 +77,6 @@
 .auth-btn {
     margin-right: 10px;
     background-color: white;
-    color: var(--button-color);
+    color: var(--button-next-color);
     font-weight: 500;
 }

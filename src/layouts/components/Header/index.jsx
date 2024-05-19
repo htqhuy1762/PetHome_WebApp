@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
-import logo from '../../../assets/images/logo.png';
-import logotitle from '../../../assets/images/logo-title.png';
+import logo from '~/assets/images/logo.png';
+import logotitle from '~/assets/images/logo-title.png';
 import { Input, Badge, Button, Dropdown, Avatar, Select } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState, useRef, useContext } from 'react';
@@ -19,7 +19,7 @@ function Header({ fixedHeader }) {
         setSelectValue(value);
         localStorage.setItem('selectValue', value);
     };
-    const { setIsLoggedIn } = useContext(AuthContext);
+    const { setIsLoggedIn, refreshAccessToken } = useContext(AuthContext);
     const searchRef = useRef(null);
     const navigate = useNavigate();
     const { Option } = Select;
@@ -72,41 +72,44 @@ function Header({ fixedHeader }) {
         },
     ];
 
-    const [token, setToken] = useState(localStorage.getItem('accessToken'));
-
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
             const expiredAt = localStorage.getItem('expiredAt');
+            const accessToken = localStorage.getItem('accessToken');
 
             // Check if token exists and is not expired
-            if (token && new Date().getTime() < new Date(expiredAt).getTime()) {
+            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
                 try {
-                    const response = await userServices.getUser(token);
+                    const response = await userServices.getUser(accessToken);
                     if (response.status === 200) {
                         setCurrentUser(response.data);
                     }
                 } catch (error) {
                     // Handle error
                 }
-            } else if (token && new Date().getTime() >= new Date(expiredAt).getTime()) {
+            } else if (accessToken && new Date().getTime() >= new Date(expiredAt).getTime()) {
                 // Refresh the token
-                const response = await authServices.getNewAccessToken();
-                // Save new token and its expiry time to localStorage
-                localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('expiredAt', response.expiredIn);
-                setToken(response.data.accessToken);
-                getUser();
+                await refreshAccessToken();
+
+                // After refreshing token, fetch user data again
+                try {
+                    const response = await userServices.getUser(localStorage.getItem('accessToken'));
+                    if (response.status === 200) {
+                        setCurrentUser(response.data);
+                    }
+                } catch (error) {
+                    // Handle error
+                }
             }
 
             setLoading(false);
         };
 
         getUser();
-    }, [token]);
+    }, []);
 
     useEffect(() => {
-        // Update the search value when the URL changes
         setSearchValue(urlParams.get('q') || '');
     }, [location.search]);
 
@@ -148,7 +151,7 @@ function Header({ fixedHeader }) {
                         enterButton={
                             <Button
                                 style={{
-                                    color: 'var(--button-color)',
+                                    color: 'var(--button-next-color)',
                                     backgroundColor: 'var(--end-color)',
                                     width: '60px',
                                     height: '39px',
@@ -181,7 +184,7 @@ function Header({ fixedHeader }) {
                                         className={cx('cart-btn')}
                                         size="large"
                                         type="text"
-                                        shape='circle'
+                                        shape="circle"
                                         icon={<ShoppingCartOutlined style={{ fontSize: '4rem', color: 'white' }} />}
                                         onClick={() => navigate('/cart')}
                                     />

@@ -73,7 +73,7 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
                     layout="vertical"
                 >
                     <h1 style={{ textAlign: 'center', fontSize: '5rem', marginBottom: '10px' }}>Nhập email</h1>
-                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray', marginBottom: '30px'}}>
+                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray', marginBottom: '30px' }}>
                         Thêm email của bạn. Chúng tôi sẽ gửi cho bạn mã xác minh để chúng tôi biết bạn là thật. Chúng
                         tôi sẽ sử dụng email này làm tên đăng nhập cho tài khoản của bạn
                     </h3>
@@ -91,7 +91,7 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
                         <Button
                             size="large"
                             type="primary"
-                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                             onClick={handleClick}
                             disabled={
                                 form.getFieldsError().filter(({ errors }) => errors.length).length ||
@@ -179,7 +179,7 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
                     layout="vertical"
                 >
                     <h1 style={{ textAlign: 'center', fontSize: '5rem', marginBottom: '10px' }}>Nhập mã OTP</h1>
-                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray', marginBottom: '30px'}}>
+                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray', marginBottom: '30px' }}>
                         Nhập mã OTP được gửi đến email của bạn
                     </h3>
                     <Form.Item
@@ -216,19 +216,25 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
                         <Button
                             size="large"
                             type="primary"
-                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                             onClick={verifyOTP}
                             disabled={otp.length !== 6}
                         >
                             Tiếp tục
                         </Button>
                     </Form.Item>
-                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray'}}>
+                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray' }}>
                         Bạn không nhận được mã OTP?
                     </h3>
                     <Form.Item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
                         <Button
-                            style={{ fontWeight: '650', display: 'flex', alignItems: 'center', color: resendDisabled ? 'gray' : 'var(--button-color)', fontSize: '1.7rem' }}
+                            style={{
+                                fontWeight: '650',
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: resendDisabled ? 'gray' : 'var(--button-next-color)',
+                                fontSize: '1.7rem',
+                            }}
                             type="text"
                             disabled={resendDisabled}
                             onClick={resendOTP}
@@ -345,7 +351,7 @@ function RegisterForm({ onBack, email }) {
                             size="large"
                             type="primary"
                             htmlType="submit"
-                            style={{ backgroundColor: 'var(--button-color)', width: '100%', fontSize: '1.7rem' }}
+                            style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                             disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
                         >
                             Đăng ký
