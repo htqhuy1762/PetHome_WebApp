@@ -1,47 +1,28 @@
 import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import * as userServices from '~/services/userServices';
 import Loading from '~/components/Loading';
 import { Form, Button, Input, DatePicker, Radio } from 'antd';
 import moment from 'moment';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
-    const { refreshAccessToken } = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
-            const expiredAt = localStorage.getItem('expiredAt');
-            const accessToken = localStorage.getItem('accessToken');
-
-            // Check if token exists and is not expired
-            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
-                try {
-                    const response = await userServices.getUser(accessToken);
-                    if (response.status === 200) {
-                        setUserData(response.data);
-                    }
-                } catch (error) {
-                    // Handle error
+            try {
+                const response = await userServices.getUser();
+                if (response.status === 200) {
+                    setUserData(response.data);
                 }
-            } else if (accessToken && new Date().getTime() > new Date(expiredAt).getTime()) {
-                await refreshAccessToken();
-                try {
-                    const response = await userServices.getUser(localStorage.getItem('accessToken'));
-                    if (response.status === 200) {
-                        setUserData(response.data);
-                    }
-                } catch (error) {
-                    // Handle error
-                }
+            } catch (error) {
+                // Handle error
             }
-
             setLoading(false);
         };
 

@@ -15,6 +15,7 @@ import SearchPet from '~/pages/SearchPet';
 import SearchItem from '~/pages/SearchItem';
 import ShopSubcribe from '~/pages/ShopSubcribe';
 import ShopRegister from '~/pages/ShopRegister';
+import AddressUser from '~/pages/AddressUser';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -35,6 +36,7 @@ const privateRoutes = [
     { path: '/user/account/profile', component: Profile, layout: UserLayout },
     { path: '/user/shop', component: ShopSubcribe, layout: UserLayout },
     { path: '/user/shop/register', component: ShopRegister, layout: UserLayout },
+    { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },
 ];
 

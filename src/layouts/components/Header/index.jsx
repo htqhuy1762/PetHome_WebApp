@@ -19,7 +19,7 @@ function Header({ fixedHeader }) {
         setSelectValue(value);
         localStorage.setItem('selectValue', value);
     };
-    const { setIsLoggedIn, refreshAccessToken } = useContext(AuthContext);
+    const { setIsLoggedIn } = useContext(AuthContext);
     const searchRef = useRef(null);
     const navigate = useNavigate();
     const { Option } = Select;
@@ -75,34 +75,14 @@ function Header({ fixedHeader }) {
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
-            const expiredAt = localStorage.getItem('expiredAt');
-            const accessToken = localStorage.getItem('accessToken');
-
-            // Check if token exists and is not expired
-            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
-                try {
-                    const response = await userServices.getUser(accessToken);
-                    if (response.status === 200) {
-                        setCurrentUser(response.data);
-                    }
-                } catch (error) {
-                    // Handle error
+            try {
+                const response = await userServices.getUser();
+                if (response.status === 200) {
+                    setCurrentUser(response.data);
                 }
-            } else if (accessToken && new Date().getTime() >= new Date(expiredAt).getTime()) {
-                // Refresh the token
-                await refreshAccessToken();
-
-                // After refreshing token, fetch user data again
-                try {
-                    const response = await userServices.getUser(localStorage.getItem('accessToken'));
-                    if (response.status === 200) {
-                        setCurrentUser(response.data);
-                    }
-                } catch (error) {
-                    // Handle error
-                }
+            } catch (error) {
+                // Handle error
             }
-
             setLoading(false);
         };
 

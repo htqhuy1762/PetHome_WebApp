@@ -18,18 +18,16 @@ import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
 import * as cartServices from '~/services/cartServices';
-import { useState, useEffect, useMemo, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function PetDetail() {
     const [messageApi, contextHolder] = message.useMessage();
-    const { refreshAccessToken } = useContext(AuthContext);
 
     const success = () => {
         messageApi.open({
@@ -101,29 +99,13 @@ function PetDetail() {
 
     useEffect(() => {
         const checkRating = async () => {
-            const expiredAt = localStorage.getItem('expiredAt');
-            const accessToken = localStorage.getItem('accessToken');
-
-            // Check if token exists and is not expired
-            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
-                try {
-                    const response = await petServices.checkRatedOrNot(id, accessToken);
-                    if (response.status === 200) {
-                        setHasReviewed(response.data.status);
-                    }
-                } catch (error) {
-                    // Handle error
+            try {
+                const response = await petServices.checkRatedOrNot(id);
+                if (response.status === 200) {
+                    setHasReviewed(response.data.status);
                 }
-            } else if (accessToken && new Date().getTime() > new Date(expiredAt).getTime()) {
-                await refreshAccessToken();
-                try {
-                    const response = await petServices.checkRatedOrNot(id, localStorage.getItem('accessToken'));
-                    if (response.status === 200) {
-                        setHasReviewed(response.data.status);
-                    }
-                } catch (error) {
-                    // Handle error
-                }
+            } catch (error) {
+                // Handle error
             }
         };
 
@@ -141,7 +123,7 @@ function PetDetail() {
     const handleOk = async () => {
         try {
             // Replace with your actual API call
-            await petServices.postPetRating(id, { rate: rating, comment: review }, localStorage.getItem('accessToken'));
+            await petServices.postPetRating(id, { rate: rating, comment: review });
             setIsModalVisible(false);
             setHasReviewed('rated');
             success();
@@ -166,12 +148,9 @@ function PetDetail() {
 
     const handleAddToCart = async () => {
         try {
-            const response = await cartServices.addPetToCart(
-                {
-                    id_pet: id,
-                },
-                localStorage.getItem('accessToken'),
-            );
+            const response = await cartServices.addPetToCart({
+                id_pet: id,
+            });
             if (response.status === 200) {
                 cartSuccess();
             } else {
@@ -303,7 +282,7 @@ function PetDetail() {
                                 icon={<ShoppingCartOutlined />}
                                 size="large"
                                 onClick={handleAddToCart}
-                                type='default'
+                                type="default"
                             >
                                 Thêm vào giỏ hàng
                             </Button>

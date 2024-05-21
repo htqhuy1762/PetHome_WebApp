@@ -1,30 +1,19 @@
-import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
+import { authRequest } from '~/utils/httpRequestPetHome';
 
-export const registerShop = async (data, token) => {
+export const registerShop = async (data) => {
     try {
-        const response = await httpRequestPetHome.post('/api/shop/submit', data, {
-            headers: {
-                Authorization: token,
-            },
-        }
-        );
+        const response = await authRequest.post('/api/shop/submit', data);
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
-}
+};
 
-export const checkUserIsShop = async (token) => {
+export const checkUserIsShop = async () => {
     try {
-        const response = await httpRequestPetHome.get('/api/shop/check', {
-            headers: {
-                Authorization: token,
-            },
-        });
+        const response = await authRequest.get('/api/shop/check');
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
-}
+};

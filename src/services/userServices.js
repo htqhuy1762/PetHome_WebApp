@@ -1,27 +1,48 @@
-import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
+import { authRequest } from '~/utils/httpRequestPetHome';
 
-export const getUser = async (accessToken) => {
-    //
-    
-    //
+export const getUser = async () => {
     try {
-        const response = await httpRequestPetHome.get('/api/user', {
-            headers: {
-                'Authorization': accessToken
-            }
-        });
+        const response = await authRequest.get('/api/user');
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
-}
+};
 
-export const updateUser = async (data, accessToken) => {
-    const response = await httpRequestPetHome.put('/api/user', data, {
-        headers: {
-            'Authorization': accessToken,
-        },
-    });
-    return response;
-}
+export const updateUser = async (data) => {
+    try {
+        const response = await authRequest.put('/api/user', data);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const getUserAddress = async () => {
+    try {
+        const response = await authRequest.get('/api/user/addresses');
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const addUserAddress = async (data) => {
+    try {
+        const response = await authRequest.post('/api/user/addresses', data);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+
+export const deleteUserAddress = async (addressId) => {
+    try {
+        const response = await authRequest.delete(`/api/user/addresses/${addressId}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+

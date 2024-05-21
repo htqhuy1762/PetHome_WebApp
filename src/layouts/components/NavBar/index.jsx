@@ -8,7 +8,6 @@ import { useState, useEffect } from 'react';
 import * as petServices from '~/services/petServices';
 import * as itemServices from '~/services/itemServices';
 
-
 const cx = classNames.bind(styles);
 
 function Navbar() {
@@ -25,7 +24,7 @@ function Navbar() {
             key: 'items',
             icon: <FontAwesomeIcon style={{ fontSize: '1.6rem' }} icon={faBagShopping} />,
             theme: 'light',
-            //children: [],
+            children: [],
         },
         {
             label: 'Dịch vụ',
@@ -48,14 +47,33 @@ function Navbar() {
             const itemTypes = await itemServices.getItemTypes();
             setItems((prevItems) => {
                 const newItems = [...prevItems];
-                newItems[0].children = species.data.map((spec) => ({
-                    label: spec.name,
-                    key: spec.name,
-                    onClick: () => {
-                        navigate(`/search/pets?q=${spec.name}`);
-                    },
-                }));
+                newItems[0].children = species.data
+                    .sort((a, b) => a.id_pet_specie - b.id_pet_specie)
+                    .map((spec) => ({
+                        label: spec.name,
+                        key: spec.id_pet_specie + 'p',
+                        onClick: () => {
+                            navigate(`/search/pets?q=${spec.name}`);
+                        },
+                    }));
                 newItems[0].onTitleClick = ({ key }) => {
+                    setSelectedValue(key);
+                    navigate(`/${key}`);
+                };
+                newItems[1].children = itemTypes.data
+                    .sort((a, b) => a.id_item_type - b.id_item_type)
+                    .map((type) => ({
+                        label: type.name,
+                        key: type.id_item_type,
+                        children: type.item_type_detail.map((subType) => ({
+                            label: subType.name,
+                            key: subType.name,
+                            onClick: () => {
+                                navigate(`/search/items?q=${subType.name}`);
+                            },
+                        })),
+                    }));
+                newItems[1].onTitleClick = ({ key }) => {
                     setSelectedValue(key);
                     navigate(`/${key}`);
                 };

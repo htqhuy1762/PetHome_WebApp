@@ -1,89 +1,59 @@
-import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
+import { authRequest } from '~/utils/httpRequestPetHome';
 
 // ITEMS
-export const getItemsCart = async (token) => {
+export const getItemsCart = async () => {
     try {
-        const response = await httpRequestPetHome.get('/api/cart/items', {
-            headers: {
-                'Authorization': token
-            }
-        });
+        const response = await authRequest.get('/api/cart/items');
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
 };
 
-export const addItemToCart = async (data, token) => {
+export const addItemToCart = async (data) => {
     try {
-        const response = await httpRequestPetHome.post('/api/items/cart', data, {
-            headers: {
-                'Authorization': token
-            }
-        });
+        const response = await authRequest.post('/api/items/cart', data);
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error adding item to cart:', error.response);
         return error.response;
     }
 }; 
 
-export const removeItemFromCart = async (id, token) => {
+export const removeItemFromCart = async (id) => {
     try {
-        const response = await httpRequestPetHome.del(`/api/cart/items/${id}`, {
-            headers: {
-                'Authorization': token
-            }
-        });
+        const response = await authRequest.delete(`/api/cart/items/${id}`);
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
-}
+};
 
 // PETS
-export const getPetsCart = async (token) => {
+export const getPetsCart = async () => {
     try {
-        const response = await httpRequestPetHome.get('/api/cart/pets', {
-            headers: {
-                'Authorization': token
-            }
-        });
+        const response = await authRequest.get('/api/cart/pets');
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
-}
+};
 
-export const addPetToCart = async (data, token) => {
+export const addPetToCart = async (data) => {
     try {
-        const response = await httpRequestPetHome.post('/api/pets/cart', data, {
-            headers: {
-                'Authorization': token
-            }
-        });
+        const response = await authRequest.post('/api/pets/cart', data);
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error adding pet to cart:', error.response);
         return error.response;
     }
 }; 
 
-export const removePetFromCart = async (id, token) => {
+export const removePetFromCart = async (id) => {
     try {
-        const response = await httpRequestPetHome.del(`/api/cart/pets/${id}`, {
-            headers: {
-                'Authorization': token
-            }
-        });
+        const response = await authRequest.delete(`/api/cart/pets/${id}`);
         return response;
-    }
-    catch (error) {
+    } catch (error) {
         return error.response;
     }
-}
+};

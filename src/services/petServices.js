@@ -1,8 +1,8 @@
-import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
+import { authRequest, publicRequest } from '~/utils/httpRequestPetHome';
 
 export const getPets = async (data) => {
     try {
-        const response = await httpRequestPetHome.get('/pets', { params: data });
+        const response = await publicRequest.get('/pets', { params: data });
         return response;
     } catch (error) {
         return error.response;
@@ -11,7 +11,7 @@ export const getPets = async (data) => {
 
 export const getPetDetailById = async (id) => {
     try {
-        const response = await httpRequestPetHome.get(`/pets/${id}`);
+        const response = await publicRequest.get(`/pets/${id}`);
         return response;
     } catch (error) {
         return error.response;
@@ -20,7 +20,7 @@ export const getPetDetailById = async (id) => {
 
 export const getPetRatings = async (id, data) => {
     try {
-        const response = await httpRequestPetHome.get(`/pets/${id}/ratings`, { params: data });
+        const response = await publicRequest.get(`/pets/${id}/ratings`, { params: data });
         return response;
     } catch (error) {
         return error.response;
@@ -29,7 +29,7 @@ export const getPetRatings = async (id, data) => {
 
 export const getPetSpecies = async () => {
     try {
-        const response = await httpRequestPetHome.get('/pet/species');
+        const response = await publicRequest.get('/pet/species');
         return response;
     } catch (error) {
         return error.response;
@@ -38,33 +38,25 @@ export const getPetSpecies = async () => {
 
 export const getPetAges = async () => {
     try {
-        const response = await httpRequestPetHome.get('/pet/ages');
+        const response = await publicRequest.get('/pet/ages');
         return response;
     } catch (error) {
         return error.response;
     }
 };
 
-export const checkRatedOrNot = async (id, token) => {
+export const checkRatedOrNot = async (id) => {
     try {
-        const response = await httpRequestPetHome.get(`/api/pets/${id}/rate`, {
-            headers: {
-                Authorization: token,
-            },
-        });
+        const response = await authRequest.get(`/api/pets/${id}/rate`);
         return response;
     } catch (error) {
         return error.response;
     }
 };
 
-export const postPetRating = async (id, data, token) => {
+export const postPetRating = async (id, data) => {
     try {
-        const response = await httpRequestPetHome.post(`/api/pets/${id}/rate`, data, {
-            headers: {
-                Authorization: token,
-            },
-        });
+        const response = await authRequest.post(`/api/pets/${id}/rate`, data);
         return response;
     } catch (error) {
         return error.response;

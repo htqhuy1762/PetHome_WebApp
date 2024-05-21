@@ -2,17 +2,15 @@ import classNames from 'classnames/bind';
 import styles from './SidebarUser.module.scss';
 import { Avatar, Menu } from 'antd';
 import { UserOutlined, ContainerOutlined, ShopOutlined } from '@ant-design/icons';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import * as userServices from '~/services/userServices';
 import Loading from '~/components/Loading';
 import { useLocation } from 'react-router-dom';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function SidebarUser() {
     const location = useLocation();
-    const { refreshAccessToken } = useContext(AuthContext);
     const items = [
         {
             key: 'sub1',
@@ -42,34 +40,14 @@ function SidebarUser() {
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
-            const expiredAt = localStorage.getItem('expiredAt');
-            const accessToken = localStorage.getItem('accessToken');
-
-            // Check if token exists and is not expired
-            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
-                try {
-                    const response = await userServices.getUser(accessToken);
-                    if (response.status === 200) {
-                        setUserData(response.data);
-                    }
-                } catch (error) {
-                    // Handle error
+            try {
+                const response = await userServices.getUser();
+                if (response.status === 200) {
+                    setUserData(response.data);
                 }
-            } else if (accessToken && new Date().getTime() > new Date(expiredAt).getTime()) {
-                // Refresh the token
-                await refreshAccessToken();
-
-                // After refreshing token, fetch user data again
-                try {
-                    const response = await userServices.getUser(localStorage.getItem('accessToken'));
-                    if (response.status === 200) {
-                        setUserData(response.data);
-                    }
-                } catch (error) {
-                    // Handle error
-                }
+            } catch (error) {
+                // Handle error
             }
-
             setLoading(false);
         };
 

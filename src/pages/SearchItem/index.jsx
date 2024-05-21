@@ -113,7 +113,6 @@ function SearchItem() {
                 });
                 if (response.status === 200) {
                     setData((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
-                    // Đang đợi bên backend xử lý trả về count khi query search
                     setTotal(response.data.count);
                     setLastQuery(query);
                 }

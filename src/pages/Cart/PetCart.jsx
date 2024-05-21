@@ -32,8 +32,8 @@ function PetCart() {
         const fetchPets = async () => {
             setIsLoading(true);
             try {
-                const response = await cartServices.getPetsCart(localStorage.getItem('accessToken'));
-                if (response.status === 200) {
+                const response = await cartServices.getPetsCart();
+                if (response.status === 200 && response.data.data) {
                     setPets(response.data.data.map((pet) => ({ ...pet})));
                 }
             } catch (error) {
@@ -46,8 +46,7 @@ function PetCart() {
 
     const handleRemovePet = async (id) => {
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await cartServices.removePetFromCart(id, token);
+            const response = await cartServices.removePetFromCart(id);
             if (response && response.status === 200) {
                 setPets(pets.filter((pet) => pet.id_pet !== id));
                 success();

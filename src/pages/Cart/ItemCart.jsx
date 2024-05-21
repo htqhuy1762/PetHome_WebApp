@@ -49,8 +49,8 @@ function ItemCart() {
         const fetchItems = async () => {
             setIsLoading(true);
             try {
-                const response = await cartServices.getItemsCart(localStorage.getItem('accessToken'));
-                if (response.status === 200) {
+                const response = await cartServices.getItemsCart();
+                if (response.status === 200 && response.data.data) {
                     setItems(response.data.data.map((item) => ({ ...item, selected: false, quantity: 1 })));
                 }
             } catch (error) {
@@ -63,8 +63,7 @@ function ItemCart() {
 
     const handleRemoveItem = async (id) => {
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await cartServices.removeItemFromCart(id, token);
+            const response = await cartServices.removeItemFromCart(id);
             if (response && response.status === 200) {
                 setItems(items.filter((item) => item.id_item_detail !== id));
                 success();

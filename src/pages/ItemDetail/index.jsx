@@ -17,19 +17,17 @@ import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/
 import { useParams } from 'react-router-dom';
 import * as itemServices from '~/services/itemServices';
 import * as cartServices from '~/services/cartServices';
-import { useState, useEffect, useMemo, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
 function ItemDetail() {
     const [messageApi, contextHolder] = message.useMessage();
     const [options, setOptions] = useState(null);
-    const { refreshAccessToken } = useContext(AuthContext);
 
     const [selectedItem, setSelectedItem] = useState(null);
 
@@ -132,28 +130,13 @@ function ItemDetail() {
 
     useEffect(() => {
         const checkRating = async () => {
-            const expiredAt = localStorage.getItem('expiredAt');
-            const accessToken = localStorage.getItem('accessToken');
-
-            if (accessToken && new Date().getTime() < new Date(expiredAt).getTime()) {
-                try {
-                    const response = await itemServices.checkRatedOrNot(id, accessToken);
-                    if (response.status === 200) {
-                        setHasReviewed(response.data.status);
-                    }
-                } catch (error) {
-                    // Handle error
+            try {
+                const response = await itemServices.checkRatedOrNot(id);
+                if (response.status === 200) {
+                    setHasReviewed(response.data.status);
                 }
-            } else if (accessToken && new Date().getTime() > new Date(expiredAt).getTime()) {
-                await refreshAccessToken();
-                try {
-                    const response = await itemServices.checkRatedOrNot(id, localStorage.getItem('accessToken'));
-                    if (response.status === 200) {
-                        setHasReviewed(response.data.status);
-                    }
-                } catch (error) {
-                    // Handle error
-                }
+            } catch (error) {
+                // Handle error
             }
         };
 
@@ -173,7 +156,6 @@ function ItemDetail() {
             await itemServices.postItemRating(
                 id,
                 { rate: rating, comment: review },
-                localStorage.getItem('accessToken'),
             );
             setIsModalVisible(false);
             setHasReviewed('rated');
@@ -204,7 +186,6 @@ function ItemDetail() {
                         id_item: selectedItem.id_item,
                         id_item_detail: selectedItem.id_item_detail,
                     },
-                    localStorage.getItem('accessToken'),
                 );
                 if (response.status === 200) {
                     cartSuccess();

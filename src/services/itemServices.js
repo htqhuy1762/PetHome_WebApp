@@ -1,8 +1,8 @@
-import * as httpRequestPetHome from '~/utils/httpRequestPetHome';
+import { authRequest, publicRequest } from '~/utils/httpRequestPetHome';
 
 export const getItems = async (data) => {
     try {
-        const response = await httpRequestPetHome.get('/items', { params: data });
+        const response = await publicRequest.get('/items', { params: data });
         return response;
     } catch (error) {
         return error.response;
@@ -11,7 +11,7 @@ export const getItems = async (data) => {
 
 export const getItemDetailById = async (id) => {
     try {
-        const response = await httpRequestPetHome.get(`/items/${id}`);
+        const response = await publicRequest.get(`/items/${id}`);
         return response;
     } catch (error) {
         return error.response;
@@ -20,7 +20,7 @@ export const getItemDetailById = async (id) => {
 
 export const getItemRatings = async (id, data) => {
     try {
-        const response = await httpRequestPetHome.get(`/items/${id}/ratings`, { params: data });
+        const response = await publicRequest.get(`/items/${id}/ratings`, { params: data });
         return response;
     } catch (error) {
         return error.response;
@@ -29,33 +29,25 @@ export const getItemRatings = async (id, data) => {
 
 export const getItemTypes = async () => {
     try {
-        const response = await httpRequestPetHome.get('/item/types');
+        const response = await publicRequest.get('/item/types');
         return response;
     } catch (error) {
         return error.response;
     }
 };
 
-export const checkRatedOrNot = async (id, token) => {
+export const checkRatedOrNot = async (id) => {
     try {
-        const response = await httpRequestPetHome.get(`/api/items/${id}/rate`, {
-            headers: {
-                Authorization: token,
-            },
-        });
+        const response = await authRequest.get(`/api/items/${id}/rate`);
         return response;
     } catch (error) {
         return error.response;
     }
 };
 
-export const postItemRating = async (id, data, token) => {
+export const postItemRating = async (id, data) => {
     try {
-        const response = await httpRequestPetHome.post(`/api/items/${id}/rate`, data, {
-            headers: {
-                Authorization: token,
-            },
-        });
+        const response = await authRequest.post(`/api/items/${id}/rate`, data);
         return response;
     } catch (error) {
         return error.response;
