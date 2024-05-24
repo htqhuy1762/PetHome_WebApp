@@ -236,7 +236,7 @@ function SearchPet() {
                             <CardPet key={pet.id_pet} pet={pet} onClick={() => goToPetDetail(pet.id_pet)} />
                         ))
                     ) : (
-                        <div style={{ display: 'flex', justifyContent: 'center', width: '965px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '965px', height: '366px' }}>
                             <Empty description="Danh sách trống" />
                         </div>
                     )}

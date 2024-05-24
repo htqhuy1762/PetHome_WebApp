@@ -16,6 +16,8 @@ import SearchItem from '~/pages/SearchItem';
 import ShopSubcribe from '~/pages/ShopSubcribe';
 import ShopRegister from '~/pages/ShopRegister';
 import AddressUser from '~/pages/AddressUser';
+import PetTypePage from '~/pages/PetTypePage';
+import ItemTypePage from '~/pages/ItemTypePage';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -26,7 +28,9 @@ const publicRoutes = [
     { path: '/blogs', component: Blog },
     { path: '/pets', component: Pet },
     { path: '/pets/:id', component: PetDetail, layout: HeaderFooter },
+    { path: '/pets/type/:type', component: PetTypePage, layout: HeaderFooter},
     { path: '/items/:id', component: ItemDetail, layout: HeaderFooter },
+    { path: '/items/type/:type', component: ItemTypePage, layout: HeaderFooter},
     { path: '/cart', component: Cart, layout: HeaderFooter },
     { path: '/search/pets/', component: SearchPet, layout: HeaderFooter },
     { path: '/search/items/', component: SearchItem, layout: HeaderFooter },

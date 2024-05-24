@@ -3,6 +3,7 @@
     height: auto;
     position: relative;
     display: flex;
+    flex-direction: column;
     height: 100%;
 }
 
@@ -24,7 +25,7 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    width: 965px;
+    width: 100%;
 }
 
 .filter-container {

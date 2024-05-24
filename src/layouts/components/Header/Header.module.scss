@@ -1,5 +1,5 @@
 .wrapperfixed {
-    height: 100px;
+    height: 110px;
     width: 100%;
     display: flex;
     position: fixed;
@@ -7,7 +7,7 @@
     left: 0;
     z-index: 10;
     justify-content: center;
-    background-color: var(--mid-color);
+    background-color: var(--header-color);
     //background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
 }
 
@@ -16,7 +16,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background-color: var(--mid-color);
+    background-color: var(--header-color);
     //background-image: linear-gradient(to left, var(--start-color), var(--mid-color), var(--end-color));
 }
 
@@ -33,30 +33,31 @@
     align-items: center;
 
     .logo {
-        height: 100px;
-        width: 100px;
+        height: 90px;
+        width: 90px;
     }
 
     .logo-title {
-        height: 60px;
-        width: 140px;
+        height: 55px;
+        width: 135px;
     }
 }
 
 .search-container {
     width: 60%;
     margin-left: 50px;
+    margin-top: 15px;
 }
 
 .right-menu {
     display: flex;
     align-items: center;
     height: 120px;
-    margin-left: 55px;
+    margin-left: 40px;
 
     .cart {
-        margin-right: 35px;
-        margin-top: 7px;
+        margin-left: 35px;
+        margin-top: 28px;
 
         .cart-btn:hover {
             background-color: initial !important;

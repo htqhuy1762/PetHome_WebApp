@@ -1,9 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Navbar.module.scss';
-import { Menu, ConfigProvider } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaw, faBlog, faBagShopping, faHouseMedical } from '@fortawesome/free-solid-svg-icons';
+import { Menu, ConfigProvider, theme } from 'antd';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faPaw, faBlog, faBagShopping, faHouseMedical } from '@fortawesome/free-solid-svg-icons';
+import { DownOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import * as petServices from '~/services/petServices';
 import * as itemServices from '~/services/itemServices';
@@ -13,28 +14,24 @@ const cx = classNames.bind(styles);
 function Navbar() {
     const [items, setItems] = useState([
         {
-            label: 'Thú cưng',
+            label: <p>THÚ CƯNG <DownOutlined /></p>,
             key: 'pets',
-            icon: <FontAwesomeIcon style={{ fontSize: '1.6rem' }} icon={faPaw} />,
-            theme: 'light',
+            theme: 'dark',
             children: [],
         },
         {
-            label: 'Vật phẩm',
+            label: <p>VẬT PHẨM <DownOutlined /></p>,
             key: 'items',
-            icon: <FontAwesomeIcon style={{ fontSize: '1.6rem' }} icon={faBagShopping} />,
-            theme: 'light',
+            theme: 'dark',
             children: [],
         },
         {
-            label: 'Dịch vụ',
+            label: 'DỊCH VỤ',
             key: 'services',
-            icon: <FontAwesomeIcon style={{ fontSize: '1.6rem' }} icon={faHouseMedical} />,
         },
         {
-            label: 'Blog',
+            label: 'BLOG',
             key: 'blogs',
-            icon: <FontAwesomeIcon style={{ fontSize: '1.6rem' }} icon={faBlog} />,
         },
     ]);
     const [selectedValue, setSelectedValue] = useState('');
@@ -53,7 +50,7 @@ function Navbar() {
                         label: spec.name,
                         key: spec.id_pet_specie + 'p',
                         onClick: () => {
-                            navigate(`/search/pets?q=${spec.name}`);
+                            navigate(`/pets/type/${spec.name}`);
                         },
                     }));
                 newItems[0].onTitleClick = ({ key }) => {
@@ -65,11 +62,13 @@ function Navbar() {
                     .map((type) => ({
                         label: type.name,
                         key: type.id_item_type,
+                        theme: 'dark',
                         children: type.item_type_detail.map((subType) => ({
                             label: subType.name,
                             key: subType.name,
-                            onClick: () => {
-                                navigate(`/search/items?q=${subType.name}`);
+                            onClick: (event) => {
+                                navigate(`/items/type/${subType.name}`);
+                                event.stopPropagation();
                             },
                         })),
                     }));
@@ -93,8 +92,13 @@ function Navbar() {
                 theme={{
                     components: {
                         Menu: {
-                            itemSelectedColor: '#7A0303 !important',
-                            horizontalItemSelectedColor: '#7A0303',
+                            itemColor: 'white',
+                            itemHoverColor: 'white',
+                            itemSelectedColor: 'white',
+                            horizontalItemSelectedColor: 'none', //
+                            horizontalItemHoverBg: '#fd4f55', //
+                            horizontalItemHoverColor: 'white', //
+                            darkItemHoverBg: '#fd4f55', //
                         },
                     },
                 }}

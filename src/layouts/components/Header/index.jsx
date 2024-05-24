@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import logo from '~/assets/images/logo.png';
 import logotitle from '~/assets/images/logo-title.png';
-import { Input, Badge, Button, Dropdown, Avatar, Select } from 'antd';
+import { Input, Button, Dropdown, Avatar, Select } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -134,7 +134,7 @@ function Header({ fixedHeader }) {
                                     color: 'var(--button-next-color)',
                                     backgroundColor: 'var(--end-color)',
                                     width: '60px',
-                                    height: '39px',
+                                    height: '39.5px',
                                 }}
                                 type="primary"
                                 icon={<SearchOutlined />}
@@ -158,32 +158,30 @@ function Header({ fixedHeader }) {
                     ) : (
                         <>
                             <div className={cx('cart')}>
-                                <Badge size="small" count={5}>
-                                    <Button
-                                        style={{ border: 'none', width: '4rem', height: '3rem' }}
-                                        className={cx('cart-btn')}
-                                        size="large"
-                                        type="text"
-                                        shape="circle"
-                                        icon={<ShoppingCartOutlined style={{ fontSize: '4rem', color: 'white' }} />}
-                                        onClick={() => navigate('/cart')}
-                                    />
-                                </Badge>
+                                <Button
+                                    style={{ border: 'none', width: '4rem', height: '3rem' }}
+                                    className={cx('cart-btn')}
+                                    size="medium"
+                                    type="text"
+                                    shape="circle"
+                                    icon={<ShoppingCartOutlined style={{ fontSize: '3.3rem', color: 'white' }} />}
+                                    onClick={() => navigate('/cart')}
+                                />
                             </div>
                             <div className={cx('user')}>
                                 <Dropdown menu={{ items }} placement="bottom" arrow>
                                     <a
-                                        style={{ color: 'white' }}
+                                        style={{ color: 'white', fontSize: '1.5rem', cursor: 'pointer' }}
                                         className="ant-dropdown-link"
                                         onClick={(e) => e.preventDefault()}
                                     >
-                                        {currentUser?.email}
                                         <Avatar
-                                            style={{ marginLeft: '0.7rem' }}
-                                            size={30}
+                                            style={{ marginRight: '0.5rem' }}
+                                            size={25}
                                             src={currentUser?.avatar ? currentUser.avatar : null}
                                             icon={!currentUser?.avatar ? <UserOutlined /> : null}
                                         />
+                                        {currentUser?.email}
                                     </a>
                                 </Dropdown>
                             </div>
