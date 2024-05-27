@@ -1,7 +1,7 @@
+import { useState, useEffect, useContext } from 'react';
 import classNames from 'classnames/bind';
 import styless from './ChatBox.module.scss';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
-import { useState, useContext } from 'react';
 import {
     MainContainer,
     Sidebar,
@@ -18,44 +18,26 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { Button, Card } from 'antd';
 import { WechatOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import * as chatServices from '~/services/chatServices';
-import { useEffect } from 'react';
+import { joinChatRoom, sendChatMessage, receiveChatMessage, exitChatRoom } from '~/services/chatWSServices.js';
 
 const cx = classNames.bind(styless);
-// [
-//     {
-//         "id_room": "d90908a5-014b-4e9d-953c-99270ad9618e",
-//         "id_shop": "0004",
-//         "shop_name": "Mật Pet Family",
-//         "shop_avatar": "https://storage.googleapis.com/pethome/shop/0004/logo.jpg",
-//         "is_read_by_user": false,
-//         "last_message": "Test mess 5",
-//         "created_at": "2024-05-11T09:21:27Z"
-//     }
-// ]
 
 function ChatBox() {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, user } = useContext(AuthContext);
     const [isChatBoxVisible, setChatBoxVisible] = useState(false);
     const [rooms, setRooms] = useState([]);
+    const [currentRoom, setCurrentRoom] = useState(null);
+    const [messages, setMessages] = useState([]);
 
     const toggleChatBox = () => {
         setChatBoxVisible(!isChatBoxVisible);
     };
 
-    const sendMessage = (e) => {
-        console.log(e);
+    const handleSendMessage = (message) => {
+        if (currentRoom) {
+            sendChatMessage(currentRoom.id_room, message);
+        }
     };
-
-    const tabList = [
-        {
-            key: 'tab1',
-            tab: 'Shop',
-        },
-        {
-            key: 'tab2',
-            tab: 'User',
-        },
-    ];
 
     useEffect(() => {
         const fetchRooms = async () => {
@@ -68,6 +50,19 @@ function ChatBox() {
         fetchRooms();
     }, []);
 
+    useEffect(() => {
+        if (currentRoom) {
+            joinChatRoom(currentRoom.id_room, user.id);
+            receiveChatMessage((message) => {
+                setMessages((prevMessages) => [...prevMessages, message]);
+            });
+
+            return () => {
+                exitChatRoom(currentRoom.id_room);
+            };
+        }
+    }, [currentRoom, user.id]);
+
     if (!isLoggedIn) {
         return null;
     }
@@ -76,7 +71,6 @@ function ChatBox() {
         <div className={cx('wrapper', { 'wrapper-hidden': !isChatBoxVisible })}>
             {isChatBoxVisible ? (
                 <Card
-                    tabList={tabList}
                     title={
                         <div className={cx('button-x-container')}>
                             <p style={{ fontWeight: 'bold', fontSize: '2.4rem', left: 0, position: 'relative' }}>
@@ -93,70 +87,60 @@ function ChatBox() {
                     }
                     styles={{ body: { padding: '0' } }}
                 >
-                    {isChatBoxVisible && (
-                        <MainContainer
-                            style={{
-                                height: '480px',
-                                width: '100%',
-                                fontSize: '1.6rem',
-                            }}
-                        >
-                            <Sidebar position="left">
-                                <ConversationList>
-                                    {rooms.map((room) => (
-                                        <Conversation
-                                            key={room.id_room}
-                                            name={room.shop_name}
-                                            lastSenderName="John"
-                                            info={room.last_message}
-                                            active={true}
-                                        >
-                                            <Avatar src={room.shop_avatar} />
-                                        </Conversation>
-                                    ))}
-                                </ConversationList>
-                            </Sidebar>
-                            <ChatContainer>
-                                <ConversationHeader>
-                                    <Avatar src="https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg" />
-                                    <ConversationHeader.Content
-                                        userName="John"
-                                        info="last active 10 min ago"
-                                    ></ConversationHeader.Content>
-                                </ConversationHeader>
-                                <MessageList>
-                                    <Message
-                                        model={{
-                                            message: 'Hey John',
-                                            sender: 'David',
-                                            sentTime: '10 min ago',
-                                            direction: 'outgoing',
-                                            position: 'single',
-                                        }}
-                                    ></Message>
-                                    <Message
-                                        model={{
-                                            message: 'Hey David',
-                                            sender: 'David',
-                                            sentTime: '10 min ago',
-                                            direction: 'incoming',
-                                            position: 'single',
-                                        }}
-                                    ></Message>
-                                    <Message
-                                        model={{
-                                            message: 'How are you?',
-                                            sender: 'David',
-                                            sentTime: '10 min ago',
-                                            direction: 'incoming',
-                                            position: 'single',
-                                        }}
-                                    ></Message>
-                                </MessageList>
-                                <MessageInput placeholder="Type your message here" onSend={sendMessage}></MessageInput>
-                            </ChatContainer>
-                        </MainContainer>
-                    )}
+                    <MainContainer
+                        style={{
+                            height: '480px',
+                            width: '100%',
+                            fontSize: '1.6rem',
+                        }}
+                    >
+                        <Sidebar position="left">
+                            <ConversationList>
+                                {rooms.map((room) => (
+                                    <Conversation
+                                        key={room.id_room}
+                                        name={room.shop_name}
+                                        lastSenderName="John"
+                                        info={room.last_message}
+                                        active={currentRoom && currentRoom.id_room === room.id_room}
+                                        onClick={() => setCurrentRoom(room)}
+                                    >
+                                        <Avatar src={room.shop_avatar} />
+                                    </Conversation>
+                                ))}
+                            </ConversationList>
+                        </Sidebar>
+                        <ChatContainer>
+                            {currentRoom ? (
+                                <>
+                                    <ConversationHeader>
+                                        <Avatar src={currentRoom.shop_avatar} />
+                                        <ConversationHeader.Content
+                                            userName={currentRoom.shop_name}
+                                            info="Last active 10 min ago"
+                                        />
+                                    </ConversationHeader>
+                                    <MessageList>
+                                        {messages.map((msg, index) => (
+                                            <Message
+                                                key={index}
+                                                model={{
+                                                    message: msg.content,
+                                                    sender: msg.id_sender === user.id ? 'You' : 'Shop',
+                                                    sentTime: msg.created_at,
+                                                    direction: msg.id_sender === user.id ? 'outgoing' : 'incoming',
+                                                    position: 'single',
+                                                }}
+                                            />
+                                        ))}
+                                    </MessageList>
+                                    <MessageInput placeholder="Gõ tin nhắn của bạn ở đây" onSend={handleSendMessage} />
+                                </>
+                            ) : (
+                                <div>Chọn một cuộc trò chuyện để bắt đầu chat</div>
+                            )}
+                        </ChatContainer>
+                    </MainContainer>
                 </Card>
             ) : (
                 <Button

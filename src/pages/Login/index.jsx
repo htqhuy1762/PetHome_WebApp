@@ -24,10 +24,12 @@ function Login() {
             if (response && response.status === 200) {
                 const accessToken = response.data.accessToken;
                 const expiredAt = response.data.expiredAt;
+                const refreshToken = response.data.refreshToken;
 
                 // Save accessToken to localStorage
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('expiredAt', expiredAt);
+                localStorage.setItem('refreshToken', refreshToken);
 
                 setIsLoggedIn(true);
 

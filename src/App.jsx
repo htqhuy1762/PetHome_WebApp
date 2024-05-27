@@ -1,28 +1,29 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from './layouts';
+import { AuthContext } from '~/components/AuthProvider/index.jsx';
 import ChatBox from '~/components/ChatBox';
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
+    const { isLoggedIn, isLoading } = useContext(AuthContext);
+
     useEffect(() => {
-        if (
-            !localStorage.getItem('accessToken') ||
-            new Date().getTime() >= new Date(localStorage.getItem('expiredAt')).getTime()
-        ) {
+        if (!isLoading && !isLoggedIn) {
             navigate('/login');
         }
-    }, [navigate]);
+    }, [isLoggedIn, navigate, isLoading]);
 
-    return children;
+    return isLoading ? null : isLoggedIn ? children : null;
 }
 
 function App() {
+    const { isLoggedIn, isLoading } = useContext(AuthContext);
     return (
         <Router>
             <div className="App">
-                <ChatBox />
+                {!isLoading && isLoggedIn && <ChatBox />}
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         let Layout = DefaultLayout;

@@ -24,7 +24,6 @@ function ItemTypePage() {
         const fetchDataItemTypes = async () => {
             const response = await itemServices.getItemTypes();
             if (response.status === 200) {
-                console.log(response.data);
                 setItemTypes(response.data);
             }
         };
@@ -48,7 +47,6 @@ function ItemTypePage() {
                     itemType.item_type_detail.some((detail) => detail.name === type),
                 );
                 const id_type = itemType?.item_type_detail.find((detail) => detail.name === type)?.id_item_type_detail;
-                console.log(id_type);
                 if (id_type) {
                     const response = await itemServices.getItems({
                         limit: limit,

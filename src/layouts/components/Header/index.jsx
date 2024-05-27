@@ -40,6 +40,7 @@ function Header({ fixedHeader }) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('expiredAt');
         localStorage.removeItem('selectValue');
+        localStorage.removeItem('refreshToken');
         setIsLoggedIn(false);
         navigate('/login');
     };
@@ -49,7 +50,7 @@ function Header({ fixedHeader }) {
 
     const urlParams = new URLSearchParams(location.search);
     const [searchValue, setSearchValue] = useState(urlParams.get('q') || '');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const items = [
         {
@@ -94,7 +95,7 @@ function Header({ fixedHeader }) {
     }, [location.search]);
 
     if (loading) {
-        return <Loading />; // Replace with your loading component or spinner
+        return <Loading />;
     }
 
     return (
