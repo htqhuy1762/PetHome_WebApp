@@ -9,13 +9,13 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
-import { useContext } from 'react';
+import { useEffect, useContext } from 'react';
 
 const cx = classNames.bind(styles);
 
 function Login() {
     const navigate = useNavigate();
-    const { setIsLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
     const onFinish = async (data) => {
         try {
@@ -45,6 +45,12 @@ function Login() {
             console.log('login failed:', error);
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/'); // Đường dẫn đến trang chủ của bạn
+        }
+    }, [isLoggedIn, navigate]);
 
     return (
         <div className={cx('wrapper')}>

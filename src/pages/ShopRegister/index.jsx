@@ -182,9 +182,10 @@ function TaxInfor({ onNext, onBack }) {
 }
 
 function IdentificationInfor({ onNext, onBack }) {
-    const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState();
     const [fileList, setFileList] = useState([]);
+    const [imageUrl2, setImageUrl2] = useState();
+    const [fileList2, setFileList2] = useState([]);
 
     const getBase64 = (img, callback) => {
         const reader = new FileReader();
@@ -192,7 +193,7 @@ function IdentificationInfor({ onNext, onBack }) {
         reader.readAsDataURL(img);
     };
 
-    const beforeUpload = (file) => {
+    const beforeUpload = (file, setImageUrl, setFileList, fileList) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');
@@ -208,45 +209,45 @@ function IdentificationInfor({ onNext, onBack }) {
             message.error('You can only upload one image!');
             return false;
         }
-        return true;
+        getBase64(file, (url) => {
+            setImageUrl(url);
+            setFileList([file]);
+        });
+        return false; // Ngăn không upload ngay lập tức
     };
 
-    const handleChange = (info) => {
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-        if (info.file.status === 'done') {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, (url) => {
-                setLoading(false);
-                setImageUrl(url);
-            });
-    
-            setFileList([info.file]);
-        }
+    const handleRemove = (setImageUrl, setFileList) => {
+        setImageUrl(null);
+        setFileList([]);
     };
-    
+
     const handleSubmit = async () => {
-        if (!imageUrl) {
-            message.error('Please upload an image.');
+        if (!fileList.length || !fileList2.length) {
+            message.error('Please upload both front and back images.');
             return;
         }
-        // Handle form submission here
+
         const formData = new FormData();
-        fileList.forEach((file) => {
-            formData.append('front_id_card', file);
-        });
-    
-        const response = await fetch('http://localhost:8080/api/shop/submit', {
-            method: 'POST',
-            body: formData,
-        });
-    
-        if (!response.ok) {
-            // handle error
-        } else {
+        formData.append('front_id_card', fileList[0]);
+        formData.append('back_id_card', fileList2[0]);
+
+        try {
+            const response = await fetch('none', {
+                method: 'POST',
+                headers: {
+                    Authorization: 'Bearer access_token', // Thay thế access_token với token thực tế
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Upload failed');
+            }
+
+            message.success('Upload successful.');
             onNext();
+        } catch (error) {
+            message.error('Upload failed.');
         }
     };
 
@@ -258,7 +259,26 @@ function IdentificationInfor({ onNext, onBack }) {
             }}
             type="button"
         >
-            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </button>
+    );
+
+    const uploadButton2 = !imageUrl2 && (
+        <button
+            style={{
+                border: 0,
+                background: 'none',
+            }}
+            type="button"
+        >
+            <PlusOutlined />
             <div
                 style={{
                     marginTop: 8,
@@ -307,26 +327,13 @@ function IdentificationInfor({ onNext, onBack }) {
                     >
                         <Flex gap="middle" wrap>
                             <Upload
-                                name="avatar"
                                 listType="picture-card"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                action=""
-                                beforeUpload={beforeUpload}
-                                onChange={handleChange}
-                                fileList={fileList}
+                                className="image-uploader"
+                                showUploadList={{ showRemoveIcon: true }}
+                                beforeUpload={(file) => beforeUpload(file, setImageUrl, setFileList, fileList)}
+                                onRemove={() => handleRemove(setImageUrl, setFileList)}
                             >
-                                {imageUrl ? (
-                                    <img
-                                        src={imageUrl}
-                                        alt="avatar"
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                    />
-                                ) : (
-                                    uploadButton
-                                )}
+                                {imageUrl ? null : uploadButton}
                             </Upload>
                         </Flex>
                     </Form.Item>
@@ -341,26 +348,13 @@ function IdentificationInfor({ onNext, onBack }) {
                     >
                         <Flex gap="middle" wrap>
                             <Upload
-                                name="avatar"
                                 listType="picture-card"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                action=""
-                                beforeUpload={beforeUpload}
-                                onChange={handleChange}
-                                fileList={fileList}
+                                className="image-uploader"
+                                showUploadList={{ showRemoveIcon: true }}
+                                beforeUpload={(file) => beforeUpload(file, setImageUrl2, setFileList2, fileList2)}
+                                onRemove={() => handleRemove(setImageUrl2, setFileList2)}
                             >
-                                {imageUrl ? (
-                                    <img
-                                        src={imageUrl}
-                                        alt="avatar"
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                    />
-                                ) : (
-                                    uploadButton
-                                )}
+                                {imageUrl2 ? null : uploadButton2}
                             </Upload>
                         </Flex>
                     </Form.Item>
@@ -446,7 +440,7 @@ function Completed({}) {
 }
 
 function ShopRegister() {
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(3);
     const { Step } = Steps;
 
     const handleNext = () => {

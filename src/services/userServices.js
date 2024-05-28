@@ -46,3 +46,17 @@ export const deleteUserAddress = async (addressId) => {
     }
 };
 
+export const uploadAvatar = async (file) => {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await authRequest.post('/api/user/avatar', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}

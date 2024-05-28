@@ -18,7 +18,6 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { Button, Card } from 'antd';
 import { WechatOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import * as chatServices from '~/services/chatServices';
-import { joinChatRoom, sendChatMessage, receiveChatMessage, exitChatRoom } from '~/services/chatWSServices.js';
 
 const cx = classNames.bind(styless);
 
@@ -33,35 +32,35 @@ function ChatBox() {
         setChatBoxVisible(!isChatBoxVisible);
     };
 
-    const handleSendMessage = (message) => {
-        if (currentRoom) {
-            sendChatMessage(currentRoom.id_room, message);
-        }
-    };
+    // const handleSendMessage = (message) => {
+    //     if (currentRoom) {
+    //         sendChatMessage(currentRoom.id_room, message);
+    //     }
+    // };
 
-    useEffect(() => {
-        const fetchRooms = async () => {
-            const response = await chatServices.getUserRooms();
-            if (response.status === 200) {
-                setRooms(response.data);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchRooms = async () => {
+    //         const response = await chatServices.getUserRooms();
+    //         if (response.status === 200) {
+    //             setRooms(response.data);
+    //         }
+    //     };
 
-        fetchRooms();
-    }, []);
+    //     fetchRooms();
+    // }, []);
 
-    useEffect(() => {
-        if (currentRoom) {
-            joinChatRoom(currentRoom.id_room, user.id);
-            receiveChatMessage((message) => {
-                setMessages((prevMessages) => [...prevMessages, message]);
-            });
+    // useEffect(() => {
+    //     if (currentRoom) {
+    //         joinChatRoom(currentRoom.id_room, user.id);
+    //         receiveChatMessage((message) => {
+    //             setMessages((prevMessages) => [...prevMessages, message]);
+    //         });
 
-            return () => {
-                exitChatRoom(currentRoom.id_room);
-            };
-        }
-    }, [currentRoom, user.id]);
+    //         return () => {
+    //             exitChatRoom(currentRoom.id_room);
+    //         };
+    //     }
+    // }, [currentRoom, user.id]);
 
     if (!isLoggedIn) {
         return null;

@@ -3,7 +3,8 @@ import styles from './Profile.module.scss';
 import { useState, useEffect } from 'react';
 import * as userServices from '~/services/userServices';
 import Loading from '~/components/Loading';
-import { Form, Button, Input, DatePicker, Radio } from 'antd';
+import { Form, Button, Input, DatePicker, Radio, Upload, message, Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const cx = classNames.bind(styles);
@@ -12,6 +13,57 @@ function Profile() {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
+    const [imageUrl, setImageUrl] = useState(null);
+    const [fileList, setFileList] = useState([]);
+
+
+    const getBase64 = (img, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    };
+
+    const beforeUpload = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+            return false;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must be smaller than 2MB!');
+            return false;
+        }
+        getBase64(file, (url) => {
+            setImageUrl(url);
+            setFileList([file]);
+        });
+        return false; // Ngăn không upload ngay lập tức
+    };
+
+    const handleSave = async () => {
+        try {
+            const values = await form.validateFields();
+            // Gửi thông tin người dùng
+            await userServices.updateUser(values);
+            // Nếu có file ảnh mới, gửi ảnh lên server
+            if (fileList.length > 0) {
+                const response = await userServices.uploadAvatar(fileList[0]);
+                if (response.status === 200) {
+                    const newAvatarUrl = response.data.avatar;
+                    setUserData((prevData) => ({
+                        ...prevData,
+                        avatar: newAvatarUrl,
+                    }));
+                    setImageUrl(newAvatarUrl);
+                }
+            }
+            message.success('Lưu thông tin thành công');
+        } catch (error) {
+            message.error('Lưu thông tin thất bại');
+        }
+    };
+
     useEffect(() => {
         const getUser = async () => {
             setLoading(true);
@@ -51,77 +103,106 @@ function Profile() {
                 <p style={{ fontSize: '2.3rem' }}>Hồ Sơ Của Tôi</p>
                 <p style={{ color: 'rgba(0, 0, 0, .54)' }}>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
             </div>
-            <div className={cx('form')}>
-                <Form
-                    form={form}
-                    className={cx('form')}
-                    name="user-info-form"
-                    initialValues={{
-                        remember: true,
-                        email: userData?.email,
-                        name: userData?.name,
-                        phonenumber: userData?.phone_num,
-                        gender: userData?.gender,
-                        birthday: userData?.day_of_birth,
-                    }}
-                    layout="horizontal"
-                    labelCol={{ span: 5 }}
-                    wrapperCol={{ span: 13 }}
-                >
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Email</label>}
-                        name="email"
+            <div className={cx('content')}>
+                <div className={cx('form-container')}>
+                    <Form
+                        form={form}
+                        className={cx('form')}
+                        name="user-info-form"
+                        initialValues={{
+                            remember: true,
+                            email: userData?.email,
+                            name: userData?.name,
+                            phonenumber: userData?.phone_num,
+                            gender: userData?.gender,
+                            birthday: userData?.day_of_birth,
+                        }}
+                        layout="horizontal"
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 15 }}
                     >
-                        <Input disabled size="medium" />
-                    </Form.Item>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Tên</label>}
-                        name="name"
-                    >
-                        <Input size="medium" autoComplete="name" />
-                    </Form.Item>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Số điện thoại</label>}
-                        name="phonenumber"
-                    >
-                        <Input
-                            style={{ width: '100%' }}
-                            size="medium"
-                            autoComplete="phonenumber"
-                            onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Giới tính</label>}
-                        name="gender"
-                    >
-                        <Radio.Group>
-                            <Radio value={'male'}>Nam</Radio>
-                            <Radio value={'female'}>Nữ</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Ngày sinh</label>}
-                        name="birthday"
-                    >
-                        <DatePicker />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            size="medium"
-                            type="primary"
-                            htmlType="submit"
-                            style={{ backgroundColor: 'var(--button-next-color)', width: '100px', marginLeft: '180px' }}
-                            disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
+                        <Form.Item
+                            label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Email</label>}
+                            name="email"
                         >
-                            Lưu
-                        </Button>
-                    </Form.Item>
-                </Form>
+                            <Input disabled size="medium" />
+                        </Form.Item>
+                        <Form.Item
+                            label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Tên</label>}
+                            name="name"
+                        >
+                            <Input size="medium" autoComplete="name" />
+                        </Form.Item>
+                        <Form.Item
+                            label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Số điện thoại</label>}
+                            name="phonenumber"
+                        >
+                            <Input
+                                style={{ width: '100%' }}
+                                size="medium"
+                                autoComplete="phonenumber"
+                                onKeyPress={(event) => {
+                                    if (!/[0-9]/.test(event.key)) {
+                                        event.preventDefault();
+                                    }
+                                }}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Giới tính</label>}
+                            name="gender"
+                        >
+                            <Radio.Group>
+                                <Radio value={'male'}>Nam</Radio>
+                                <Radio value={'female'}>Nữ</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item
+                            label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Ngày sinh</label>}
+                            name="birthday"
+                        >
+                            <DatePicker />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button
+                                size="medium"
+                                type="primary"
+                                htmlType="submit"
+                                onClick={handleSave}
+                                style={{
+                                    backgroundColor: 'var(--button-next-color)',
+                                    width: '100px',
+                                    marginLeft: '180px',
+                                }}
+                                disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
+                            >
+                                Lưu
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+                <div className={cx('avatar-container')}>
+                    <div className={cx('avatar')}>
+                        <Avatar
+                            size={150}
+                            src={imageUrl || (userData?.avatar ? userData.avatar : null)}
+                            icon={!imageUrl && !userData?.avatar ? <UserOutlined /> : null}
+                            alt="avatar"
+                        />
+                    </div>
+                    <div className={cx('upload-avatar')}>
+                        <Upload
+                            beforeUpload={beforeUpload}
+                            fileList={fileList}
+                            onRemove={() => {
+                                setFileList([]);
+                                setImageUrl(null);
+                            }}
+                        >
+                            <Button type="primary">Chọn ảnh</Button>
+                        </Upload>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OtpInput from 'react-otp-input';
 import styles from './Register.module.scss';
@@ -8,6 +8,7 @@ import logotitle from '../../assets/images/logo-title.png';
 import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined, LeftOutlined } from '@ant-design/icons';
 import { sendCodeEmail, verifyCodeEmail, register } from '../../services/authServices';
+import { AuthContext } from '~/components/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 
@@ -364,10 +365,13 @@ function RegisterForm({ onBack, email }) {
 }
 
 function Register() {
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [token, setToken] = useState('');
     const [expiry, setExpiry] = useState('');
     const [email, setEmail] = useState('');
+
+    const { isLoggedIn } = useContext(AuthContext);
 
     // Hàm chuyển sang bước tiếp theo
     const handleNext = () => {
@@ -377,6 +381,12 @@ function Register() {
     const handleBack = () => {
         setStep(step - 1);
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/'); // Đường dẫn đến trang chủ của bạn
+        }
+    }, [isLoggedIn, navigate]);
 
     return (
         <>
