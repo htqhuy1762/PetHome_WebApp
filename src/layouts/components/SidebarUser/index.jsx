@@ -67,7 +67,7 @@ function SidebarUser() {
                     size={46}
                     style={{ border: '1px solid rgb(0, 0, 0, 0.25)', marginRight: '7px' }}
                 />
-                <h4 style={{ width: '190px', wordWrap: 'break-word' }}>{userData?.email}</h4>
+                <h4 style={{ width: '190px', wordWrap: 'break-word' }}>{userData?.name}</h4>
             </div>
             <Menu
                 style={{ width: 256 }}

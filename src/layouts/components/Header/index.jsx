@@ -182,7 +182,7 @@ function Header({ fixedHeader }) {
                                             src={currentUser?.avatar ? currentUser.avatar : null}
                                             icon={!currentUser?.avatar ? <UserOutlined /> : null}
                                         />
-                                        {currentUser?.email}
+                                        {currentUser?.name}
                                     </a>
                                 </Dropdown>
                             </div>

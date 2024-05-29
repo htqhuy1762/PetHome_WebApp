@@ -55,7 +55,6 @@ function Profile() {
                         ...prevData,
                         avatar: newAvatarUrl,
                     }));
-                    setImageUrl(newAvatarUrl);
                 }
             }
             message.success('Lưu thông tin thành công');

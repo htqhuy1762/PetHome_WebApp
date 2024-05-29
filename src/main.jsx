@@ -1,15 +1,15 @@
-import React from 'react';
+//import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import GlobalStyles from './components/GlobalStyles/index.jsx';
 import { AuthProvider } from './components/AuthProvider/index.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <GlobalStyles>
             <AuthProvider>
                 <App />
             </AuthProvider>
         </GlobalStyles>
-    </React.StrictMode>,
+    // </React.StrictMode>,
 );

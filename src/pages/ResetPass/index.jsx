@@ -1,48 +1,41 @@
-import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import OtpInput from 'react-otp-input';
-import styles from './Register.module.scss';
 import classNames from 'classnames/bind';
-import logo from '../../assets/images/logo.png';
-import logotitle from '../../assets/images/logo-title.png';
+import styles from './ResetPass.module.scss';
+import { useState, useEffect } from 'react';
+import OtpInput from 'react-otp-input';
 import { Form, Input, Button, notification } from 'antd';
-import { UserOutlined, LockOutlined, LeftOutlined } from '@ant-design/icons';
-import { sendCodeEmail, verifyCodeEmail, register } from '~/services/authServices';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import * as authServices from '~/services/authServices';
+import * as userServices from '~/services/userServices';
+import { useNavigate } from 'react-router-dom';
+import { LeftOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 
-function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
-    const navigate = useNavigate();
-    const onBack = () => {
-        navigate('/login');
-    };
+function CheckEmail({ onNext, setToken, setExpiry, userData }) {
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        form.setFieldsValue({
+            email: userData.email,
+        });
+    }, [form, userData.email]);
 
     const handleClick = async () => {
         try {
-            // Get the email value from the form
-            const values = form.getFieldsValue();
-            const email = values.email;
-
             // Check if the email is valid
-            if (!email || !form.getFieldError('email').length) {
-                const response = await sendCodeEmail({ email });
+            if (!userData.email || !form.getFieldError('email').length) {
+                const response = await authServices.sendCodeResetPassword({ email: userData.email });
 
-                if (response.status === 208) {
-                    //console.log('Email already exists');
-                    notification.warning({
-                        message: 'Warning',
-                        description: 'Email already exists',
-                    });
-                    return;
+                if (response.status === 200) {
+                    setToken(response.data.token);
+                    setExpiry(response.data.expiredAt);
+                    onNext();
                 }
-
-                setToken(response.data.token);
-                setExpiry(response.data.expiredAt);
-                setEmail(email);
-
-                onNext();
+                else {
+                    notification.error({
+                        message: 'Error',
+                        description: response.data.error,
+                    });
+                }
             } else {
                 //console.log('Invalid email');
                 notification.error({
@@ -57,15 +50,7 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('logo_container')}>
-                <img className={cx('logo')} src={logo} alt="logo" />
-                <img className={cx('logo_title')} src={logotitle} alt="logotitle" />
-            </div>
-
             <div className={cx('form_container')}>
-                <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
-                    <LeftOutlined />
-                </Button>
                 <Form
                     form={form}
                     className={cx('form')}
@@ -73,10 +58,9 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
                     initialValues={{ remember: true }}
                     layout="vertical"
                 >
-                    <h1 style={{ textAlign: 'center', fontSize: '5rem', marginBottom: '10px' }}>Nhập email</h1>
+                    <h1 style={{ textAlign: 'center', fontSize: '5rem', marginBottom: '10px' }}>Xác minh email</h1>
                     <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray', marginBottom: '30px' }}>
-                        Thêm email của bạn. Chúng tôi sẽ gửi cho bạn mã xác minh để chúng tôi biết bạn là thật. Chúng
-                        tôi sẽ sử dụng email này làm tên đăng nhập cho tài khoản của bạn
+                        Chúng tôi sẽ gửi cho bạn mã xác minh để chúng tôi biết bạn là thật.
                     </h3>
                     <Form.Item
                         label={<label style={{ fontSize: '1.6rem' }}>Email</label>}
@@ -86,7 +70,13 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
                             { type: 'email', message: 'Email không hợp lệ!' },
                         ]}
                     >
-                        <Input size="large" prefix={<UserOutlined />} placeholder="Nhập Email" />
+                        <Input
+                            disabled
+                            size="large"
+                            prefix={<UserOutlined />}
+                            placeholder="Nhập Email"
+                            //style={{ pointerEvents: 'none' }}
+                        />
                     </Form.Item>
                     <Form.Item>
                         <Button
@@ -108,7 +98,7 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
     );
 }
 
-function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry }) {
+function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry }) {
     const [otp, setOtp] = useState('');
     const [resendDisabled, setResendDisabled] = useState(false);
     const [countdown, setCountdown] = useState(60);
@@ -121,7 +111,7 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
                 return;
             }
 
-            const response = await verifyCodeEmail({ code: otp }, token);
+            const response = await authServices.verifyCodeResetPassword({ code: otp }, token);
             if (response.status === 401) {
                 //console.log(response.data.error);
                 notification.error({
@@ -130,7 +120,11 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
                 });
                 return;
             }
-            onNext(response);
+            else {
+                setToken(response.data.token);
+                setExpiry(response.data.expiredAt);
+                onNext();
+            }
         } catch (error) {
             console.log('OTP verification failed:', error);
         }
@@ -138,7 +132,7 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
 
     const resendOTP = async () => {
         if (!resendDisabled) {
-            const response = await sendCodeEmail({ email });
+            const response = await authServices.sendCodeResetPassword({ email: userData.email });
             setToken(response.data.token);
             setExpiry(response.data.expiredAt);
 
@@ -163,11 +157,6 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('logo_container')}>
-                <img className={cx('logo')} src={logo} alt="logo" />
-                <img className={cx('logo_title')} src={logotitle} alt="logotitle" />
-            </div>
-
             <div className={cx('form_container')}>
                 <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
                     <LeftOutlined />
@@ -249,38 +238,42 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
     );
 }
 
-function RegisterForm({ onBack, email }) {
+function ChangePassForm({ onBack, token, expiry }) {
     const navigate = useNavigate();
     const onFinish = async (values) => {
         try {
-            const response = await register({ name: values.username, email: email, password: values.password });
-            if (response.status === 201) {
-                // console.log('Register successful');
+            const isTokenExpired = new Date() > new Date(expiry);
+            if (isTokenExpired) {
+                notification.error({
+                    message: 'Error',
+                    description: 'Mã OTP đã hết hạn!',
+                });
+                return;
+            }
+
+            const response = await authServices.resetPassword({
+                new_password: values.password,
+            }, token);
+            if (response.status === 200) {
                 notification.success({
                     message: 'Success',
-                    description: 'Đăng ký tài khoản thành công!',
+                    description: 'Đổi mật khẩu thành công!',
                 });
-                navigate('/login');
+                navigate('/');
             } else {
-                //console.log('Register failed:', response.data.error);
                 notification.error({
                     message: 'Error',
                     description: response.data.error,
                 });
             }
         } catch (error) {
-            console.log('Register failed:', error);
+            console.log('Đổi mật khẩu thất bại:', error);
         }
     };
     const [form] = Form.useForm();
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('logo_container')}>
-                <img className={cx('logo')} src={logo} alt="logo" />
-                <img className={cx('logo_title')} src={logotitle} alt="logotitle" />
-            </div>
-
             <div className={cx('form_container')}>
                 <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
                     <LeftOutlined />
@@ -288,35 +281,16 @@ function RegisterForm({ onBack, email }) {
                 <Form
                     className={cx('form')}
                     name="register-form"
-                    initialValues={{ remember: true, email: email }}
+                    initialValues={{ remember: true }}
                     onFinish={onFinish}
                     layout="vertical"
                     form={form}
                 >
-                    <h1 style={{ textAlign: 'center', fontSize: '4.5rem' }}>Hoàn tất thông tin</h1>
+                    <h1 style={{ textAlign: 'center', fontSize: '4.5rem' }}>Đổi mật khẩu</h1>
                     <Form.Item
-                        label={<label style={{ fontSize: '1.6rem' }}>Tài khoản (Email)</label>}
-                        name="email"
-                        rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
-                    >
-                        <Input disabled size="large" prefix={<UserOutlined />} placeholder="Nhập Email" />
-                    </Form.Item>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem' }}>Tên người dùng</label>}
-                        name="username"
-                        rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
-                    >
-                        <Input
-                            size="large"
-                            prefix={<UserOutlined />}
-                            placeholder="Nhập tên người dùng"
-                            autoComplete="username"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem' }}>Mật khẩu</label>}
+                        label={<label style={{ fontSize: '1.6rem' }}>Mật khẩu mới</label>}
                         name="password"
-                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu của bạn!' }]}
+                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới của bạn!' }]}
                     >
                         <Input.Password
                             size="large"
@@ -326,10 +300,10 @@ function RegisterForm({ onBack, email }) {
                         />
                     </Form.Item>
                     <Form.Item
-                        label={<label style={{ fontSize: '1.6rem' }}>Nhập lại mật khẩu</label>}
+                        label={<label style={{ fontSize: '1.6rem' }}>Nhập lại mật khẩu mới</label>}
                         name="repassword"
                         rules={[
-                            { required: true, message: 'Vui lòng nhập mật khẩu của bạn!' },
+                            { required: true, message: 'Vui lòng nhập lại mật khẩu mới của bạn!' },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
                                     if (!value || getFieldValue('password') === value) {
@@ -355,7 +329,7 @@ function RegisterForm({ onBack, email }) {
                             style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                             disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
                         >
-                            Đăng ký
+                            Đổi mật khẩu
                         </Button>
                     </Form.Item>
                 </Form>
@@ -364,16 +338,12 @@ function RegisterForm({ onBack, email }) {
     );
 }
 
-function Register() {
-    const navigate = useNavigate();
+function ResetPass() {
     const [step, setStep] = useState(1);
     const [token, setToken] = useState('');
     const [expiry, setExpiry] = useState('');
-    const [email, setEmail] = useState('');
+    const [userData, setUserData] = useState('');
 
-    const { isLoggedIn } = useContext(AuthContext);
-
-    // Hàm chuyển sang bước tiếp theo
     const handleNext = () => {
         setStep(step + 1);
     };
@@ -383,30 +353,39 @@ function Register() {
     };
 
     useEffect(() => {
-        if (isLoggedIn) {
-            navigate('/'); // Đường dẫn đến trang chủ của bạn
-        }
-    }, [isLoggedIn, navigate]);
+        const getUser = async () => {
+            try {
+                const response = await userServices.getUser();
+                if (response.status === 200) {
+                    setUserData(response.data);
+                }
+            } catch (error) {
+                // Handle error
+            }
+        };
+
+        getUser();
+    }, []);
 
     return (
         <>
             {step === 1 && (
-                <InputEmail setToken={setToken} setExpiry={setExpiry} setEmail={setEmail} onNext={handleNext} />
+                <CheckEmail setToken={setToken} setExpiry={setExpiry} userData={userData} onNext={handleNext} />
             )}
             {step === 2 && (
                 <InputOTP
                     token={token}
                     expiry={expiry}
-                    email={email}
+                    userData={userData}
                     setToken={setToken}
                     setExpiry={setExpiry}
                     onNext={handleNext}
                     onBack={handleBack}
                 />
             )}
-            {step === 3 && <RegisterForm email={email} onBack={handleBack} />}
+            {step === 3 && <ChangePassForm onBack={handleBack} token={token} expiry={expiry} />}
         </>
     );
 }
 
-export default Register;
+export default ResetPass;
