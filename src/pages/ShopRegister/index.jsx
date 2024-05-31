@@ -1,24 +1,106 @@
 import classNames from 'classnames/bind';
 import styles from './ShopRegister.module.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Button, ConfigProvider, Input, Radio, Upload, Flex, message, Steps } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import * as shopServices from '~/services/shopServices';
 
 const cx = classNames.bind(styles);
 
-function ShopInfor({ onNext }) {
+function ShopInfor({ onNext, formData, setFormData }) {
     const navigate = useNavigate();
+    const [form] = Form.useForm();
     const handleBackClick = () => {
         navigate('/user/shop');
     };
+
+    useEffect(() => {
+        // Kiểm tra xem formData có dữ liệu hay không
+        if (formData.name) {
+            // Nếu có dữ liệu, set giá trị của trường "shopName" bằng giá trị từ formData
+            form.setFieldsValue({ shopName: formData.name });
+        }
+        if (formData.address) {
+            form.setFieldsValue({ shopAddress: formData.address });
+        }
+        if (formData.area) {
+            form.setFieldsValue({ shopArea: formData.area });
+        }
+    }, [formData, form]);
+
+    const getBase64 = (img, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    };
+
+    const beforeUpload = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+            return false;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must be smaller than 2MB!');
+            return false;
+        }
+        getBase64(file, () => {
+            setFormData({ ...formData, logo: file });
+        });
+        return false;
+    };
+
+    const handleRemove = () => {
+        setFormData({ ...formData, logo: null });
+    };
+
+    const uploadButton = !formData.logo && (
+        <button
+            style={{
+                border: 0,
+                background: 'none',
+            }}
+            type="button"
+        >
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </button>
+    );
+
+    const handleNextClick = () => {
+        form.validateFields()
+            .then((values) => {
+                setFormData({ ...formData, name: values.shopName, address: values.shopAddress, area: values.shopArea });
+                onNext();
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
+    };
+
     return (
         <div className={cx('wrapper')}>
             <h1 style={{ textAlign: 'center' }}>Thông tin shop</h1>
             <div className={cx('form_container')}>
-                <Form layout="horizontal" labelAlign="right" labelCol={{ span: 7 }} wrapperCol={{ span: 11 }}>
+                <Form
+                    form={form}
+                    layout="horizontal"
+                    labelAlign="right"
+                    labelCol={{ span: 7 }}
+                    wrapperCol={{ span: 11 }}
+                    initialValues={formData}
+                >
                     <Form.Item
                         label="Tên cửa hàng"
+                        name="shopName"
                         rules={[
                             {
                                 required: true,
@@ -30,6 +112,7 @@ function ShopInfor({ onNext }) {
                     </Form.Item>
                     <Form.Item
                         label="Địa chỉ cửa hàng"
+                        name="shopAddress"
                         rules={[
                             {
                                 required: true,
@@ -40,11 +123,160 @@ function ShopInfor({ onNext }) {
                         <Input type="text" />
                     </Form.Item>
                     <Form.Item
-                        label="Email"
+                        label="Khu vực"
+                        name="shopArea"
                         rules={[
                             {
                                 required: true,
-                                message: 'Vui lòng nhập email!',
+                                message: 'Vui lòng nhập khu vực!',
+                            },
+                        ]}
+                    >
+                        <Input type="text" placeholder="" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Logo"
+                        name="logo"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn ảnh logo cho shop!',
+                            },
+                        ]}
+                    >
+                        <Flex gap="middle" wrap>
+                            <Upload
+                                listType="picture-card"
+                                className="image-uploader"
+                                showUploadList={{ showRemoveIcon: true }}
+                                beforeUpload={(file) => beforeUpload(file)}
+                                onRemove={handleRemove}
+                            >
+                                {formData.logo ? (
+                                    <img
+                                        src={URL.createObjectURL(formData.logo)}
+                                        alt="avatar"
+                                        style={{ width: '100%' }}
+                                    />
+                                ) : (
+                                    uploadButton
+                                )}
+                            </Upload>
+                        </Flex>
+                    </Form.Item>
+                    <div className={cx('button-container')}>
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'var(--button-next-color)',
+                                        defaultBg: 'var(--button-back-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-back-color)',
+                                        defaultHoverColor: 'var(--button-next-color)',
+                                    },
+                                },
+                            }}
+                        >
+                            <Button className={cx('btn-back')} type="default" onClick={handleBackClick}>
+                                Quay lại
+                            </Button>
+                        </ConfigProvider>
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'white',
+                                        defaultBg: 'var(--button-next-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-next-color)',
+                                        defaultHoverColor: 'white',
+                                    },
+                                },
+                            }}
+                        >
+                            <Button className={cx('btn-next')} type="default" onClick={handleNextClick}>
+                                Tiếp theo
+                            </Button>
+                        </ConfigProvider>
+                    </div>
+                </Form>
+            </div>
+        </div>
+    );
+}
+
+function TaxInfor({ onNext, onBack, formData, setFormData }) {
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        if (formData.business_type) {
+            form.setFieldsValue({ businessType: formData.business_type });
+        }
+        if (formData.tax_code) {
+            form.setFieldsValue({ taxCode: formData.tax_code });
+        }
+    }, [formData, form]);
+
+    const handleBackClick = () => {
+        form.validateFields()
+            .then((values) => {
+                setFormData({ ...formData, tax_code: values.taxCode, business_type: values.businessType });
+                onBack();
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
+    };
+
+    const handleNextClick = () => {
+        form.validateFields()
+            .then((values) => {
+                setFormData({ ...formData, tax_code: values.taxCode, business_type: values.businessType });
+                onNext();
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
+    };
+
+    return (
+        <div className={cx('wrapper')}>
+            <h1 style={{ textAlign: 'center', paddingBottom: '15px' }}>Thông tin thuế</h1>
+            <div className={cx('form_container')}>
+                <Form
+                    form={form}
+                    layout="horizontal"
+                    labelAlign="right"
+                    labelCol={{ span: 7 }}
+                    wrapperCol={{ span: 11 }}
+                    initialValues={formData}
+                >
+                    <Form.Item
+                        label="Loại hình kinh doanh"
+                        name="businessType"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn loại hình kinh doanh!',
+                            },
+                        ]}
+                    >
+                        <Radio.Group>
+                            <Radio value={'Cá nhân'}>Cá nhân</Radio>
+                            <Radio value={'Hộ gia đình'}>Hộ gia đình</Radio>
+                            <Radio value={'Công ty'}>Công ty</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                    <Form.Item
+                        label="Mã số thuế"
+                        name="taxCode"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập mã số thuế!',
                             },
                         ]}
                     >
@@ -83,7 +315,7 @@ function ShopInfor({ onNext }) {
                                 },
                             }}
                         >
-                            <Button className={cx('btn-next')} type="default" onClick={onNext}>
+                            <Button className={cx('btn-next')} type="default" onClick={handleNextClick}>
                                 Tiếp theo
                             </Button>
                         </ConfigProvider>
@@ -94,98 +326,18 @@ function ShopInfor({ onNext }) {
     );
 }
 
-function TaxInfor({ onNext, onBack }) {
-    return (
-        <div className={cx('wrapper')}>
-            <h1 style={{ textAlign: 'center', paddingBottom: '15px' }}>Thông tin thuế</h1>
-            <div className={cx('form_container')}>
-                <Form layout="horizontal" labelAlign="right" labelCol={{ span: 7 }} wrapperCol={{ span: 11 }}>
-                    <Form.Item
-                        label="Loại hình kinh doanh"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập tên cửa hàng!',
-                            },
-                        ]}
-                    >
-                        <Radio.Group defaultValue={1}>
-                            <Radio value={1}>Cá nhân</Radio>
-                            <Radio value={2}>Hộ gia đình</Radio>
-                            <Radio value={3}>Công ty</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item
-                        label="Địa chỉ đăng ký kinh doanh"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập địa chỉ đăng ký kinh doanh!',
-                            },
-                        ]}
-                    >
-                        <Input type="text" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Mã số thuế"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập mã số thuế!',
-                            },
-                        ]}
-                    >
-                        <Input type="text" />
-                    </Form.Item>
-                    <div className={cx('button-container')}>
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Button: {
-                                        defaultColor: 'var(--button-next-color)',
-                                        defaultBg: 'var(--button-back-color)',
-                                        defaultBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBg: 'var(--button-back-color)',
-                                        defaultHoverColor: 'var(--button-next-color)',
-                                    },
-                                },
-                            }}
-                        >
-                            <Button className={cx('btn-back')} type="default" onClick={onBack}>
-                                Quay lại
-                            </Button>
-                        </ConfigProvider>
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Button: {
-                                        defaultColor: 'white',
-                                        defaultBg: 'var(--button-next-color)',
-                                        defaultBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBg: 'var(--button-next-color)',
-                                        defaultHoverColor: 'white',
-                                    },
-                                },
-                            }}
-                        >
-                            <Button className={cx('btn-next')} type="default" onClick={onNext}>
-                                Tiếp theo
-                            </Button>
-                        </ConfigProvider>
-                    </div>
-                </Form>
-            </div>
-        </div>
-    );
-}
+function IdentificationInfor({ onBack, formData, setFormData }) {
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
 
-function IdentificationInfor({ onNext, onBack }) {
-    const [imageUrl, setImageUrl] = useState();
-    const [fileList, setFileList] = useState([]);
-    const [imageUrl2, setImageUrl2] = useState();
-    const [fileList2, setFileList2] = useState([]);
+    useEffect(() => {
+        if (formData.owner_name) {
+            form.setFieldsValue({ fullName: formData.owner_name });
+        }
+        if (formData.id_card) {
+            form.setFieldsValue({ idNumber: formData.id_card });
+        }
+    }, [formData, form]);
 
     const getBase64 = (img, callback) => {
         const reader = new FileReader();
@@ -193,7 +345,7 @@ function IdentificationInfor({ onNext, onBack }) {
         reader.readAsDataURL(img);
     };
 
-    const beforeUpload = (file, setImageUrl, setFileList, fileList) => {
+    const beforeUploadFront = (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');
@@ -204,54 +356,65 @@ function IdentificationInfor({ onNext, onBack }) {
             message.error('Image must be smaller than 2MB!');
             return false;
         }
-        const hasUploadedFile = fileList.length > 0;
-        if (hasUploadedFile) {
-            message.error('You can only upload one image!');
-            return false;
-        }
-        getBase64(file, (url) => {
-            setImageUrl(url);
-            setFileList([file]);
+        getBase64(file, () => {
+            setFormData({ ...formData, front_id_card: file });
         });
-        return false; // Ngăn không upload ngay lập tức
+        return false;
     };
 
-    const handleRemove = (setImageUrl, setFileList) => {
-        setImageUrl(null);
-        setFileList([]);
+    const beforeUploadBack = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+            return false;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must be smaller than 2MB!');
+            return false;
+        }
+        getBase64(file, () => {
+            setFormData({ ...formData, back_id_card: file });
+        });
+        return false;
+    };
+
+    const handleRemoveFront = () => {
+        setFormData({ ...formData, front_id_card: null });
+    };
+
+    const handleRemoveBack = () => {
+        setFormData({ ...formData, back_id_card: null });
     };
 
     const handleSubmit = async () => {
-        if (!fileList.length || !fileList2.length) {
-            message.error('Please upload both front and back images.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('front_id_card', fileList[0]);
-        formData.append('back_id_card', fileList2[0]);
-
         try {
-            const response = await fetch('none', {
-                method: 'POST',
-                headers: {
-                    Authorization: 'Bearer access_token', // Thay thế access_token với token thực tế
-                },
-                body: formData,
+            await form.validateFields();
+            const values = form.getFieldsValue();
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                owner_name: values.fullName,
+                id_card: values.idNumber,
+            }));
+    
+            const response = await shopServices.registerShop({
+                ...formData,
+                owner_name: values.fullName,
+                id_card: values.idNumber,
             });
-
-            if (!response.ok) {
-                throw new Error('Upload failed');
+    
+            if (response.status === 200) {
+                console.log('Đăng ký shop thành công');
+                navigate('/user/shop/complete');
+            } else {
+                console.log('Đăng ký shop thất bại');
             }
-
-            message.success('Upload successful.');
-            onNext();
         } catch (error) {
-            message.error('Upload failed.');
+            console.log('Đăng ký shop thất bại lỗi do lỗi', error);
         }
     };
 
-    const uploadButton = !imageUrl && (
+    const uploadButton = !formData.front_id_card && (
         <button
             style={{
                 border: 0,
@@ -270,7 +433,7 @@ function IdentificationInfor({ onNext, onBack }) {
         </button>
     );
 
-    const uploadButton2 = !imageUrl2 && (
+    const uploadButton2 = !formData.back_id_card && (
         <button
             style={{
                 border: 0,
@@ -288,14 +451,33 @@ function IdentificationInfor({ onNext, onBack }) {
             </div>
         </button>
     );
+
+    const handleBackClick = () => {
+        form.validateFields()
+            .then((values) => {
+                setFormData({ ...formData, owner_name: values.fullName, id_card: values.idNumber });
+                onBack();
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
+    };
 
     return (
         <div className={cx('wrapper')}>
             <h1 style={{ textAlign: 'center', paddingBottom: '15px' }}>Thông tin xác thực</h1>
             <div className={cx('form_container')}>
-                <Form layout="horizontal" labelAlign="right" labelCol={{ span: 7 }} wrapperCol={{ span: 11 }}>
+                <Form
+                    form={form}
+                    layout="horizontal"
+                    labelAlign="right"
+                    labelCol={{ span: 7 }}
+                    wrapperCol={{ span: 11 }}
+                    initialValues={formData}
+                >
                     <Form.Item
                         label="Họ và tên"
+                        name="fullName"
                         rules={[
                             {
                                 required: true,
@@ -307,10 +489,11 @@ function IdentificationInfor({ onNext, onBack }) {
                     </Form.Item>
                     <Form.Item
                         label="Mã số CCCD"
+                        name="idNumber"
                         rules={[
                             {
                                 required: true,
-                                message: 'Vui lòng nhập mã số cccd của bạn!',
+                                message: 'Vui lòng nhập mã số CCCD của bạn!',
                             },
                         ]}
                     >
@@ -318,6 +501,7 @@ function IdentificationInfor({ onNext, onBack }) {
                     </Form.Item>
                     <Form.Item
                         label="Ảnh chụp mặt trước CCCD"
+                        name="front_id_card"
                         rules={[
                             {
                                 required: true,
@@ -330,15 +514,24 @@ function IdentificationInfor({ onNext, onBack }) {
                                 listType="picture-card"
                                 className="image-uploader"
                                 showUploadList={{ showRemoveIcon: true }}
-                                beforeUpload={(file) => beforeUpload(file, setImageUrl, setFileList, fileList)}
-                                onRemove={() => handleRemove(setImageUrl, setFileList)}
+                                beforeUpload={(file) => beforeUploadFront(file)}
+                                onRemove={handleRemoveFront}
                             >
-                                {imageUrl ? null : uploadButton}
+                                {formData.front_id_card ? (
+                                    <img
+                                        src={URL.createObjectURL(formData.front_id_card)}
+                                        alt="avatar"
+                                        style={{ width: '100%' }}
+                                    />
+                                ) : (
+                                    uploadButton
+                                )}
                             </Upload>
                         </Flex>
                     </Form.Item>
                     <Form.Item
                         label="Ảnh chụp mặt sau CCCD"
+                        name="back_id_card"
                         rules={[
                             {
                                 required: true,
@@ -351,10 +544,18 @@ function IdentificationInfor({ onNext, onBack }) {
                                 listType="picture-card"
                                 className="image-uploader"
                                 showUploadList={{ showRemoveIcon: true }}
-                                beforeUpload={(file) => beforeUpload(file, setImageUrl2, setFileList2, fileList2)}
-                                onRemove={() => handleRemove(setImageUrl2, setFileList2)}
+                                beforeUpload={(file) => beforeUploadBack(file)}
+                                onRemove={handleRemoveBack}
                             >
-                                {imageUrl2 ? null : uploadButton2}
+                                {formData.back_id_card ? (
+                                    <img
+                                        src={URL.createObjectURL(formData.back_id_card)}
+                                        alt="avatar"
+                                        style={{ width: '100%' }}
+                                    />
+                                ) : (
+                                    uploadButton2
+                                )}
                             </Upload>
                         </Flex>
                     </Form.Item>
@@ -373,7 +574,7 @@ function IdentificationInfor({ onNext, onBack }) {
                                 },
                             }}
                         >
-                            <Button className={cx('btn-back')} type="default" onClick={onBack}>
+                            <Button className={cx('btn-back')} type="default" onClick={handleBackClick}>
                                 Quay lại
                             </Button>
                         </ConfigProvider>
@@ -402,67 +603,58 @@ function IdentificationInfor({ onNext, onBack }) {
     );
 }
 
-function Completed({}) {
-    const navigate = useNavigate();
-
-    return (
-        <div className={cx('wrapper')}>
-            <h1 style={{ textAlign: 'center', paddingBottom: '15px' }}>Hoàn thành!</h1>
-            <div className={cx('content')}>
-                <p style={{ textAlign: 'center', fontSize: '1.6 rem' }}>
-                    Bạn đã hoàn thành thủ tục để đăng ký cửa hàng. <br />
-                    Chúng tôi sẽ kiểm duyệt trong thời gian sớm nhất (thời gian chậm nhất là 1 tuần).
-                    <br /> Pet Home chân thành cảm ơn!
-                </p>
-                <div className={cx('button-container')} style={{ justifyContent: 'center', width: '100%' }}>
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Button: {
-                                    defaultColor: 'white',
-                                    defaultBg: 'var(--button-next-color)',
-                                    defaultBorderColor: 'var(--button-next-color)',
-                                    defaultHoverBorderColor: 'var(--button-next-color)',
-                                    defaultHoverBg: 'var(--button-next-color)',
-                                    defaultHoverColor: 'white',
-                                },
-                            },
-                        }}
-                    >
-                        <Button className={cx('btn-next')} type="default" onClick={null}>
-                            Đi đến cửa hàng của tôi
-                        </Button>
-                    </ConfigProvider>
-                </div>
-            </div>
-        </div>
-    );
-}
-
 function ShopRegister() {
-    const [step, setStep] = useState(3);
+    const [step, setStep] = useState(1);
     const { Step } = Steps;
+    const [formData, setFormData] = useState({
+        name: '',
+        address: '',
+        area: '',
+        logo: null,
+        tax_code: '',
+        business_type: null,
+        owner_name: '',
+        id_card: '',
+        front_id_card: null,
+        back_id_card: null,
+    });
 
     const handleNext = () => {
+        console.log(formData);
+        if (step === 3) {
+            return;
+        }
         setStep(step + 1);
     };
 
     const handleBack = () => {
+        console.log(formData);
+        if (step === 1) {
+            return;
+        }
         setStep(step - 1);
     };
 
     return (
         <div className={cx('wrapper')}>
             <Steps progressDot style={{ padding: '40px 20px 20px 20px' }} current={step - 1}>
-                <Step title="Shop Information" />
-                <Step title="Tax Information" />
-                <Step title="Identification Information" />
-                <Step title="Completed" />
+                <Step title="Thông tin cửa hàng" />
+                <Step title="Thông tin thuế" />
+                <Step title="Thông tin xác thực" />
+                <Step title="Hoàn thành" />
             </Steps>
-            {step === 1 && <ShopInfor onNext={handleNext} />}
-            {step === 2 && <TaxInfor onNext={handleNext} onBack={handleBack} />}
-            {step === 3 && <IdentificationInfor onNext={handleNext} onBack={handleBack} />}
-            {step === 4 && <Completed onBack={handleBack} />}
+            {step === 1 && <ShopInfor onNext={handleNext} formData={formData} setFormData={setFormData} />}
+            {step === 2 && (
+                <TaxInfor onNext={handleNext} formData={formData} setFormData={setFormData} onBack={handleBack} />
+            )}
+            {step === 3 && (
+                <IdentificationInfor
+                    formData={formData}
+                    setFormData={setFormData}
+                    onNext={handleNext}
+                    onBack={handleBack}
+                />
+            )}
         </div>
     );
 }

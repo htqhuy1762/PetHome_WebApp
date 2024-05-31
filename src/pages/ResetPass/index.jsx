@@ -29,8 +29,7 @@ function CheckEmail({ onNext, setToken, setExpiry, userData }) {
                     setToken(response.data.token);
                     setExpiry(response.data.expiredAt);
                     onNext();
-                }
-                else {
+                } else {
                     notification.error({
                         message: 'Error',
                         description: response.data.error,
@@ -119,8 +118,7 @@ function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry
                     description: response.data.error,
                 });
                 return;
-            }
-            else {
+            } else {
                 setToken(response.data.token);
                 setExpiry(response.data.expiredAt);
                 onNext();
@@ -251,9 +249,12 @@ function ChangePassForm({ onBack, token, expiry }) {
                 return;
             }
 
-            const response = await authServices.resetPassword({
-                new_password: values.password,
-            }, token);
+            const response = await authServices.resetPassword(
+                {
+                    new_password: values.password,
+                },
+                token,
+            );
             if (response.status === 200) {
                 notification.success({
                     message: 'Success',
@@ -329,7 +330,7 @@ function ChangePassForm({ onBack, token, expiry }) {
                             style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                             disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
                         >
-                            Đổi mật khẩu
+                            Thay đổi
                         </Button>
                     </Form.Item>
                 </Form>

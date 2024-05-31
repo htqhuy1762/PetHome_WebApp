@@ -50,6 +50,7 @@ const refreshToken = async () => {
     try {
         const response = await authServices.getNewAccessToken();
         if (response.status === 200) {
+            console.log('Refresh token successfully:', response);
             // Nếu refreshToken thành công, lưu token mới và tiếp tục thực hiện request với token mới
             const newAccessToken = response.data.accessToken;
             const expiryTime = response.data.expiredAt;

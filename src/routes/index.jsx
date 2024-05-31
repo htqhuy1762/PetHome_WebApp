@@ -19,6 +19,9 @@ import AddressUser from '~/pages/AddressUser';
 import PetTypePage from '~/pages/PetTypePage';
 import ItemTypePage from '~/pages/ItemTypePage';
 import ResetPass from '~/pages/ResetPass';
+import CompletedRegisterShop from '~/pages/CompletedRegisterShop';
+import ShopManagement from '~/pages/ShopManagement';
+import MyShop from '~/pages/MyShop';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -39,8 +42,11 @@ const publicRoutes = [
 
 const privateRoutes = [
     { path: '/user/account/profile', component: Profile, layout: UserLayout },
-    { path: '/user/shop', component: ShopSubcribe, layout: UserLayout },
+    { path: '/user/shop', component: MyShop, layout: UserLayout },
+    { path: '/user/shop/subcribe', component: ShopSubcribe, layout: UserLayout},
     { path: '/user/shop/register', component: ShopRegister, layout: UserLayout },
+    { path: '/user/shop/complete', component: CompletedRegisterShop, layout: UserLayout},
+    { path: '/user/shop/management', component: ShopManagement, layout: UserLayout},
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/user/account/changepass', component: ResetPass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },
