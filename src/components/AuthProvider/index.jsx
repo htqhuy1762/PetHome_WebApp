@@ -21,6 +21,18 @@ export function AuthProvider({ children }) {
 
         // Check initial login status
         checkLoginStatus();
+
+        // Lắng nghe sự kiện tokenRefreshed
+        const handleTokenRefreshed = (event) => {
+            setIsLoggedIn(event.detail.isLoggedIn);
+        };
+
+        window.addEventListener('tokenRefreshed', handleTokenRefreshed);
+
+        // Dọn dẹp sự kiện khi component unmount
+        return () => {
+            window.removeEventListener('tokenRefreshed', handleTokenRefreshed);
+        };
     }, []);
 
     return <AuthContext.Provider value={{ isLoggedIn, isLoading, setIsLoggedIn }}>{children}</AuthContext.Provider>;

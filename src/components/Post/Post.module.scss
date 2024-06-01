@@ -1,8 +1,19 @@
 .post {
     display: flex;
-    flex-direction: column;
+    width: 100%;
+    //flex-direction: column;
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
 }
 
 .header {
     display: flex;
+}
+
+.liked {
+    color: #4096ff; // Bạn có thể chọn màu khác nếu muốn
 }

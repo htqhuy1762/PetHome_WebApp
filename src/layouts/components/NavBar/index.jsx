@@ -1,9 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Navbar.module.scss';
-import { Menu, ConfigProvider, theme } from 'antd';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faPaw, faBlog, faBagShopping, faHouseMedical } from '@fortawesome/free-solid-svg-icons';
+import { Menu, ConfigProvider } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import * as petServices from '~/services/petServices';

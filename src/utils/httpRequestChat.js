@@ -57,6 +57,8 @@ const refreshToken = async () => {
             localStorage.setItem('accessToken', newAccessToken);
             localStorage.setItem('expiredAt', expiryTime);
             localStorage.setItem('refreshToken', newRefreshToken);
+            const event = new CustomEvent('tokenRefreshed', { detail: { isLoggedIn: true } });
+            window.dispatchEvent(event);
         } else {
             // Xử lý lỗi nếu refreshToken không thành công
             console.log('Error refreshing token:', response);

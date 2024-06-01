@@ -10,12 +10,18 @@ function PrivateRoute({ children }) {
     const { isLoggedIn, isLoading } = useContext(AuthContext);
 
     useEffect(() => {
-        if (!isLoading && !isLoggedIn) {
-            navigate('/login');
+        if (!isLoading) {
+            if (!isLoggedIn) {
+                navigate('/login');
+            }
         }
     }, [isLoggedIn, navigate, isLoading]);
 
-    return isLoading ? null : isLoggedIn ? children : null;
+    if (isLoading) {
+        return null; // Hoặc hiển thị một tiện ích chờ đợi nếu bạn muốn
+    }
+
+    return isLoggedIn ? children : null;
 }
 
 function App() {
