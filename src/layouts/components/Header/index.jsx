@@ -116,7 +116,7 @@ function Header({ fixedHeader }) {
                                 style={{
                                     backgroundColor: '#e6e6e6',
                                     width: '110px',
-                                    height: '39px',
+                                    height: '40px',
                                     borderRadius: '8px',
                                 }}
                                 value={selectValue}

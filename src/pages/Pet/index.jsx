@@ -6,13 +6,17 @@ import * as petServices from '~/services/petServices';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '~/components/Loading';
+import { useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Pet() {
     const navigate = useNavigate();
     const [data, setData] = useState({});
-    const [currentPage, setCurrentPage] = useState(1);
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get('page');
+    const [currentPage, setCurrentPage] = useState(page || 1);
     const limit = 20;
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -35,6 +39,7 @@ function Pet() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        navigate(`/pets?page=${page}`);
         window.scrollTo(0, 0);
     };
 

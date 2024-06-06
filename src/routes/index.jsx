@@ -22,6 +22,7 @@ import ResetPass from '~/pages/ResetPass';
 import CompletedRegisterShop from '~/pages/CompletedRegisterShop';
 import ShopManagement from '~/pages/ShopManagement';
 import MyShop from '~/pages/MyShop';
+import MyBlog from '~/pages/MyBlog';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -30,6 +31,7 @@ const publicRoutes = [
     { path: '/items', component: Item },
     { path: '/services', component: ServicePet },
     { path: '/blogs', component: Blog },
+    { path: '/blogs/myblog', component: MyBlog },
     { path: '/pets', component: Pet },
     { path: '/pets/:id', component: PetDetail, layout: HeaderFooter },
     { path: '/pets/type/:type', component: PetTypePage, layout: HeaderFooter },

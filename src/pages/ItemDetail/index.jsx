@@ -17,17 +17,24 @@ import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/
 import { useParams } from 'react-router-dom';
 import * as itemServices from '~/services/itemServices';
 import * as cartServices from '~/services/cartServices';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
+import { ChatContext } from '~/components/ChatProvider';
 
 const cx = classNames.bind(styles);
 
 function ItemDetail() {
     const [messageApi, contextHolder] = message.useMessage();
     const [options, setOptions] = useState(null);
+
+    const { setIdShop } = useContext(ChatContext);
+
+    const handleChatButtonClick = (id) => {
+        setIdShop(id);
+    };
 
     const [selectedItem, setSelectedItem] = useState(null);
 
@@ -358,6 +365,7 @@ function ItemDetail() {
                             size="large"
                             style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
                             icon={<WechatOutlined />}
+                            onClick={() => handleChatButtonClick(itemData.id_shop)}
                         >
                             Chat ngay
                         </Button>

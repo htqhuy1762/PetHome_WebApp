@@ -18,16 +18,22 @@ import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
 import * as cartServices from '~/services/cartServices';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
+import { ChatContext } from '~/components/ChatProvider';
 
 const cx = classNames.bind(styles);
 
 function PetDetail() {
     const [messageApi, contextHolder] = message.useMessage();
+    const { setIdShop } = useContext(ChatContext);
+
+    const handleChatButtonClick = (id) => {
+        setIdShop(id);
+    };
 
     const success = () => {
         messageApi.open({
@@ -304,6 +310,7 @@ function PetDetail() {
                             size="large"
                             style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
                             icon={<WechatOutlined />}
+                            onClick={() => handleChatButtonClick(petData.id_shop)}
                         >
                             Chat ngay
                         </Button>

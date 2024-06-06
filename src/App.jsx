@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from './layouts';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import { ChatContext } from '~/components/ChatProvider/index.jsx';
 import ChatBox from '~/components/ChatBox';
 
 function PrivateRoute({ children }) {
@@ -11,14 +12,18 @@ function PrivateRoute({ children }) {
 
     useEffect(() => {
         if (!isLoading) {
-            if (!isLoggedIn) {
-                navigate('/login');
-            }
+            const checkTimeout = setTimeout(() => {
+                if (!isLoggedIn) {
+                    navigate('/login');
+                }
+            }, 1000);
+
+            return () => clearTimeout(checkTimeout);
         }
     }, [isLoggedIn, navigate, isLoading]);
 
     if (isLoading) {
-        return null; // Hoặc hiển thị một tiện ích chờ đợi nếu bạn muốn
+        return null;
     }
 
     return isLoggedIn ? children : null;
@@ -26,10 +31,11 @@ function PrivateRoute({ children }) {
 
 function App() {
     const { isLoggedIn, isLoading } = useContext(AuthContext);
+    const { idShop } = useContext(ChatContext);
     return (
         <Router>
             <div className="App">
-                {!isLoading && isLoggedIn && <ChatBox />}
+                {!isLoading && isLoggedIn && <ChatBox shopInfo={idShop}/>}
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         let Layout = DefaultLayout;

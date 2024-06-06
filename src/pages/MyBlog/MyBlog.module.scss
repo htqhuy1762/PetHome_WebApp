@@ -1,0 +1,38 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-info {
+    position: absolute;
+    bottom: -120px; /* Để avatar và tên nằm bên dưới header */
+    left: 44%; /* Khoảng cách từ bên trái */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1; /* Đảm bảo avatar và tên nằm trên hình nền */
+}
+
+.content {
+    margin-top: 150px;
+    width: 64%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.end-message {
+    margin-top: 20px;
+    font-size: 16px;
+    color: gray;
+}
