@@ -23,6 +23,7 @@ import CompletedRegisterShop from '~/pages/CompletedRegisterShop';
 import ShopManagement from '~/pages/ShopManagement';
 import MyShop from '~/pages/MyShop';
 import MyBlog from '~/pages/MyBlog';
+import ServiceDetail from '~/pages/ServiceDetail';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -30,6 +31,7 @@ const publicRoutes = [
     { path: '/register', component: Register, layout: null },
     { path: '/items', component: Item },
     { path: '/services', component: ServicePet },
+    { path: '/services/:id', component: ServiceDetail, layout: HeaderFooter },
     { path: '/blogs', component: Blog },
     { path: '/blogs/myblog', component: MyBlog },
     { path: '/pets', component: Pet },

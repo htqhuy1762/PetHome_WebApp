@@ -37,6 +37,11 @@ function Pet() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
 
+    useEffect(() => {
+        const newPage = searchParams.get('page');
+        setCurrentPage(newPage || 1);
+    }, [location]);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
         navigate(`/pets?page=${page}`);

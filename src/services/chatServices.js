@@ -39,3 +39,13 @@ export const createRoomShop = async (data) => {
         return error.response;
     }
 }
+
+export const checkHavingMessage = async (id) => {
+    try {
+        const response = await authRequest.get(`/api/user/chat/shop/${id}`);
+        return response;
+    }
+    catch(error) {
+        return error.response;
+    }
+}
