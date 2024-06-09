@@ -1,4 +1,4 @@
-import { authRequest } from '~/utils/httpRequestPetHome';
+import { authRequest, publicRequest } from '~/utils/httpRequestPetHome';
 
 export const registerShop = async (data) => {
     try {
@@ -25,6 +25,15 @@ export const checkIsRegisterShop = async () => {
 export const checkIsActiveShop = async () => {
     try {
         const response = await authRequest.get('/api/shop/status');
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const getShopInfo = async () => {
+    try {
+        const response = await publicRequest.get('/api/shop/info');
         return response;
     } catch (error) {
         return error.response;

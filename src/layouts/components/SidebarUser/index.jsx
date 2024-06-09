@@ -11,6 +11,7 @@ const cx = classNames.bind(styles);
 
 function SidebarUser() {
     const location = useLocation();
+    const [selectedKey, setSelectedKey] = useState(location.pathname);
     const items = [
         {
             key: 'sub1',
@@ -54,8 +55,16 @@ function SidebarUser() {
         getUser();
     }, []);
 
+    useEffect(() => {
+        if (location.pathname.startsWith('/user/shop')) {
+            setSelectedKey('/user/shop');
+        } else {
+            setSelectedKey(location.pathname);
+        }
+    }, [location.pathname]);
+
     if (loading) {
-        return <Loading />; 
+        return <Loading />;
     }
 
     return (
@@ -71,10 +80,10 @@ function SidebarUser() {
             </div>
             <Menu
                 style={{ width: 256 }}
-                defaultOpenKeys={['sub1', 'sub2', 'sub3', 'sub4']}
+                defaultOpenKeys={['sub1']}
                 mode="inline"
                 items={items}
-                selectedKeys={[location.pathname]}
+                selectedKeys={[selectedKey]}
             />
         </div>
     );

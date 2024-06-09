@@ -34,6 +34,7 @@ function ServicePet() {
                     start: (page - 1) * limit,
                 });
                 if (response.status === 200) {
+                    console.log(response.data);
                     setServices(response.data.data);
                     setTotal(response.data.count);
                 } else {

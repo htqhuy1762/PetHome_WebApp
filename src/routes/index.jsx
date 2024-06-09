@@ -50,7 +50,7 @@ const privateRoutes = [
     { path: '/user/shop/subcribe', component: ShopSubcribe, layout: UserLayout},
     { path: '/user/shop/register', component: ShopRegister, layout: UserLayout },
     { path: '/user/shop/complete', component: CompletedRegisterShop, layout: UserLayout},
-    { path: '/user/shop/management', component: ShopManagement, layout: UserLayout},
+    { path: '/user/shop/management', component: ShopManagement, layout: HeaderFooter},
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/user/account/changepass', component: ResetPass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },

@@ -190,7 +190,7 @@ function Blog() {
                                         setImageUrl(null);
                                     }}
                                 >
-                                    <Button icon={<UploadOutlined />}>Add Photo</Button>
+                                    <Button icon={<UploadOutlined />}>Thêm ảnh</Button>
                                 </Upload>
                             </Form.Item>
                             <Form.Item>
@@ -209,7 +209,7 @@ function Blog() {
                                     }}
                                 >
                                     <Button htmlType="submit" style={{ width: '70px', height: '35px' }}>
-                                        Post
+                                        Đăng
                                     </Button>
                                 </ConfigProvider>
                             </Form.Item>

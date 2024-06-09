@@ -1,5 +1,5 @@
 .wrapperfixed {
-    height: 110px;
+    height: 95px;
     width: 100%;
     display: flex;
     position: fixed;
@@ -33,31 +33,31 @@
     align-items: center;
 
     .logo {
-        height: 90px;
-        width: 90px;
+        height: 70px;
+        width: 70px;
     }
 
     .logo-title {
-        height: 55px;
-        width: 135px;
+        height: 50px;
+        width: 110px;
     }
 }
 
 .search-container {
-    width: 60%;
-    margin-left: 50px;
-    margin-top: 15px;
+    width: 66%;
+    margin-left: 30px;
+    margin-top: 5px;
 }
 
 .right-menu {
     display: flex;
     align-items: center;
     height: 120px;
-    margin-left: 40px;
+    margin-left: 20px;
 
     .cart {
-        margin-left: 35px;
-        margin-top: 28px;
+        //margin-left: 5px;
+        margin-top: 10px;
 
         .cart-btn:hover {
             background-color: initial !important;
@@ -65,9 +65,9 @@
     }
 
     .user {
-        position: absolute;
-        top: 0;
-        right: 0;
+        display: flex;
+        align-items: center;
+        margin-left: 15px;
         .user-btn:hover {
             color: #fff;
             background-color: var(--button-next-color);

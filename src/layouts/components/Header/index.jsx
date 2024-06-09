@@ -115,8 +115,8 @@ function Header({ fixedHeader }) {
                             <Select
                                 style={{
                                     backgroundColor: '#e6e6e6',
-                                    width: '110px',
-                                    height: '40px',
+                                    width: '105px',
+                                    height: '39.6px',
                                     borderRadius: '8px',
                                 }}
                                 value={selectValue}
@@ -134,8 +134,8 @@ function Header({ fixedHeader }) {
                                 style={{
                                     color: 'var(--button-next-color)',
                                     backgroundColor: 'var(--end-color)',
-                                    width: '60px',
-                                    height: '39.5px',
+                                    width: '65px',
+                                    height: '39.6px',
                                 }}
                                 type="primary"
                                 icon={<SearchOutlined />}
@@ -165,24 +165,34 @@ function Header({ fixedHeader }) {
                                     size="medium"
                                     type="text"
                                     shape="circle"
-                                    icon={<ShoppingCartOutlined style={{ fontSize: '3.3rem', color: 'white' }} />}
+                                    icon={<ShoppingCartOutlined style={{ fontSize: '3.5rem', color: 'white' }} />}
                                     onClick={() => navigate('/cart')}
                                 />
                             </div>
                             <div className={cx('user')}>
                                 <Dropdown menu={{ items }} placement="bottom" arrow>
                                     <a
-                                        style={{ color: 'white', fontSize: '1.5rem', cursor: 'pointer' }}
+                                        style={{
+                                            color: 'white',
+                                            fontSize: '1.5rem',
+                                            cursor: 'pointer',
+                                            maxWidth: '140px',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                        }}
                                         className="ant-dropdown-link"
                                         onClick={(e) => e.preventDefault()}
                                     >
                                         <Avatar
-                                            style={{ marginRight: '0.5rem' }}
-                                            size={25}
+                                            style={{ marginRight: '5px' }}
+                                            size={39}
                                             src={currentUser?.avatar ? currentUser.avatar : null}
                                             icon={!currentUser?.avatar ? <UserOutlined /> : null}
                                         />
-                                        {currentUser?.name}
+                                        <span>{currentUser?.name}</span>
                                     </a>
                                 </Dropdown>
                             </div>

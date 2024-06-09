@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Skeleton, Card, Avatar, Image, Dropdown, Modal, Button, Input } from 'antd';
+import { Skeleton, Card, Avatar, Image, Dropdown, Modal, Button, Input, Flex } from 'antd';
 import { HeartOutlined, HeartFilled, EllipsisOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
@@ -161,9 +161,14 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
                     marginTop: 16,
                 }}
                 actions={[
-                    <div style={{ fontSize: '2rem' }} key="like" onClick={onLike} className={cx({ liked: liked })}>
+                    <div
+                        style={{ fontSize: '2.4rem', display: 'flex', marginLeft: '35px', alignItems: 'center' }}
+                        key="like"
+                        onClick={onLike}
+                        className={cx({ liked: liked })}
+                    >
                         {liked ? <HeartFilled key="heart" /> : <HeartOutlined key="heart" />}
-                        {likes}
+                        <span style={{ marginLeft: '3px', lineHeight: 1 }}>{likes}</span>
                     </div>,
                 ]}
             >

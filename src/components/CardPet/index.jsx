@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './CardPet.module.scss';
-import { Card, Image } from 'antd';
+import { Card, Image, Rate } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -35,8 +35,20 @@ function CardPet({ pet, onClick }) {
                 style={{ padding: '0px' }}
                 onClick={onClick}
             >
-                <Card.Meta title={<span>{pet.name}</span>} description={pet.shop_name} />
-                <Card.Meta title={<span style={{ color: 'red' }}>{pet.price.toLocaleString('vi-VN')}đ</span>} />
+                <Card.Meta
+                    style={{ marginBottom: '10px' }}
+                    title={<span style={{ fontSize: '1.8rem' }}>{pet.name}</span>}
+                    description={pet.shop_name}
+                />
+                <Card.Meta
+                    style={{ marginBottom: '10px' }}
+                    title={<span style={{ color: 'red' }}>{pet.price.toLocaleString('vi-VN')}đ</span>}
+                />
+                <Card.Meta
+                    style={{ marginBottom: '7px' }}
+                    title={<Rate style={{ fontSize: '1.5rem' }} disabled defaultValue={pet.avg_rating} allowHalf />}
+                />
+                <Card.Meta title={<span style={{ fontSize: '1.2rem', fontWeight: 500 }}>{pet.areas[0]}</span>} />
             </Card>
         </>
     );

@@ -19,6 +19,30 @@ import { Button, Card } from 'antd';
 import { WechatOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import * as chatServices from '~/services/chatServices';
 import * as shopServices from '~/services/shopServices';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const formatDateTime = (isoDateString) => {
+    if (!isoDateString) {
+        return ''; 
+    }
+    const timezone = 'Asia/Ho_Chi_Minh';
+    const date = dayjs.utc(isoDateString).tz(timezone);
+
+    const today = dayjs().tz(timezone);
+
+    const isSameDay = date.isSame(today, 'day');
+
+    if (isSameDay) {
+        return date.format('HH:mm');
+    } else {
+        return date.format('DD/MM/YYYY');
+    }
+};
 
 const cx = classNames.bind(styless);
 
@@ -63,7 +87,11 @@ function ChatBox({ shopInfo }) {
             const response = await shopServices.checkIsActiveShop();
             if (response.status === 200 && response.data.status === 'active') {
                 setIsShop(true);
-                fetchListRoomUser();
+                if (chatType === 'user') {
+                    fetchListRoomUser();
+                } else {
+                    fetchListRoomShop();
+                }
             } else {
                 setIsShop(false);
                 fetchListRoomUser();
@@ -341,10 +369,11 @@ function ChatBox({ shopInfo }) {
                                                     key={room.id_room}
                                                     name={room.shop_name}
                                                     info={room.last_message}
+                                                    lastActivityTime={<span>{formatDateTime(room.created_at)}</span>}
                                                     active={currentRoomUser && currentRoomUser.id_room === room.id_room}
                                                     onClick={() => handleConversationClickUser(room)}
                                                 >
-                                                    <Avatar src={room.shop_avatar} />
+                                                    <Avatar src={room?.shop_avatar || "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg"} />
                                                 </Conversation>
                                             ))}
                                         </ConversationList>
@@ -355,10 +384,11 @@ function ChatBox({ shopInfo }) {
                                                     key={room.id_room}
                                                     name={room.user_name}
                                                     info={room.last_message}
+                                                    lastActivityTime={<span>{formatDateTime(room.created_at)}</span>}
                                                     active={currentRoomShop && currentRoomShop.id_room === room.id_room}
                                                     onClick={() => handleConversationClickShop(room)}
                                                 >
-                                                    <Avatar src={room.user_avatar} />
+                                                    <Avatar src={room?.user_avatar || "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg"} />
                                                 </Conversation>
                                             ))}
                                         </ConversationList>
@@ -371,10 +401,11 @@ function ChatBox({ shopInfo }) {
                                             key={room.id_room}
                                             name={room.shop_name}
                                             info={room.last_message}
+                                            lastActivityTime={<span>{formatDateTime(room.created_at)}</span>}
                                             active={currentRoomUser && currentRoomUser.id_room === room.id_room}
                                             onClick={() => handleConversationClickUser(room)}
                                         >
-                                            <Avatar src={room.shop_avatar} />
+                                            <Avatar src={room?.shop_avatar || "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg"} />
                                         </Conversation>
                                     ))}
                                 </ConversationList>
@@ -393,7 +424,7 @@ function ChatBox({ shopInfo }) {
                                         }
                                         info={
                                             currentRoomUser || currentRoomShop
-                                                ? 'Last active 10 min ago'
+                                                ? 'Thường trả lời ngay'
                                                 : 'Vui lòng chọn một cuộc trò chuyện để bắt đầu'
                                         }
                                     />
@@ -406,7 +437,7 @@ function ChatBox({ shopInfo }) {
                                         }
                                         info={
                                             currentRoomUser
-                                                ? 'Last active 10 min ago'
+                                                ? 'Thường trả lời ngay'
                                                 : 'Vui lòng chọn một cuộc trò chuyện để bắt đầu'
                                         }
                                     />
