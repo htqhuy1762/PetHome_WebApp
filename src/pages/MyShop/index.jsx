@@ -18,6 +18,7 @@ function MyShop() {
 
                 if (responseIsRegister.status === 200 || responseIsRegister.status === 201) {
                     if (responseIsRegister.data.message === 'User is shop owner') {
+                        localStorage.setItem('idShop', responseIsActive.data.id_shop);
                         isRegister = true;
                     } else {
                         isRegister = false;

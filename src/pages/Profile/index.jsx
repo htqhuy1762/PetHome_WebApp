@@ -5,7 +5,7 @@ import * as userServices from '~/services/userServices';
 import Loading from '~/components/Loading';
 import { Form, Button, Input, DatePicker, Radio, Upload, message, Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +15,6 @@ function Profile() {
     const [form] = Form.useForm();
     const [imageUrl, setImageUrl] = useState(null);
     const [fileList, setFileList] = useState([]);
-
 
     const getBase64 = (img, callback) => {
         const reader = new FileReader();
@@ -44,8 +43,10 @@ function Profile() {
     const handleSave = async () => {
         try {
             const values = await form.validateFields();
-            // Gửi thông tin người dùng
-            await userServices.updateUser(values);
+            values.day_of_birth = dayjs(values.day_of_birth).format('YYYY-MM-DD');
+
+            //Gửi thông tin người dùng
+            const response = await userServices.updateUser(values);
             // Nếu có file ảnh mới, gửi ảnh lên server
             if (fileList.length > 0) {
                 const response = await userServices.uploadAvatar(fileList[0]);
@@ -55,9 +56,14 @@ function Profile() {
                         ...prevData,
                         avatar: newAvatarUrl,
                     }));
+                } else {
+                    message.error('Upload ảnh thất bại');
                 }
             }
-            message.success('Lưu thông tin thành công');
+
+            if (response.status === 200) {
+                message.success('Lưu thông tin thành công');
+            }
         } catch (error) {
             message.error('Lưu thông tin thất bại');
         }
@@ -85,9 +91,9 @@ function Profile() {
             form.setFieldsValue({
                 email: userData.email,
                 name: userData.name,
-                phonenumber: userData.phone_num,
+                phone_num: userData.phone_num,
                 gender: userData.gender,
-                birthday: moment(userData?.day_of_birth),
+                day_of_birth: dayjs(userData?.day_of_birth),
             });
         }
     }, [userData, form]);
@@ -114,7 +120,7 @@ function Profile() {
                             name: userData?.name,
                             phonenumber: userData?.phone_num,
                             gender: userData?.gender,
-                            birthday: userData?.day_of_birth,
+                            day_of_birth: dayjs(userData?.day_of_birth),
                         }}
                         layout="horizontal"
                         labelCol={{ span: 6 }}
@@ -134,7 +140,7 @@ function Profile() {
                         </Form.Item>
                         <Form.Item
                             label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Số điện thoại</label>}
-                            name="phonenumber"
+                            name="phone_num"
                         >
                             <Input
                                 style={{ width: '100%' }}
@@ -154,11 +160,12 @@ function Profile() {
                             <Radio.Group>
                                 <Radio value={'male'}>Nam</Radio>
                                 <Radio value={'female'}>Nữ</Radio>
+                                <Radio value={'other'}>Khác</Radio>
                             </Radio.Group>
                         </Form.Item>
                         <Form.Item
                             label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Ngày sinh</label>}
-                            name="birthday"
+                            name="day_of_birth"
                         >
                             <DatePicker />
                         </Form.Item>

@@ -396,12 +396,22 @@ function IdentificationInfor({ onBack, formData, setFormData }) {
                 owner_name: values.fullName,
                 id_card: values.idNumber,
             }));
+
+            const dataform = new FormData();
+            
+            dataform.append('name', formData.name);
+            dataform.append('address', formData.address);
+            dataform.append('area', formData.area);
+            dataform.append('logo', formData.logo);
+            dataform.append('tax_code', formData.tax_code);
+            dataform.append('business_type', formData.business_type);
+            dataform.append('owner_name', values.fullName);
+            dataform.append('id_card', values.idNumber);
+            dataform.append('front_id_card', formData.front_id_card);
+            dataform.append('back_id_card', formData.back_id_card);
+
     
-            const response = await shopServices.registerShop({
-                ...formData,
-                owner_name: values.fullName,
-                id_card: values.idNumber,
-            });
+            const response = await shopServices.registerShop(dataform);
     
             if (response.status === 200) {
                 console.log('Đăng ký shop thành công');

@@ -41,6 +41,7 @@ function Header({ fixedHeader }) {
         localStorage.removeItem('expiredAt');
         localStorage.removeItem('selectValue');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('idShop');
         setIsLoggedIn(false);
         navigate('/login');
     };

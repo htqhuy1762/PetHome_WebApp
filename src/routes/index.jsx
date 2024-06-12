@@ -1,5 +1,5 @@
 // Layouts
-import { HeaderFooter, UserLayout } from '~/layouts';
+import { HeaderFooter, UserLayout, ShopManagementLayout } from '~/layouts';
 
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
@@ -24,6 +24,8 @@ import ShopManagement from '~/pages/ShopManagement';
 import MyShop from '~/pages/MyShop';
 import MyBlog from '~/pages/MyBlog';
 import ServiceDetail from '~/pages/ServiceDetail';
+import Purchase from '~/pages/Purchase';
+import ManagementPet from '~/pages/ManagementPet';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -39,7 +41,6 @@ const publicRoutes = [
     { path: '/pets/type/:type', component: PetTypePage, layout: HeaderFooter },
     { path: '/items/:id', component: ItemDetail, layout: HeaderFooter },
     { path: '/items/type/:type', component: ItemTypePage, layout: HeaderFooter },
-    { path: '/cart', component: Cart, layout: HeaderFooter },
     { path: '/search/pets/', component: SearchPet, layout: HeaderFooter },
     { path: '/search/items/', component: SearchItem, layout: HeaderFooter },
 ];
@@ -50,10 +51,12 @@ const privateRoutes = [
     { path: '/user/shop/subcribe', component: ShopSubcribe, layout: UserLayout},
     { path: '/user/shop/register', component: ShopRegister, layout: UserLayout },
     { path: '/user/shop/complete', component: CompletedRegisterShop, layout: UserLayout},
-    { path: '/user/shop/management', component: ShopManagement, layout: HeaderFooter},
+    { path: '/user/shop/management', component: ShopManagement, layout: ShopManagementLayout},
+    { path: '/user/shop/management/pet', component: ManagementPet, layout: ShopManagementLayout},
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/user/account/changepass', component: ResetPass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },
+    { path: '/user/purchase', component: Purchase, layout: UserLayout },
 ];
 
 export { publicRoutes, privateRoutes };
