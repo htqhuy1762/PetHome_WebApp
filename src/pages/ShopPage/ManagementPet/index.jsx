@@ -48,10 +48,6 @@ function ManagementPet() {
             message.error('Image must be smaller than 2MB!');
             return false;
         }
-        if (images.length >= 4) {
-            message.error('You can only upload up to 4 images!');
-            return false;
-        }
         setImages([...images, file]);
         return false;
     };

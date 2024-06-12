@@ -1,31 +1,31 @@
 // Layouts
 import { HeaderFooter, UserLayout, ShopManagementLayout } from '~/layouts';
 
-import Login from '~/pages/Login';
-import Register from '~/pages/Register';
-import Pet from '~/pages/Pet';
-import Profile from '~/pages/Profile';
-import Blog from '~/pages/Blog';
-import Item from '~/pages/Item';
-import ServicePet from '~/pages/ServicePet';
-import PetDetail from '~/pages/PetDetail';
-import ItemDetail from '~/pages/ItemDetail';
-import Cart from '~/pages/Cart';
-import SearchPet from '~/pages/SearchPet';
-import SearchItem from '~/pages/SearchItem';
-import ShopSubcribe from '~/pages/ShopSubcribe';
-import ShopRegister from '~/pages/ShopRegister';
-import AddressUser from '~/pages/AddressUser';
-import PetTypePage from '~/pages/PetTypePage';
-import ItemTypePage from '~/pages/ItemTypePage';
-import ResetPass from '~/pages/ResetPass';
-import CompletedRegisterShop from '~/pages/CompletedRegisterShop';
-import ShopManagement from '~/pages/ShopManagement';
-import MyShop from '~/pages/MyShop';
-import MyBlog from '~/pages/MyBlog';
-import ServiceDetail from '~/pages/ServiceDetail';
-import Purchase from '~/pages/Purchase';
-import ManagementPet from '~/pages/ManagementPet';
+import Login from '~/pages/AuthPage/Login';
+import Register from '~/pages/AuthPage/Register';
+import Pet from '~/pages/PetPage/Pet';
+import Profile from '~/pages/UserPage/Profile';
+import Blog from '~/pages/BlogPage/Blog';
+import Item from '~/pages/ItemPage/Item';
+import ServicePet from '~/pages/ServicePage/ServicePet';
+import PetDetail from '~/pages/PetPage/PetDetail';
+import ItemDetail from '~/pages/ItemPage/ItemDetail';
+import Cart from '~/pages/CartPage/Cart';
+import SearchPet from '~/pages/PetPage/SearchPet';
+import SearchItem from '~/pages/ItemPage/SearchItem';
+import ShopSubcribe from '~/pages/ShopPage/ShopSubcribe';
+import ShopRegister from '~/pages/ShopPage/ShopRegister';
+import AddressUser from '~/pages/UserPage/AddressUser';
+import PetTypePage from '~/pages/PetPage/PetTypePage';
+import ItemTypePage from '~/pages/ItemPage/ItemTypePage';
+import ResetPass from '~/pages/UserPage/ResetPass';
+import CompletedRegisterShop from '~/pages/ShopPage/CompletedRegisterShop';
+import ShopManagement from '~/pages/ShopPage/ShopManagement';
+import MyShop from '~/pages/UserPage/MyShop';
+import MyBlog from '~/pages/BlogPage/MyBlog';
+import ServiceDetail from '~/pages/ServicePage/ServiceDetail';
+import Purchase from '~/pages/UserPage/Purchase';
+import ManagementPet from '~/pages/ShopPage/ManagementPet';
 
 const publicRoutes = [
     { path: '/', component: Pet },

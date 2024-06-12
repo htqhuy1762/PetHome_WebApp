@@ -1,9 +1,9 @@
 import styles from './Login.module.scss';
 import classNames from 'classnames/bind';
-import logo from '../../assets/images/logo.png';
-import logotitle from '../../assets/images/logo-title.png';
-import google_logo from '../../assets/images/Google_Logo.png';
-import facebook_logo from '../../assets/images/Facebook_Logo.png';
+import logo from '~/assets/images/logo.png';
+import logotitle from '~/assets/images/logo-title.png';
+import google_logo from '~/assets/images/Google_Logo.png';
+import facebook_logo from '~/assets/images/Facebook_Logo.png';
 import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
