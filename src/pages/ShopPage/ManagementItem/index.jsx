@@ -1,183 +1,183 @@
 import classNames from 'classnames/bind';
-import styles from './ManagementPet.module.scss';
+import styles from './ManagementItem.module.scss';
 import { Tabs, ConfigProvider, Button, Modal, Input, Upload, message, Form, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import ListPet from './ListPet';
-import ListPetRequest from './ListPetRequest';
+import ListItem from './ListItem';
+import ListItemRequest from './ListItemRequest';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
-import * as petServices from '~/services/petServices';
+// import * as itemServices from '~/services/itemServices';
 
 const cx = classNames.bind(styles);
 
-function ManagementPet() {
-    const [form] = Form.useForm();
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [listSpecie, setListSpecie] = useState([]);
-    const [listAge, setListAge] = useState([]);
-    const [headerImage, setHeaderImage] = useState([]);
-    const [images, setImages] = useState([]);
+function ManagementItem() {
+    //const [form] = Form.useForm();
+    // const [isModalVisible, setIsModalVisible] = useState(false);
+    // const [listSpecie, setListSpecie] = useState([]);
+    // const [listAge, setListAge] = useState([]);
+    //const [headerImage, setHeaderImage] = useState([]);
+   // const [images, setImages] = useState([]);
 
-    const handleAddPetClick = () => {
-        setIsModalVisible(true);
-    };
+    // const handleAddItemClick = () => {
+    //     setIsModalVisible(true);
+    // };
 
-    const beforeUploadHeaderImage = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG file!');
-            return false;
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error('Image must be smaller than 2MB!');
-            return false;
-        }
-        setHeaderImage([file]);
-        return false;
-    };
+    // const beforeUploadHeaderImage = (file) => {
+    //     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    //     if (!isJpgOrPng) {
+    //         message.error('You can only upload JPG/PNG file!');
+    //         return false;
+    //     }
+    //     const isLt2M = file.size / 1024 / 1024 < 2;
+    //     if (!isLt2M) {
+    //         message.error('Image must be smaller than 2MB!');
+    //         return false;
+    //     }
+    //     setHeaderImage([file]);
+    //     return false;
+    // };
 
-    const beforeUploadImages = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG file!');
-            return false;
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error('Image must be smaller than 2MB!');
-            return false;
-        }
-        setImages([...images, file]);
-        return false;
-    };
+    // const beforeUploadImages = (file) => {
+    //     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    //     if (!isJpgOrPng) {
+    //         message.error('You can only upload JPG/PNG file!');
+    //         return false;
+    //     }
+    //     const isLt2M = file.size / 1024 / 1024 < 2;
+    //     if (!isLt2M) {
+    //         message.error('Image must be smaller than 2MB!');
+    //         return false;
+    //     }
+    //     setImages([...images, file]);
+    //     return false;
+    // };
 
-    const handleRemoveHeaderImage = () => {
-        setHeaderImage([]);
-    };
+    // const handleRemoveHeaderImage = () => {
+    //     setHeaderImage([]);
+    // };
 
-    const handleRemoveImage = (file) => {
-        setImages(images.filter((image) => image.uid !== file.uid));
-    };
+    // const handleRemoveImage = (file) => {
+    //     setImages(images.filter((image) => image.uid !== file.uid));
+    // };
 
-    const uploadButtonHeaderImage = headerImage.length === 0 && (
-        <button
-            style={{
-                border: 0,
-                background: 'none',
-            }}
-            type="button"
-        >
-            <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </button>
-    );
+    // const uploadButtonHeaderImage = headerImage.length === 0 && (
+    //     <button
+    //         style={{
+    //             border: 0,
+    //             background: 'none',
+    //         }}
+    //         type="button"
+    //     >
+    //         <PlusOutlined />
+    //         <div
+    //             style={{
+    //                 marginTop: 8,
+    //             }}
+    //         >
+    //             Upload
+    //         </div>
+    //     </button>
+    // );
 
-    const uploadButtonImages = images.length < 4 && (
-        <button
-            style={{
-                border: 0,
-                background: 'none',
-            }}
-            type="button"
-        >
-            <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </button>
-    );
+    // const uploadButtonImages = images.length < 4 && (
+    //     <button
+    //         style={{
+    //             border: 0,
+    //             background: 'none',
+    //         }}
+    //         type="button"
+    //     >
+    //         <PlusOutlined />
+    //         <div
+    //             style={{
+    //                 marginTop: 8,
+    //             }}
+    //         >
+    //             Upload
+    //         </div>
+    //     </button>
+    // );
 
     const items = [
         {
             key: '1',
-            label: 'Thú cưng của bạn',
-            children: <ListPet />,
+            label: 'Vật phẩm của bạn',
+            children: <ListItem />,
         },
         {
             key: '2',
             label: 'Đang yêu cầu',
-            children: <ListPetRequest />,
+            children: <ListItemRequest />,
         },
     ];
 
-    const handleOk = async () => {
-        try {
-            await form.validateFields();
-            const values = form.getFieldsValue();
+    // const handleOk = async () => {
+    //     try {
+    //         await form.validateFields();
+    //         const values = form.getFieldsValue();
 
-            const updatedFormData = new FormData();
-            updatedFormData.append('header_image', headerImage[0]);
-            images.forEach((image) => {
-                updatedFormData.append('images', image);
-            });
-            updatedFormData.append('name', values.name);
-            updatedFormData.append('price', values.price);
-            updatedFormData.append('id_pet_specie', values.id_pet_specie);
-            updatedFormData.append('id_pet_age', values.id_pet_age);
-            updatedFormData.append('weight', values.weight);
-            updatedFormData.append('description', values.description);
+    //         const updatedFormData = new FormData();
+    //         updatedFormData.append('header_image', headerImage[0]);
+    //         images.forEach((image) => {
+    //             updatedFormData.append('images', image);
+    //         });
+    //         updatedFormData.append('name', values.name);
+    //         updatedFormData.append('price', values.price);
+    //         updatedFormData.append('id_pet_specie', values.id_pet_specie);
+    //         updatedFormData.append('id_pet_age', values.id_pet_age);
+    //         updatedFormData.append('weight', values.weight);
+    //         updatedFormData.append('description', values.description);
 
-            console.log(updatedFormData);
-            // Here you can add the code to send updatedFormData to your backend
-            const response = await shopServices.addPetRequest(updatedFormData);
+    //         console.log(updatedFormData);
+    //         // Here you can add the code to send updatedFormData to your backend
+    //         const response = await shopServices.addItemRequest(updatedFormData);
 
-            console.log(response.data);
-            if (response.status === 200) {
-                message.success('Thêm thú cưng thành công');
-                form.resetFields();
-                setHeaderImage([]);
-                setImages([]);
-                setIsModalVisible(false);
-            } else {
-                message.error('Thêm thú cưng thất bại');
-                setIsModalVisible(false);
-            }
-        } catch (errorInfo) {
-            console.log('Validate Failed:', errorInfo);
-        }
-    };
+    //         console.log(response.data);
+    //         if (response.status === 200) {
+    //             message.success('Thêm vật phẩm thành công');
+    //             form.resetFields();
+    //             setHeaderImage([]);
+    //             setImages([]);
+    //             setIsModalVisible(false);
+    //         } else {
+    //             message.error('Thêm vật phẩm thất bại');
+    //             setIsModalVisible(false);
+    //         }
+    //     } catch (errorInfo) {
+    //         console.log('Validate Failed:', errorInfo);
+    //     }
+    // };
 
-    const handleCancel = () => {
-        setHeaderImage([]);
-        setImages([]);
-        setIsModalVisible(false);
-    };
+    // const handleCancel = () => {
+    //     setHeaderImage([]);
+    //     setImages([]);
+    //     setIsModalVisible(false);
+    // };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await petServices.getPetSpecies();
-            if (response.status === 200) {
-                setListSpecie(response.data);
-            }
-        };
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await petServices.getItemSpecies();
+    //         if (response.status === 200) {
+    //             setListSpecie(response.data);
+    //         }
+    //     };
+    //     fetchData();
+    // }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await petServices.getPetAges();
-            if (response.status === 200) {
-                setListAge(response.data);
-            }
-        };
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await petServices.getItemAges();
+    //         if (response.status === 200) {
+    //             setListAge(response.data);
+    //         }
+    //     };
+    //     fetchData();
+    // }, []);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <h1>Thú cưng</h1>
+                <h1>Vật phẩm</h1>
                 <ConfigProvider
                     theme={{
                         components: {
@@ -192,11 +192,11 @@ function ManagementPet() {
                         },
                     }}
                 >
-                    <Button className={cx('btn-add-address')} icon={<PlusOutlined />} onClick={handleAddPetClick}>
-                        Thêm thú cưng mới
+                    <Button className={cx('btn-add-address')} icon={<PlusOutlined />} onClick={null}>
+                        Thêm vật phẩm mới
                     </Button>
                 </ConfigProvider>
-                <Modal title="Thêm thú cưng" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                {/* <Modal title="Thêm vật phẩm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                     <Form form={form} layout="vertical">
                         <Form.Item
                             label="Ảnh đại diện"
@@ -241,9 +241,9 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Tên thú cưng"
+                            label="Tên vật phẩm"
                             name="name"
-                            rules={[{ required: true, message: 'Vui lòng nhập tên thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập tên vật phẩm!' }]}
                         >
                             <Input.TextArea
                                 autoSize="true"
@@ -267,9 +267,9 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Loại thú cưng"
+                            label="Loại vật phẩm"
                             name="id_pet_specie"
-                            rules={[{ required: true, message: 'Vui lòng chọn loại thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng chọn loại vật phẩm!' }]}
                         >
                             <Select
                                 options={listSpecie?.map((specie) => ({
@@ -280,9 +280,9 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Tuổi thú cưng"
+                            label="Tuổi vật phẩm"
                             name="id_pet_age"
-                            rules={[{ required: true, message: 'Vui lòng chọn tuổi thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng chọn tuổi vật phẩm!' }]}
                         >
                             <Select
                                 options={listAge?.map((age) => ({
@@ -295,7 +295,7 @@ function ManagementPet() {
                         <Form.Item
                             label="Cân nặng"
                             name="weight"
-                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng vật phẩm!' }]}
                         >
                             <Input.TextArea
                                 autoSize="true"
@@ -318,11 +318,11 @@ function ManagementPet() {
                             />
                         </Form.Item>
                     </Form>
-                </Modal>
+                </Modal> */}
             </div>
             <Tabs defaultActiveKey="1" items={items} size="large" centered tabBarGutter={340} />
         </div>
     );
 }
 
-export default ManagementPet;
+export default ManagementItem;

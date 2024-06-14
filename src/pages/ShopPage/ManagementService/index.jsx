@@ -1,26 +1,111 @@
 import classNames from 'classnames/bind';
-import styles from './ManagementPet.module.scss';
-import { Tabs, ConfigProvider, Button, Modal, Input, Upload, message, Form, Select } from 'antd';
+import styles from './ManagementService.module.scss';
+import { Tabs, ConfigProvider, Button, Modal, Input, Upload, message, Form, Select, Menu } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import ListPet from './ListPet';
-import ListPetRequest from './ListPetRequest';
+import ListService from './ListService';
+import ListServiceRequest from './ListServiceRequest';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
-import * as petServices from '~/services/petServices';
+import * as servicePetServices from '~/services/servicePetServices';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function ManagementPet() {
+function ManagementService() {
+    const [selectedTab, setSelectedTab] = useState('1');
+    const navigate = useNavigate();
+    const location = useLocation();
     const [form] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [listSpecie, setListSpecie] = useState([]);
-    const [listAge, setListAge] = useState([]);
+    // const [listSpecie, setListSpecie] = useState([]);
+    // const [listAge, setListAge] = useState([]);
     const [headerImage, setHeaderImage] = useState([]);
     const [images, setImages] = useState([]);
+    const [itemMenu, setItemMenu] = useState([]);
 
-    const handleAddPetClick = () => {
+    const [selectedServiceTypeDetailId, setSelectedServiceTypeDetailId] = useState(1);
+    const [selectedServiceTypeDetailName, setSelectedServiceTypeDetailName] = useState('Tắm và vệ sinh');
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const serviceTypeDetailId = searchParams.get('serviceTypeDetailId');
+        const tab = searchParams.get('tab');
+
+        if (serviceTypeDetailId) {
+            setSelectedServiceTypeDetailId(Number(serviceTypeDetailId));
+        }
+        if (tab) {
+            setSelectedTab(tab);
+        }
+
+        const fetchServiceTypes = async () => {
+            try {
+                const response = await servicePetServices.getServiceTypes();
+                if (response.status === 200) {
+                    let types = response.data;
+
+                    // Sort types by id_service_type
+                    types = types.sort((a, b) => a.id_service_type - b.id_service_type);
+
+                    // Fetch details for each service type
+                    const detailsPromises = types.map((type) =>
+                        servicePetServices.getServiceTypeDetail(type.id_service_type),
+                    );
+                    const detailsResponses = await Promise.all(detailsPromises);
+
+                    const newItems = types.map((type, index) => {
+                        let details = detailsResponses[index].data;
+                        if (detailsResponses[index].status === 200) {
+                            // Sort details by id_service_type_detail
+                            details = details.sort((a, b) => a.id_service_type_detail - b.id_service_type_detail);
+                        }
+
+                        return {
+                            key: `type-${type.id_service_type}`,
+                            label: type.name,
+                            children: details.map((detail) => ({
+                                key: `type-${type.id_service_type}-detail-${detail.id_service_type_detail}`,
+                                label: detail.name,
+                                onClick: () => {
+                                    setSelectedServiceTypeDetailName(detail.name);
+                                    setSelectedServiceTypeDetailId(detail.id_service_type_detail);
+                                    navigate(`?serviceTypeDetailId=${detail.id_service_type_detail}&tab=${selectedTab}`);
+                                },
+                            })),
+                        };
+                    });
+
+                    setItemMenu(newItems);
+
+                    // // Fetch services if name is set in the URL
+                    // if (name) {
+                    //     const selectedDetail = newItems.flatMap(item => item.children).find(child => child.label === name);
+                    //     if (selectedDetail) {
+                    //         //const detailId = selectedDetail.key.split('-detail-')[1];
+                    //         //setCurrentId(detailId);
+                    //         //fetchServices(detailId, currentPage);
+                    //         //setSelectedKeys([selectedDetail.key]);
+                    //     }
+                    // }
+                }
+            } catch (error) {
+                console.error('Failed to fetch service types or details', error);
+            } finally {
+                //setLoading(false);
+            }
+        };
+
+        fetchServiceTypes();
+    }, [location.search, navigate, selectedTab]);
+
+    const handleAddServiceClick = () => {
         setIsModalVisible(true);
     };
+
+    const handleTabChange = (key) => {
+        setSelectedTab(key);
+        navigate(`?serviceTypeDetailId=${selectedServiceTypeDetailId}&tab=${key}`);
+    };
+    
 
     const beforeUploadHeaderImage = (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -101,13 +186,23 @@ function ManagementPet() {
     const items = [
         {
             key: '1',
-            label: 'Thú cưng của bạn',
-            children: <ListPet />,
+            label: 'Dịch vụ của bạn',
+            children: (
+                <ListService
+                    idServiceTypeDetail={selectedServiceTypeDetailId}
+                    nameServiceTypeDetail={selectedServiceTypeDetailName}
+                />
+            ),
         },
         {
             key: '2',
             label: 'Đang yêu cầu',
-            children: <ListPetRequest />,
+            children: (
+                <ListServiceRequest
+                    idServiceTypeDetail={selectedServiceTypeDetailId}
+                    nameServiceTypeDetail={selectedServiceTypeDetailName}
+                />
+            ),
         },
     ];
 
@@ -130,17 +225,17 @@ function ManagementPet() {
 
             console.log(updatedFormData);
             // Here you can add the code to send updatedFormData to your backend
-            const response = await shopServices.addPetRequest(updatedFormData);
+            const response = await shopServices.addServiceRequest(updatedFormData);
 
             console.log(response.data);
             if (response.status === 200) {
-                message.success('Thêm thú cưng thành công');
+                message.success('Thêm dịch vụ thành công');
                 form.resetFields();
                 setHeaderImage([]);
                 setImages([]);
                 setIsModalVisible(false);
             } else {
-                message.error('Thêm thú cưng thất bại');
+                message.error('Thêm dịch vụ thất bại');
                 setIsModalVisible(false);
             }
         } catch (errorInfo) {
@@ -154,30 +249,30 @@ function ManagementPet() {
         setIsModalVisible(false);
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await petServices.getPetSpecies();
-            if (response.status === 200) {
-                setListSpecie(response.data);
-            }
-        };
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await petServices.getServiceSpecies();
+    //         if (response.status === 200) {
+    //             setListSpecie(response.data);
+    //         }
+    //     };
+    //     fetchData();
+    // }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await petServices.getPetAges();
-            if (response.status === 200) {
-                setListAge(response.data);
-            }
-        };
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await petServices.getServiceAges();
+    //         if (response.status === 200) {
+    //             setListAge(response.data);
+    //         }
+    //     };
+    //     fetchData();
+    // }, []);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <h1>Thú cưng</h1>
+                <h1>Dịch vụ</h1>
                 <ConfigProvider
                     theme={{
                         components: {
@@ -192,11 +287,11 @@ function ManagementPet() {
                         },
                     }}
                 >
-                    <Button className={cx('btn-add-address')} icon={<PlusOutlined />} onClick={handleAddPetClick}>
-                        Thêm thú cưng mới
+                    <Button className={cx('btn-add-address')} icon={<PlusOutlined />} onClick={handleAddServiceClick}>
+                        Thêm dịch vụ mới
                     </Button>
                 </ConfigProvider>
-                <Modal title="Thêm thú cưng" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                {/* <Modal title="Thêm dịch vụ" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                     <Form form={form} layout="vertical">
                         <Form.Item
                             label="Ảnh đại diện"
@@ -241,9 +336,9 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Tên thú cưng"
+                            label="Tên dịch vụ"
                             name="name"
-                            rules={[{ required: true, message: 'Vui lòng nhập tên thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập tên dịch vụ!' }]}
                         >
                             <Input.TextArea
                                 autoSize="true"
@@ -267,9 +362,9 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Loại thú cưng"
+                            label="Loại dịch vụ"
                             name="id_pet_specie"
-                            rules={[{ required: true, message: 'Vui lòng chọn loại thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng chọn loại dịch vụ!' }]}
                         >
                             <Select
                                 options={listSpecie?.map((specie) => ({
@@ -280,9 +375,9 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Tuổi thú cưng"
+                            label="Tuổi dịch vụ"
                             name="id_pet_age"
-                            rules={[{ required: true, message: 'Vui lòng chọn tuổi thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng chọn tuổi dịch vụ!' }]}
                         >
                             <Select
                                 options={listAge?.map((age) => ({
@@ -295,7 +390,7 @@ function ManagementPet() {
                         <Form.Item
                             label="Cân nặng"
                             name="weight"
-                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng thú cưng!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng dịch vụ!' }]}
                         >
                             <Input.TextArea
                                 autoSize="true"
@@ -318,11 +413,18 @@ function ManagementPet() {
                             />
                         </Form.Item>
                     </Form>
-                </Modal>
+                </Modal> */}
             </div>
-            <Tabs defaultActiveKey="1" items={items} size="large" centered tabBarGutter={340} />
+            <Menu
+                style={{ width: '100%' }}
+                defaultOpenKeys={items.map((item) => item.key)}
+                mode="horizontal"
+                items={itemMenu}
+                //selectedKeys={selectedKeys}
+            />
+            <Tabs activeKey={selectedTab} onChange={handleTabChange} defaultActiveKey="1" items={items} size="large" centered tabBarGutter={340} />
         </div>
     );
 }
 
-export default ManagementPet;
+export default ManagementService;

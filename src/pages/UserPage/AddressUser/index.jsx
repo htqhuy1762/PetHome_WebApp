@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, message, ConfigProvider, Input } from 'antd';
+import { Button, Modal, message, ConfigProvider, Input, Select, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './AddressUser.module.scss';
@@ -7,13 +7,82 @@ import AddressCard from '~/components/AddressCard';
 import * as userServices from '~/services/userServices';
 
 const cx = classNames.bind(styles);
+const areas = [
+    'Hà Nội',
+    'Hồ Chí Minh',
+    'Đà Nẵng',
+    'Hải Phòng',
+    'Cần Thơ',
+    'An Giang',
+    'Bà Rịa - Vũng Tàu',
+    'Bắc Giang',
+    'Bắc Kạn',
+    'Bạc Liêu',
+    'Bắc Ninh',
+    'Bến Tre',
+    'Bình Định',
+    'Bình Dương',
+    'Bình Phước',
+    'Bình Thuận',
+    'Cà Mau',
+    'Cao Bằng',
+    'Đắk Lắk',
+    'Đắk Nông',
+    'Điện Biên',
+    'Đồng Nai',
+    'Đồng Tháp',
+    'Gia Lai',
+    'Hà Giang',
+    'Hà Nam',
+    'Hà Tĩnh',
+    'Hải Dương',
+    'Hậu Giang',
+    'Hòa Bình',
+    'Hưng Yên',
+    'Khánh Hòa',
+    'Kiên Giang',
+    'Kon Tum',
+    'Lai Châu',
+    'Lâm Đồng',
+    'Lạng Sơn',
+    'Lào Cai',
+    'Long An',
+    'Nam Định',
+    'Nghệ An',
+    'Ninh Bình',
+    'Ninh Thuận',
+    'Phú Thọ',
+    'Quảng Bình',
+    'Quảng Nam',
+    'Quảng Ngãi',
+    'Quảng Ninh',
+    'Quảng Trị',
+    'Sóc Trăng',
+    'Sơn La',
+    'Tây Ninh',
+    'Thái Bình',
+    'Thái Nguyên',
+    'Thanh Hóa',
+    'Thừa Thiên Huế',
+    'Tiền Giang',
+    'Trà Vinh',
+    'Tuyên Quang',
+    'Vĩnh Long',
+    'Vĩnh Phúc',
+    'Yên Bái',
+];
 
 function AddressUser() {
     const [addresses, setAddresses] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [addressContent, setAddressContent] = useState('');
-    const [areaContent, setAreaContent] = useState('');
+    const [areaContent, setAreaContent] = useState('Hà Nội'); // Khởi tạo state với giá trị mặc định
+
+    const areaOptions = areas.map((area) => ({
+        value: area,
+        label: area,
+    }));
 
     const success = () => {
         messageApi.open({
@@ -49,6 +118,8 @@ function AddressUser() {
 
     const handleCancel = () => {
         setIsModalVisible(false);
+        setAddressContent(''); // Làm sạch nội dung sau khi đóng modal
+        setAreaContent('Hà Nội'); // Reset area về giá trị mặc định
     };
 
     const handleOk = async () => {
@@ -58,7 +129,11 @@ function AddressUser() {
             setIsModalVisible(false);
             success1();
 
-            // Refresh the list of reviews
+            // Làm sạch nội dung sau khi thêm địa chỉ
+            setAddressContent('');
+            setAreaContent('Hà Nội');
+
+            // Refresh the list of addresses
             const response = await userServices.getUserAddress();
             if (response.status === 200) {
                 setAddresses(response.data);
@@ -69,6 +144,10 @@ function AddressUser() {
         }
     };
 
+    const handleChange = (value) => {
+        setAreaContent(value);
+    };
+
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
@@ -77,6 +156,7 @@ function AddressUser() {
                     setAddresses(response.data);
                 }
             } catch (error) {
+                console.error('Failed to fetch addresses', error);
                 // Handle error
             }
         };
@@ -94,12 +174,11 @@ function AddressUser() {
                     setAddresses(response.data);
                 }
             } else {
-                console.error('Failed to remove item from cart');
+                console.error('Failed to remove address');
                 errorMessage();
             }
         } catch (error) {
-            console.error('Failed to remove item from cart', error);
-            console.log('Error:', error);
+            console.error('Failed to remove address', error);
         }
     };
 
@@ -127,25 +206,26 @@ function AddressUser() {
                     </Button>
                 </ConfigProvider>
                 <Modal title="Thêm địa chỉ" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                    <Input.TextArea
-                        autoSize="true"
-                        placeholder="Địa chỉ"
-                        onChange={(e) => setAddressContent(e.target.value)}
-                        value={addressContent}
-                        maxLength={200}
-                        showCount
-                        style={{ marginBottom: '25px' }}
-                    />
-
-                    <Input.TextArea
-                        autoSize="true"
-                        placeholder="Khu vực"
-                        onChange={(e) => setAreaContent(e.target.value)}
-                        value={areaContent}
-                        maxLength={200}
-                        showCount
-                        style={{ marginBottom: '25px' }}
-                    />
+                    <Form layout="vertical">
+                        <Form.Item label="Địa chỉ">
+                            <Input.TextArea
+                                autoSize={{ minRows: 2, maxRows: 6 }}
+                                placeholder="Địa chỉ"
+                                onChange={(e) => setAddressContent(e.target.value)}
+                                value={addressContent}
+                                maxLength={200}
+                                showCount
+                            />
+                        </Form.Item>
+                        <Form.Item label="Khu vực">
+                            <Select
+                                value={areaContent}
+                                style={{ width: '100%' }}
+                                onChange={handleChange}
+                                options={areaOptions}
+                            />
+                        </Form.Item>
+                    </Form>
                 </Modal>
             </div>
             <div className={cx('address-list')}>

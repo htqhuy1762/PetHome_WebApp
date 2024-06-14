@@ -1,86 +1,86 @@
 import classNames from 'classnames/bind';
-import styles from './ListPet.module.scss';
+import styles from './ListItemRequest.module.scss';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
-import CardPetShop from '~/components/CardPetShop';
+import CardItemShopRequest from '~/components/CardItemShopRequest';
 import { Row, Col, message, Empty, Modal } from 'antd';
 import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
-function ListPet() {
-    const [petData, setPetData] = useState([]);
+function ListItemRequest() {
+    const [itemData, setItemData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedPetId, setSelectedPetId] = useState(null);
+    const [selectedItemId, setSelectedItemId] = useState(null);
 
     const success = () => {
         messageApi.open({
             type: 'success',
-            content: 'Xóa pet thành công',
+            content: 'Xóa item thành công',
         });
     };
 
     const errorMessage = () => {
         messageApi.open({
             type: 'error',
-            content: 'Xóa pet thất bại',
+            content: 'Xóa item thất bại',
         });
     };
 
     useEffect(() => {
-        const fetchPetData = async () => {
+        const fetchItemData = async () => {
             setIsLoading(true);
             try {
                 const idShop = localStorage.getItem('idShop');
-                const response = await shopServices.getShopPets(idShop, { status: 'active' });
+                const response = await shopServices.getShopItems(idShop, { status: 'requested' });
 
                 if (response.status === 200) {
-                    setPetData(response.data.data || []);
+                    setItemData(response.data.data || []);
                 }
             } catch (error) {
-                console.log('Failed to fetch pet data: ', error);
+                console.log('Failed to fetch item data: ', error);
             }
             setIsLoading(false);
         };
-        fetchPetData();
+        fetchItemData();
     }, []);
 
-    const showDeleteConfirm = (idPet) => {
-        setSelectedPetId(idPet);
+    const showDeleteConfirm = (idItem) => {
+        setSelectedItemId(idItem);
         setIsModalVisible(true);
     };
 
-    const handleRemovePet = async () => {
+    const handleRemoveItem = async () => {
         try {
-            const response = await shopServices.deleteShopPet(selectedPetId);
+            const response = await shopServices.deleteShopItem(selectedItemId);
             if (response && response.status === 200) {
-                setPetData(petData.filter((pet) => pet.id_pet !== selectedPetId));
+                setItemData(itemData.filter((item) => item.id_item !== selectedItemId));
                 success();
             } else {
-                console.error('Failed to remove pet');
+                console.error('Failed to remove item');
                 errorMessage();
             }
         } catch (error) {
-            console.error('Failed to remove pet', error);
+            console.error('Failed to remove item', error);
             console.log('Error:', error);
         } finally {
             setIsModalVisible(false);
-            setSelectedPetId(null);
+            setSelectedItemId(null);
         }
     };
 
     const handleCancel = () => {
         setIsModalVisible(false);
-        setSelectedPetId(null);
+        setSelectedItemId(null);
     };
 
     if (isLoading) {
         return <Loading />;
     }
 
-    if (petData.length === 0) {
+    if (itemData.length === 0) {
         return (
             <div className={cx('wrapper')}>
                 {contextHolder}
@@ -93,35 +93,32 @@ function ListPet() {
         <div className={cx('wrapper')}>
             {contextHolder}
             <Row style={{ marginBottom: 20 }}>
-                <Col span={12}>
-                    <p style={{ fontSize: '2rem' }}>Thú cưng</p>
+                <Col span={14}>
+                    <p style={{ fontSize: '2rem' }}>Vật phẩm</p>
                 </Col>
-                <Col span={4}>
+                <Col span={6}>
                     <p style={{ fontSize: '2rem' }}>Số tiền</p>
-                </Col>
-                <Col span={4}>
-                    <p style={{ fontSize: '2rem' }}>Tình trạng</p>
                 </Col>
                 <Col span={4}>
                     <p style={{ fontSize: '2rem' }}>Thao tác</p>
                 </Col>
             </Row>
-            {petData?.map((pet) => (
-                <CardPetShop key={pet.id_pet} pet={pet} onRemove={showDeleteConfirm} />
+            {itemData?.map((item) => (
+                <CardItemShopRequest key={item.id_item} item={item} onRemove={showDeleteConfirm} />
             ))}
 
             <Modal
                 title="Xác nhận xóa"
                 open={isModalVisible}
-                onOk={handleRemovePet}
+                onOk={handleRemoveItem}
                 onCancel={handleCancel}
                 okText="Xóa"
                 cancelText="Hủy"
             >
-                <p>Bạn có chắc chắn muốn xóa thú cưng này không?</p>
+                <p>Bạn có chắc chắn muốn xóa vật phẩm này không?</p>
             </Modal>
         </div>
     );
 }
 
-export default ListPet;
+export default ListItemRequest;

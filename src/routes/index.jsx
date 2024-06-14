@@ -18,19 +18,24 @@ import ShopRegister from '~/pages/ShopPage/ShopRegister';
 import AddressUser from '~/pages/UserPage/AddressUser';
 import PetTypePage from '~/pages/PetPage/PetTypePage';
 import ItemTypePage from '~/pages/ItemPage/ItemTypePage';
-import ResetPass from '~/pages/UserPage/ResetPass';
+import ChangePass from '~/pages/UserPage/ChangePass';
 import CompletedRegisterShop from '~/pages/ShopPage/CompletedRegisterShop';
 import ShopManagement from '~/pages/ShopPage/ShopManagement';
 import MyShop from '~/pages/UserPage/MyShop';
 import MyBlog from '~/pages/BlogPage/MyBlog';
 import ServiceDetail from '~/pages/ServicePage/ServiceDetail';
 import Purchase from '~/pages/UserPage/Purchase';
+import Payment from '~/pages/UserPage/Payment';
 import ManagementPet from '~/pages/ShopPage/ManagementPet';
+import ManagementItem from '~/pages/ShopPage/ManagementItem';
+import ManagementService from '~/pages/ShopPage/ManagementService';
+import ForgotPassword from '~/pages/AuthPage/ForgotPassword';
 
 const publicRoutes = [
     { path: '/', component: Pet },
     { path: '/login', component: Login, layout: null },
     { path: '/register', component: Register, layout: null },
+    { path: '/forgotpassword', component: ForgotPassword, layout: null},
     { path: '/items', component: Item },
     { path: '/services', component: ServicePet },
     { path: '/services/:id', component: ServiceDetail, layout: HeaderFooter },
@@ -53,10 +58,13 @@ const privateRoutes = [
     { path: '/user/shop/complete', component: CompletedRegisterShop, layout: UserLayout},
     { path: '/user/shop/management', component: ShopManagement, layout: ShopManagementLayout},
     { path: '/user/shop/management/pet', component: ManagementPet, layout: ShopManagementLayout},
+    { path: '/user/shop/management/item', component: ManagementItem, layout: ShopManagementLayout},
+    { path: '/user/shop/management/service', component: ManagementService, layout: ShopManagementLayout},
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
-    { path: '/user/account/changepass', component: ResetPass, layout: UserLayout },
+    { path: '/user/account/changepass', component: ChangePass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },
     { path: '/user/purchase', component: Purchase, layout: UserLayout },
+    { path: '/user/account/payment', component: Payment, layout: UserLayout}
 ];
 
 export { publicRoutes, privateRoutes };

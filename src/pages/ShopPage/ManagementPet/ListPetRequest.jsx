@@ -1,14 +1,14 @@
 import classNames from 'classnames/bind';
-import styles from './ListPet.module.scss';
+import styles from './ListPetRequest.module.scss';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
-import CardPetShop from '~/components/CardPetShop';
+import CardPetShopRequest from '~/components/CardPetShopRequest';
 import { Row, Col, message, Empty, Modal } from 'antd';
 import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
-function ListPet() {
+function ListPetRequest() {
     const [petData, setPetData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,7 @@ function ListPet() {
             setIsLoading(true);
             try {
                 const idShop = localStorage.getItem('idShop');
-                const response = await shopServices.getShopPets(idShop, { status: 'active' });
+                const response = await shopServices.getShopPets(idShop, { status: 'requested' });
 
                 if (response.status === 200) {
                     setPetData(response.data.data || []);
@@ -93,21 +93,18 @@ function ListPet() {
         <div className={cx('wrapper')}>
             {contextHolder}
             <Row style={{ marginBottom: 20 }}>
-                <Col span={12}>
+                <Col span={14}>
                     <p style={{ fontSize: '2rem' }}>Thú cưng</p>
                 </Col>
-                <Col span={4}>
+                <Col span={6}>
                     <p style={{ fontSize: '2rem' }}>Số tiền</p>
-                </Col>
-                <Col span={4}>
-                    <p style={{ fontSize: '2rem' }}>Tình trạng</p>
                 </Col>
                 <Col span={4}>
                     <p style={{ fontSize: '2rem' }}>Thao tác</p>
                 </Col>
             </Row>
             {petData?.map((pet) => (
-                <CardPetShop key={pet.id_pet} pet={pet} onRemove={showDeleteConfirm} />
+                <CardPetShopRequest key={pet.id_pet} pet={pet} onRemove={showDeleteConfirm} />
             ))}
 
             <Modal
@@ -124,4 +121,4 @@ function ListPet() {
     );
 }
 
-export default ListPet;
+export default ListPetRequest;

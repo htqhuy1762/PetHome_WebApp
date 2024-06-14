@@ -88,7 +88,6 @@ export const authorizeToken = async () => {
     }
 };
 
-
 // RESET PASSWORD
 export const sendCodeResetPassword = async (data) => {
     try {
@@ -101,7 +100,7 @@ export const sendCodeResetPassword = async (data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const verifyCodeResetPassword = async (data, token) => {
     try {
@@ -115,7 +114,7 @@ export const verifyCodeResetPassword = async (data, token) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const resetPassword = async (data, token) => {
     try {
@@ -129,4 +128,18 @@ export const resetPassword = async (data, token) => {
     } catch (error) {
         return error.response;
     }
-}
+};
+
+export const changePassword = async (data, token) => {
+    try {
+        const response = await httpRequestAuth.put('/jwt/change_pass', data, {
+            headers: {
+                Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};

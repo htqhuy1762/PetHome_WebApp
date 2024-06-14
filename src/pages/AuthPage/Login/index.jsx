@@ -9,13 +9,14 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useRef } from 'react';
 
 const cx = classNames.bind(styles);
 
 function Login() {
     const navigate = useNavigate();
     const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+    const formRef = useRef(null);
 
     const onFinish = async (data) => {
         try {
@@ -52,6 +53,37 @@ function Login() {
         }
     }, [isLoggedIn, navigate]);
 
+    const handleForgotPassword = async () => {
+        const email = formRef.current.getFieldValue('email');
+        if (!email) {
+            notification.error({
+                message: 'Error',
+                description: 'Vui lòng nhập email của bạn!',
+            });
+            return;
+        }
+
+        try {
+            const response = await authServices.sendCodeResetPassword({ email: email });
+            if (response.status === 200) {
+                localStorage.setItem('resetToken', response.data.token);
+                localStorage.setItem('resetTokenExpired', response.data.expiredAt);
+                localStorage.setItem('resetEmail', email);
+                navigate('/forgotpassword');
+            } else {
+                notification.error({
+                    message: 'Error',
+                    description: 'Email này chưa được đăng ký!',
+                });
+            }
+        } catch (error) {
+            notification.error({
+                message: 'Error',
+                description: 'Có lỗi xảy ra, vui lòng thử lại!',
+            });
+        }
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('logo_container')}>
@@ -66,6 +98,7 @@ function Login() {
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
                     layout="vertical"
+                    ref={formRef}
                 >
                     <h1 style={{ textAlign: 'center', fontSize: '5rem' }}>Đăng nhập</h1>
                     <Form.Item
@@ -88,7 +121,11 @@ function Login() {
                         />
                     </Form.Item>
                     <Form.Item>
-                        <a style={{ fontSize: '1.6rem' }} className={cx('forgot_password')} href="/forgot-password">
+                        <a
+                            style={{ fontSize: '1.6rem' }}
+                            className={cx('forgot_password')}
+                            onClick={handleForgotPassword}
+                        >
                             Quên mật khẩu
                         </a>
                     </Form.Item>

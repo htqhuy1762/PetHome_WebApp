@@ -1,103 +1,18 @@
 import classNames from 'classnames/bind';
-import styles from './ResetPass.module.scss';
+import styles from './ForgotPassword.module.scss';
+import { Form, Button, notification, Input } from 'antd';
+import { LeftOutlined, LockOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import OtpInput from 'react-otp-input';
-import { Form, Input, Button, notification } from 'antd';
 import * as authServices from '~/services/authServices';
-import * as userServices from '~/services/userServices';
+import logo from '~/assets/images/logo.png';
+import logotitle from '~/assets/images/logo-title.png';
 import { useNavigate } from 'react-router-dom';
-import { LeftOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 
-function CheckEmail({ onNext, setToken, setExpiry, userData }) {
-    const [form] = Form.useForm();
-
-    useEffect(() => {
-        form.setFieldsValue({
-            email: userData.email,
-        });
-    }, [form, userData.email]);
-
-    const handleClick = async () => {
-        try {
-            // Check if the email is valid
-            if (!userData.email || !form.getFieldError('email').length) {
-                const response = await authServices.sendCodeResetPassword({ email: userData.email });
-
-                if (response.status === 200) {
-                    setToken(response.data.token);
-                    setExpiry(response.data.expiredAt);
-                    onNext();
-                } else {
-                    notification.error({
-                        message: 'Error',
-                        description: response.data.error,
-                    });
-                }
-            } else {
-                //console.log('Invalid email');
-                notification.error({
-                    message: 'Error',
-                    description: 'Invalid email',
-                });
-            }
-        } catch (error) {
-            console.log('send code failed:', error);
-        }
-    };
-
-    return (
-        <div className={cx('wrapper')}>
-            <div className={cx('form_container')}>
-                <Form
-                    form={form}
-                    className={cx('form')}
-                    name="input-email-form"
-                    initialValues={{ remember: true }}
-                    layout="vertical"
-                >
-                    <h1 style={{ textAlign: 'center', fontSize: '5rem', marginBottom: '10px' }}>Xác minh email</h1>
-                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'gray', marginBottom: '30px' }}>
-                        Chúng tôi sẽ gửi cho bạn mã xác minh để chúng tôi biết bạn là thật.
-                    </h3>
-                    <Form.Item
-                        label={<label style={{ fontSize: '1.6rem' }}>Email</label>}
-                        name="email"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập email của bạn!' },
-                            { type: 'email', message: 'Email không hợp lệ!' },
-                        ]}
-                    >
-                        <Input
-                            disabled
-                            size="large"
-                            prefix={<UserOutlined />}
-                            placeholder="Nhập Email"
-                            //style={{ pointerEvents: 'none' }}
-                        />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            size="large"
-                            type="primary"
-                            style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
-                            onClick={handleClick}
-                            disabled={
-                                form.getFieldsError().filter(({ errors }) => errors.length).length ||
-                                form.getFieldError('email').length > 0
-                            }
-                        >
-                            Gửi mã OTP
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        </div>
-    );
-}
-
-function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry }) {
+function InputOTP({ onNext }) {
+    const navigate = useNavigate();
     const [otp, setOtp] = useState('');
     const [resendDisabled, setResendDisabled] = useState(false);
     const [countdown, setCountdown] = useState(60);
@@ -105,12 +20,15 @@ function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry
 
     const verifyOTP = async () => {
         try {
-            const isTokenExpired = new Date() > new Date(expiry);
+            const isTokenExpired = new Date() > new Date(localStorage.getItem('resetTokenExpired'));
             if (isTokenExpired) {
                 return;
             }
 
-            const response = await authServices.verifyCodeResetPassword({ code: otp }, token);
+            const response = await authServices.verifyCodeResetPassword(
+                { code: otp },
+                localStorage.getItem('resetToken'),
+            );
             if (response.status === 401) {
                 //console.log(response.data.error);
                 notification.error({
@@ -119,8 +37,8 @@ function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry
                 });
                 return;
             } else {
-                setToken(response.data.token);
-                setExpiry(response.data.expiredAt);
+                localStorage.setItem('resetToken', response.data.token);
+                localStorage.setItem('resetTokenExpired', response.data.expiredAt);
                 onNext();
             }
         } catch (error) {
@@ -130,14 +48,21 @@ function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry
 
     const resendOTP = async () => {
         if (!resendDisabled) {
-            const response = await authServices.sendCodeResetPassword({ email: userData.email });
-            setToken(response.data.token);
-            setExpiry(response.data.expiredAt);
+            const response = await authServices.sendCodeResetPassword({ email: localStorage.getItem('resetEmail') });
+            localStorage.setItem('resetToken', response.data.token);
+            localStorage.setItem('resetTokenExpired', response.data.expiredAt);
 
             // Bắt đầu đếm ngược
             setResendDisabled(true);
             setCountdown(60);
         }
+    };
+    
+    const onBack = () => {
+        navigate('/login');
+        localStorage.removeItem('resetEmail');
+        localStorage.removeItem('resetToken');
+        localStorage.removeItem('resetTokenExpired');
     };
 
     useEffect(() => {
@@ -155,6 +80,10 @@ function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry
 
     return (
         <div className={cx('wrapper')}>
+            <div className={cx('logo_container')}>
+                <img className={cx('logo')} src={logo} alt="logo" />
+                <img className={cx('logo_title')} src={logotitle} alt="logotitle" />
+            </div>
             <div className={cx('form_container')}>
                 <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
                     <LeftOutlined />
@@ -236,11 +165,11 @@ function InputOTP({ onNext, onBack, token, expiry, userData, setToken, setExpiry
     );
 }
 
-function ChangePassForm({ onBack, token, expiry }) {
+function ChangePassForm({ onBack }) {
     const navigate = useNavigate();
     const onFinish = async (values) => {
         try {
-            const isTokenExpired = new Date() > new Date(expiry);
+            const isTokenExpired = new Date() > new Date(localStorage.getItem('resetTokenExpired'));
             if (isTokenExpired) {
                 notification.error({
                     message: 'Error',
@@ -253,14 +182,17 @@ function ChangePassForm({ onBack, token, expiry }) {
                 {
                     new_password: values.password,
                 },
-                token,
+                localStorage.getItem('resetToken'),
             );
             if (response.status === 200) {
                 notification.success({
                     message: 'Success',
-                    description: 'Đổi mật khẩu thành công!',
+                    description: 'Cập nhật lại mật khẩu thành công!',
                 });
-                navigate('/');
+                navigate('/login');
+                localStorage.removeItem('resetEmail');
+                localStorage.removeItem('resetToken');
+                localStorage.removeItem('resetTokenExpired');
             } else {
                 notification.error({
                     message: 'Error',
@@ -268,13 +200,17 @@ function ChangePassForm({ onBack, token, expiry }) {
                 });
             }
         } catch (error) {
-            console.log('Đổi mật khẩu thất bại:', error);
+            console.log('Cập nhật lại mật khẩu thất bại:', error);
         }
     };
     const [form] = Form.useForm();
 
     return (
         <div className={cx('wrapper')}>
+            <div className={cx('logo_container')}>
+                <img className={cx('logo')} src={logo} alt="logo" />
+                <img className={cx('logo_title')} src={logotitle} alt="logotitle" />
+            </div>
             <div className={cx('form_container')}>
                 <Button className={cx('back_button')} type="text" onClick={() => onBack()}>
                     <LeftOutlined />
@@ -287,7 +223,7 @@ function ChangePassForm({ onBack, token, expiry }) {
                     layout="vertical"
                     form={form}
                 >
-                    <h1 style={{ textAlign: 'center', fontSize: '4.5rem' }}>Đổi mật khẩu</h1>
+                    <h1 style={{ textAlign: 'center', fontSize: '4.5rem' }}>Cập nhật lại mật khẩu</h1>
                     <Form.Item
                         label={<label style={{ fontSize: '1.6rem' }}>Mật khẩu mới</label>}
                         name="password"
@@ -330,7 +266,7 @@ function ChangePassForm({ onBack, token, expiry }) {
                             style={{ backgroundColor: 'var(--button-next-color)', width: '100%', fontSize: '1.7rem' }}
                             disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
                         >
-                            Thay đổi
+                            Cập nhật
                         </Button>
                     </Form.Item>
                 </Form>
@@ -339,11 +275,8 @@ function ChangePassForm({ onBack, token, expiry }) {
     );
 }
 
-function ResetPass() {
+function ForgotPassword() {
     const [step, setStep] = useState(1);
-    const [token, setToken] = useState('');
-    const [expiry, setExpiry] = useState('');
-    const [userData, setUserData] = useState('');
 
     const handleNext = () => {
         setStep(step + 1);
@@ -353,40 +286,12 @@ function ResetPass() {
         setStep(step - 1);
     };
 
-    useEffect(() => {
-        const getUser = async () => {
-            try {
-                const response = await userServices.getUser();
-                if (response.status === 200) {
-                    setUserData(response.data);
-                }
-            } catch (error) {
-                // Handle error
-            }
-        };
-
-        getUser();
-    }, []);
-
     return (
         <>
-            {step === 1 && (
-                <CheckEmail setToken={setToken} setExpiry={setExpiry} userData={userData} onNext={handleNext} />
-            )}
-            {step === 2 && (
-                <InputOTP
-                    token={token}
-                    expiry={expiry}
-                    userData={userData}
-                    setToken={setToken}
-                    setExpiry={setExpiry}
-                    onNext={handleNext}
-                    onBack={handleBack}
-                />
-            )}
-            {step === 3 && <ChangePassForm onBack={handleBack} token={token} expiry={expiry} />}
+            {step === 1 && <InputOTP onNext={handleNext} />}
+            {step === 2 && <ChangePassForm onBack={handleBack} />}
         </>
     );
 }
 
-export default ResetPass;
+export default ForgotPassword;

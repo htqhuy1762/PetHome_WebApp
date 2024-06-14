@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Footer.module.scss';
-import logo from '../../../assets/images/logo.png';
-import logotitle from '../../../assets/images/logo-title.png';
+import logo from '~/assets/images/logo.png';
+import logotitle from '~/assets/images/logo-title.png';
 import { Button } from 'antd';
 import googlePlayIcon from '~/assets/images/GooglePlay.png';
 import appStoreIcon from '~/assets/images/AppStore.png';

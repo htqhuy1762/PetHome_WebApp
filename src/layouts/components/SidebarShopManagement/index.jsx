@@ -1,10 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './SidebarShopManagement.module.scss';
-import { Menu } from 'antd';
+import { Menu, Avatar } from 'antd';
 import { useState, useEffect } from 'react';
-import { Avatar } from 'antd';
 import * as shopServices from '~/services/shopServices';
 import { UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -37,15 +37,15 @@ function SidebarShopManagement() {
             children: [
                 {
                     key: '2.1',
-                    label: <a href='/user/shop/management/pet'>Thú cưng</a>,
+                    label: <Link to='/user/shop/management/pet'>Thú cưng</Link>,
                 },
                 {
                     key: '2.2',
-                    label: 'Vật phẩm',
+                    label: <Link to='/user/shop/management/item'>Vật phẩm</Link>,
                 },
                 {
                     key: '2.3',
-                    label: 'Dịch vụ',
+                    label: <Link to='/user/shop/management/service'>Dịch vụ</Link>,
                 },
             ],
         },
@@ -98,7 +98,7 @@ function SidebarShopManagement() {
                 mode="inline"
                 items={items}
                 selectedKeys={[selectedKey]}
-                onSelect={handleSelect}
+                onClick={handleSelect}
             />
         </div>
     );

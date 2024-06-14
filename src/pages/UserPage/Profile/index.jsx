@@ -99,7 +99,7 @@ function Profile() {
     }, [userData, form]);
 
     if (loading) {
-        return <Loading />; // Replace with your loading component or spinner
+        return <Loading />;
     }
 
     return (
