@@ -26,7 +26,7 @@ function CardItemShopRequest({ item, onRemove }) {
             </Col>
             <Col span={9}>
                 <Row>
-                    <Link to={`/items/${item.id_item}`}>
+                    <Link to={`/items/requested/${item.id_item}`}>
                         <p className={cx('item-name')}>{item.name}</p>
                     </Link>
                 </Row>

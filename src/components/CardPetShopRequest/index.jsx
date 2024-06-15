@@ -26,7 +26,7 @@ function CardPetShopRequest({ pet, onRemove }) {
             </Col>
             <Col span={9}>
                 <Row>
-                    <Link to={`/pets/${pet.id_pet}`}>
+                    <Link to={`/pets/requested/${pet.id_pet}`}>
                         <p className={cx('pet-name')}>{pet.name}</p>
                     </Link>
                 </Row>
