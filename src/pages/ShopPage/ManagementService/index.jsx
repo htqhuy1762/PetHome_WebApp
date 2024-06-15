@@ -1,6 +1,19 @@
 import classNames from 'classnames/bind';
 import styles from './ManagementService.module.scss';
-import { Tabs, ConfigProvider, Button, Modal, Input, Upload, message, Form, Select, Menu } from 'antd';
+import {
+    Tabs,
+    ConfigProvider,
+    Button,
+    Modal,
+    Input,
+    InputNumber,
+    Upload,
+    message,
+    Form,
+    Select,
+    Menu,
+    Checkbox,
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ListService from './ListService';
 import ListServiceRequest from './ListServiceRequest';
@@ -17,8 +30,8 @@ function ManagementService() {
     const location = useLocation();
     const [form] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState(false);
-    // const [listSpecie, setListSpecie] = useState([]);
-    // const [listAge, setListAge] = useState([]);
+    const [listAddress, setListAddress] = useState([]);
+    const [listTypeService, setListTypeService] = useState([]);
     const [headerImage, setHeaderImage] = useState([]);
     const [images, setImages] = useState([]);
     const [itemMenu, setItemMenu] = useState([]);
@@ -68,7 +81,9 @@ function ManagementService() {
                                 onClick: () => {
                                     setSelectedServiceTypeDetailName(detail.name);
                                     setSelectedServiceTypeDetailId(detail.id_service_type_detail);
-                                    navigate(`?serviceTypeDetailId=${detail.id_service_type_detail}&tab=${selectedTab}`);
+                                    navigate(
+                                        `?serviceTypeDetailId=${detail.id_service_type_detail}&tab=${selectedTab}`,
+                                    );
                                 },
                             })),
                         };
@@ -105,7 +120,6 @@ function ManagementService() {
         setSelectedTab(key);
         navigate(`?serviceTypeDetailId=${selectedServiceTypeDetailId}&tab=${key}`);
     };
-    
 
     const beforeUploadHeaderImage = (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -217,10 +231,12 @@ function ManagementService() {
                 updatedFormData.append('images', image);
             });
             updatedFormData.append('name', values.name);
-            updatedFormData.append('price', values.price);
-            updatedFormData.append('id_pet_specie', values.id_pet_specie);
-            updatedFormData.append('id_pet_age', values.id_pet_age);
-            updatedFormData.append('weight', values.weight);
+            updatedFormData.append('min_price', values.min_price);
+            updatedFormData.append('max_price', values.max_price);
+            updatedFormData.append('id_service_type_detail', values.id_service_type_detail);
+            values.id_address.forEach((address) => {
+                updatedFormData.append('id_address', address);
+            });
             updatedFormData.append('description', values.description);
 
             console.log(updatedFormData);
@@ -249,25 +265,26 @@ function ManagementService() {
         setIsModalVisible(false);
     };
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const response = await petServices.getServiceSpecies();
-    //         if (response.status === 200) {
-    //             setListSpecie(response.data);
-    //         }
-    //     };
-    //     fetchData();
-    // }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await shopServices.getShopInfo(localStorage.getItem('idShop'));
+            if (response.status === 200) {
+                setListAddress(response.data.areas);
+            }
+        };
+        fetchData();
+    }, []);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const response = await petServices.getServiceAges();
-    //         if (response.status === 200) {
-    //             setListAge(response.data);
-    //         }
-    //     };
-    //     fetchData();
-    // }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await servicePetServices.getServiceTypes();
+            if (response.status === 200) {
+                const sortedData = response.data.sort((a, b) => a.id_service_type - b.id_service_type);
+                setListTypeService(sortedData);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <div className={cx('wrapper')}>
@@ -291,7 +308,7 @@ function ManagementService() {
                         Thêm dịch vụ mới
                     </Button>
                 </ConfigProvider>
-                {/* <Modal title="Thêm dịch vụ" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                <Modal title="Thêm dịch vụ" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                     <Form form={form} layout="vertical">
                         <Form.Item
                             label="Ảnh đại diện"
@@ -340,63 +357,51 @@ function ManagementService() {
                             name="name"
                             rules={[{ required: true, message: 'Vui lòng nhập tên dịch vụ!' }]}
                         >
-                            <Input.TextArea
-                                autoSize="true"
-                                maxLength={200}
-                                showCount
-                                style={{ marginBottom: '25px' }}
-                            />
+                            <Input.TextArea autoSize="true" maxLength={200} showCount />
                         </Form.Item>
 
                         <Form.Item
-                            label="Giá (VNĐ)"
-                            name="price"
-                            rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
+                            label="Giá thấp nhất (VNĐ)"
+                            name="min_price"
+                            rules={[{ required: true, message: 'Vui lòng nhập giá thấp nhất!' }]}
                         >
-                            <Input.TextArea
-                                autoSize="true"
-                                maxLength={200}
-                                showCount
-                                style={{ marginBottom: '25px' }}
-                            />
+                            <InputNumber min={0} style={{ width: '100%' }} />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Giá cao nhất (VNĐ)"
+                            name="max_price"
+                            rules={[{ required: true, message: 'Vui lòng nhập giá cao nhất!' }]}
+                        >
+                            <InputNumber min={0} style={{ width: '100%' }} />
                         </Form.Item>
 
                         <Form.Item
                             label="Loại dịch vụ"
-                            name="id_pet_specie"
+                            name="id_service_type_detail"
                             rules={[{ required: true, message: 'Vui lòng chọn loại dịch vụ!' }]}
                         >
                             <Select
-                                options={listSpecie?.map((specie) => ({
-                                    value: specie.id_pet_specie,
-                                    label: specie.name,
+                                options={listTypeService?.map((typeService) => ({
+                                    label: typeService.name,
+                                    options: typeService.service_type_detail?.map((serviceTypeDetail) => ({
+                                        label: serviceTypeDetail.name,
+                                        value: serviceTypeDetail.id_service_type_detail,
+                                    })),
                                 }))}
                             ></Select>
                         </Form.Item>
 
                         <Form.Item
-                            label="Tuổi dịch vụ"
-                            name="id_pet_age"
-                            rules={[{ required: true, message: 'Vui lòng chọn tuổi dịch vụ!' }]}
+                            label="Khu vực cung cấp dịch vụ"
+                            name="id_address"
+                            rules={[{ required: true, message: 'Vui lòng chọn khu vực cung cấp dịch vụ!' }]}
                         >
-                            <Select
-                                options={listAge?.map((age) => ({
-                                    value: age.id_pet_age,
-                                    label: age.name,
+                            <Checkbox.Group
+                                options={listAddress?.map((address) => ({
+                                    label: address.address,
+                                    value: address.id_address,
                                 }))}
-                            ></Select>
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Cân nặng"
-                            name="weight"
-                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng dịch vụ!' }]}
-                        >
-                            <Input.TextArea
-                                autoSize="true"
-                                maxLength={200}
-                                showCount
-                                style={{ marginBottom: '25px' }}
                             />
                         </Form.Item>
 
@@ -413,16 +418,24 @@ function ManagementService() {
                             />
                         </Form.Item>
                     </Form>
-                </Modal> */}
+                </Modal>
             </div>
             <Menu
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginBottom: '25px' }}
                 defaultOpenKeys={items.map((item) => item.key)}
                 mode="horizontal"
                 items={itemMenu}
                 //selectedKeys={selectedKeys}
             />
-            <Tabs activeKey={selectedTab} onChange={handleTabChange} defaultActiveKey="1" items={items} size="large" centered tabBarGutter={340} />
+            <Tabs
+                activeKey={selectedTab}
+                onChange={handleTabChange}
+                defaultActiveKey="1"
+                items={items}
+                size="large"
+                centered
+                tabBarGutter={340}
+            />
         </div>
     );
 }

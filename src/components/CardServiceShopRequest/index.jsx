@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './CardServiceShopRequest.module.scss';
 import { Card, Button } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 

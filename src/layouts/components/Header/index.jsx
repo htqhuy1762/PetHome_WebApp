@@ -177,10 +177,7 @@ function Header({ fixedHeader }) {
                                             color: 'white',
                                             fontSize: '1.5rem',
                                             cursor: 'pointer',
-                                            maxWidth: '140px',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
+                                            maxWidth: '145px',
                                             display: 'flex',
                                             alignItems: 'center',
                                         }}
@@ -193,7 +190,16 @@ function Header({ fixedHeader }) {
                                             src={currentUser?.avatar ? currentUser.avatar : null}
                                             icon={!currentUser?.avatar ? <UserOutlined /> : null}
                                         />
-                                        <span>{currentUser?.name}</span>
+                                        <span
+                                            style={{
+                                                maxWidth: '105px',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {currentUser?.name}
+                                        </span>
                                     </a>
                                 </Dropdown>
                             </div>

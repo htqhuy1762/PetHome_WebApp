@@ -1,148 +1,29 @@
-import {
-    Button,
-    Image,
-    Pagination,
-    Rate,
-    Avatar,
-    Descriptions,
-    Breadcrumb,
-    Modal,
-    Input,
-    message,
-    Carousel,
-} from 'antd';
+import { Image, Rate, Avatar, Descriptions, Breadcrumb, Carousel } from 'antd';
 import classNames from 'classnames/bind';
-import styles from './ServiceDetail.module.scss';
-import { WechatOutlined, UserOutlined } from '@ant-design/icons';
+import styles from './ServiceRequestedInfo.module.scss';
+import { UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as servicePetServices from '~/services/servicePetServices';
-import { useState, useEffect, useMemo, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
-import Rating from '~/components/Rating';
-import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
-import { ChatContext } from '~/components/ChatProvider';
 
 const cx = classNames.bind(styles);
 
-function ServiceDetail() {
-    const [messageApi, contextHolder] = message.useMessage();
-    const { setIdShop } = useContext(ChatContext);
-
-    const handleChatButtonClick = (id) => {
-        if (id === localStorage.getItem('idShop')) {
-            messageApi.open({
-                type: 'error',
-                content: 'Xin lỗi, dịch vụ này thuộc cửa hàng của bạn!',
-            });
-
-            return;
-        }
-        setIdShop(id);
-    };
-
-    const success = () => {
-        messageApi.open({
-            type: 'success',
-            content: 'Gửi đánh giá thành công',
-        });
-    };
-
-    const errorMessage = () => {
-        messageApi.open({
-            type: 'error',
-            content: 'Gửi đánh giá thất bại',
-        });
-    };
-
+function ServiceRequestedInfo() {
     const { id } = useParams();
     const [serviceData, setServiceData] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 4;
-    const [total, setTotal] = useState(0);
-    const [dataRating, setDataRating] = useState({});
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState('');
-    const [hasReviewed, setHasReviewed] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await servicePetServices.getServiceDetailById(id);
             if (response.status === 200) {
                 setServiceData(response.data);
-                setTotal(response.data.ratings.rating_count);
             }
         };
 
         fetchData();
     }, [id]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!dataRating[currentPage]) {
-                const response = await servicePetServices.getServiceRatings(id, {
-                    limit: limit,
-                    start: (currentPage - 1) * limit,
-                });
-                if (response.status === 200) {
-                    setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
-                }
-            }
-        };
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage]);
-
-    useEffect(() => {
-        const checkRating = async () => {
-            try {
-                const response = await servicePetServices.checkRatedOrNot(id);
-                if (response.status === 200) {
-                    setHasReviewed(response.data.status);
-                }
-            } catch (error) {
-                // Handle error
-            }
-        };
-
-        checkRating();
-    }, [hasReviewed]);
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-
-    const handleReviewClick = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = async () => {
-        try {
-            // Replace with your actual API call
-            await servicePetServices.postServiceRating(id, { rate: rating, comment: review });
-            setIsModalVisible(false);
-            setHasReviewed('rated');
-            success();
-
-            // Refresh the list of reviews
-            const response = await servicePetServices.getServiceRatings(id, {
-                limit: limit,
-                start: (currentPage - 1) * limit,
-            });
-            if (response.status === 200) {
-                setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
-            }
-        } catch (error) {
-            console.error(error);
-            errorMessage();
-        }
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     const items = useMemo(() => {
         if (!serviceData) {
@@ -169,7 +50,6 @@ function ServiceDetail() {
 
     return serviceData ? (
         <div className={cx('wrapper')}>
-            {contextHolder}
             <Breadcrumb
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
@@ -244,7 +124,9 @@ function ServiceDetail() {
                         </p>
                     </div>
                     <div className={cx('tutorial')}>
-                        <span>Nếu bạn muốn sử dụng dịch vụ, vui lòng bấm chat ngay ở phía bên dưới để liên hệ với shop!</span>
+                        <span>
+                            Nếu bạn muốn sử dụng dịch vụ, vui lòng bấm chat ngay ở phía bên dưới để liên hệ với shop!
+                        </span>
                     </div>
                 </div>
             </div>
@@ -256,17 +138,7 @@ function ServiceDetail() {
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />
-                    <div className={cx('pet-detail-shop-info')}>
-                        <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{serviceData.shop.name}</p>
-                        <Button
-                            size="large"
-                            style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
-                            icon={<WechatOutlined />}
-                            onClick={() => handleChatButtonClick(serviceData.id_shop)}
-                        >
-                            Chat ngay
-                        </Button>
-                    </div>
+                    <p style={{ fontSize: '2rem', margin: '0px 0px 0px 15px' }}>{serviceData.shop.name}</p>
                 </div>
                 <div className={cx('pet-detail-shop-right')}>
                     <Descriptions layout="horizontal" title="Thông tin shop" items={items} />
@@ -285,68 +157,10 @@ function ServiceDetail() {
                     </p>
                 </div>
             </div>
-            <div
-                className={cx('pet-detail-rating')}
-                style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? 'auto' : '300px' }}
-            >
-                <div className={cx('header-rating')}>
-                    <h2>Đánh giá sản phẩm</h2>
-                    {hasReviewed === 'not rated' ? (
-                        <Button className={cx('Button-rating')} size="large" onClick={handleReviewClick}>
-                            Đánh giá
-                        </Button>
-                    ) : hasReviewed === 'rated' ? (
-                        <div className={cx('rated-text')}>Bạn đã đánh giá sản phẩm!</div>
-                    ) : null}
-
-                    <Modal title="Viết đánh giá" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                        <Rate size="large" style={{ margin: '5px 0 20px 0' }} onChange={setRating} value={rating} />
-                        <Input.TextArea
-                            autoSize="true"
-                            placeholder="Viết đánh giá"
-                            onChange={(e) => setReview(e.target.value)}
-                            value={review}
-                            maxLength={200}
-                            showCount
-                            style={{ marginBottom: '25px' }}
-                        />
-                    </Modal>
-                </div>
-                {dataRating[currentPage] && dataRating[currentPage].length > 0 ? (
-                    <>
-                        {dataRating[currentPage].map((rate) => (
-                            <Rating key={rate.id_rate} data={rate} />
-                        ))}
-                        <div className={cx('pagination-container')}>
-                            <Pagination
-                                className={cx('pagination')}
-                                size="medium"
-                                defaultPageSize={limit}
-                                defaultCurrent={1}
-                                total={total}
-                                current={currentPage}
-                                onChange={handlePageChange}
-                            />
-                        </div>
-                    </>
-                ) : (
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <img src={nocomment} />
-                        <p>Chưa có đánh giá</p>
-                    </div>
-                )}
-            </div>
         </div>
     ) : (
         <Loading />
     );
 }
 
-export default ServiceDetail;
+export default ServiceRequestedInfo;

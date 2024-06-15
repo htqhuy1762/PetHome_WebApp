@@ -3,12 +3,14 @@ import styles from './ListServiceRequest.module.scss';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
 import CardServiceShopRequest from '~/components/CardServiceShopRequest';
-import { Row, Col, message, Empty, Modal } from 'antd';
+import { message, Empty, Modal } from 'antd';
 import Loading from '~/components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail }) {
+    const navigate = useNavigate();
     const [serviceData, setServiceData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState(false);
@@ -97,7 +99,12 @@ function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail }) {
             {contextHolder}
             <h1>{nameServiceTypeDetail}</h1>
             {serviceData?.map((service) => (
-                <CardServiceShopRequest key={service.id_service} service={service} onRemove={showDeleteConfirm} />
+                <CardServiceShopRequest
+                    key={service.id_service}
+                    service={service}
+                    onRemove={showDeleteConfirm}
+                    onClick={() => navigate(`/services/requested/${service.id_service}`)}
+                />
             ))}
 
             <Modal

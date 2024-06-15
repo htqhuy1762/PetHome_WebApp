@@ -18,13 +18,11 @@ function MyShop() {
 
                 if (responseIsRegister.status === 200 || responseIsRegister.status === 201) {
                     if (responseIsRegister.data.message === 'User is shop owner') {
-                        localStorage.setItem('idShop', responseIsActive.data.id_shop);
                         isRegister = true;
                     } else {
                         isRegister = false;
                     }
-                }
-                else {
+                } else {
                     isRegister = false;
                 }
 
@@ -34,8 +32,7 @@ function MyShop() {
                     } else {
                         isActive = false;
                     }
-                }
-                else {
+                } else {
                     isActive = false;
                 }
 
@@ -45,11 +42,9 @@ function MyShop() {
                     } else {
                         navigate('/user/shop/complete');
                     }
-                }
-                else {
+                } else {
                     navigate('/user/shop/subcribe');
                 }
-
             } catch (error) {
                 console.log(error);
             } finally {

@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './ManagementPet.module.scss';
-import { Tabs, ConfigProvider, Button, Modal, Input, Upload, message, Form, Select } from 'antd';
+import { Tabs, ConfigProvider, Button, Modal, Input, InputNumber, Upload, message, Form, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ListPet from './ListPet';
 import ListPetRequest from './ListPetRequest';
@@ -249,7 +249,6 @@ function ManagementPet() {
                                 autoSize="true"
                                 maxLength={200}
                                 showCount
-                                style={{ marginBottom: '25px' }}
                             />
                         </Form.Item>
 
@@ -258,12 +257,7 @@ function ManagementPet() {
                             name="price"
                             rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
                         >
-                            <Input.TextArea
-                                autoSize="true"
-                                maxLength={200}
-                                showCount
-                                style={{ marginBottom: '25px' }}
-                            />
+                            <InputNumber min={0} style={{ width: '100%' }} />
                         </Form.Item>
 
                         <Form.Item
@@ -297,12 +291,7 @@ function ManagementPet() {
                             name="weight"
                             rules={[{ required: true, message: 'Vui lòng nhập cân nặng thú cưng!' }]}
                         >
-                            <Input.TextArea
-                                autoSize="true"
-                                maxLength={200}
-                                showCount
-                                style={{ marginBottom: '25px' }}
-                            />
+                            <InputNumber min={0} style={{ width: '100%' }} />
                         </Form.Item>
 
                         <Form.Item

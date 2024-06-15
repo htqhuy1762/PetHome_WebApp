@@ -1,49 +1,19 @@
-import {
-    Button,
-    Image,
-    Pagination,
-    Rate,
-    Avatar,
-    Descriptions,
-    Breadcrumb,
-    Modal,
-    Input,
-    message,
-    ConfigProvider,
-    Carousel,
-} from 'antd';
+import { Button, Image, Rate, Avatar, Descriptions, Breadcrumb, message, ConfigProvider, Carousel } from 'antd';
 import classNames from 'classnames/bind';
-import styles from './ItemDetail.module.scss';
-import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
+import styles from './ItemRequestedInfo.module.scss';
+import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as itemServices from '~/services/itemServices';
 import * as cartServices from '~/services/cartServices';
-import { useState, useEffect, useMemo, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
-import Rating from '~/components/Rating';
-import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
-import { ChatContext } from '~/components/ChatProvider';
 
 const cx = classNames.bind(styles);
 
-function ItemDetail() {
+function ItemRequestedInfo() {
     const [messageApi, contextHolder] = message.useMessage();
     const [options, setOptions] = useState(null);
-
-    const { setIdShop } = useContext(ChatContext);
-
-    const handleChatButtonClick = (id) => {
-        if (id === localStorage.getItem('idShop')) {
-            messageApi.open({
-                type: 'error',
-                content: 'Xin lỗi, sản phẩm này thuộc cửa hàng của bạn!',
-            });
-
-            return;
-        }
-        setIdShop(id);
-    };
 
     const [selectedItem, setSelectedItem] = useState(null);
 
@@ -54,20 +24,6 @@ function ItemDetail() {
             instock: instock,
             id_item: id_item,
             id_item_detail: id_item_detail,
-        });
-    };
-
-    const success = () => {
-        messageApi.open({
-            type: 'success',
-            content: 'Gửi đánh giá thành công',
-        });
-    };
-
-    const errorMessage = () => {
-        messageApi.open({
-            type: 'error',
-            content: 'Gửi đánh giá thất bại',
         });
     };
 
@@ -87,22 +43,12 @@ function ItemDetail() {
 
     const { id } = useParams();
     const [itemData, setItemData] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 4;
-    const [total, setTotal] = useState(0);
-    const [dataRating, setDataRating] = useState({});
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState('');
-    const [hasReviewed, setHasReviewed] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await itemServices.getItemDetailById(id);
             if (response.status === 200) {
                 setItemData(response.data);
-                setTotal(response.data.ratings.rating_count);
             }
         };
 
@@ -127,69 +73,6 @@ function ItemDetail() {
             );
         }
     }, [options]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!dataRating[currentPage]) {
-                const response = await itemServices.getItemRatings(id, {
-                    limit: limit,
-                    start: (currentPage - 1) * limit,
-                });
-                if (response.status === 200) {
-                    setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
-                }
-            }
-        };
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage]);
-
-    useEffect(() => {
-        const checkRating = async () => {
-            try {
-                const response = await itemServices.checkRatedOrNot(id);
-                if (response.status === 200) {
-                    setHasReviewed(response.data.status);
-                }
-            } catch (error) {
-                // Handle error
-            }
-        };
-
-        checkRating();
-    }, [hasReviewed]);
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-
-    const handleReviewClick = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = async () => {
-        try {
-            await itemServices.postItemRating(id, { rate: rating, comment: review });
-            setIsModalVisible(false);
-            setHasReviewed('rated');
-            success();
-
-            const response = await itemServices.getItemRatings(id, {
-                limit: limit,
-                start: (currentPage - 1) * limit,
-            });
-            if (response.status === 200) {
-                setDataRating((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
-            }
-        } catch (error) {
-            console.error(error);
-            errorMessage();
-        }
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     const handleAddToCart = async (id) => {
         if (selectedItem) {
@@ -352,34 +235,6 @@ function ItemDetail() {
                     <div className={cx('item-state', selectedItem?.instock ? 'in-stock' : 'out-of-stock')}>
                         <p>{selectedItem?.instock ? 'Còn hàng' : 'Hết hàng'}</p>
                     </div>
-                    <div className={cx('list-button')}>
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Button: {
-                                        defaultColor: 'var(--button-next-color)',
-                                        defaultBg: 'var(--button-back-color)',
-                                        defaultBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBg: 'var(--button-back-color)',
-                                        defaultHoverColor: 'var(--button-next-color)',
-                                    },
-                                },
-                            }}
-                        >
-                            <Button
-                                className={cx('button1')}
-                                icon={<ShoppingCartOutlined />}
-                                size="large"
-                                onClick={() => handleAddToCart(itemData.id_shop)}
-                            >
-                                Thêm vào giỏ hàng
-                            </Button>
-                        </ConfigProvider>
-                        <Button className={cx('button2')} size="large">
-                            Mua ngay
-                        </Button>
-                    </div>
                 </div>
             </div>
             <div className={cx('item-detail-shop')}>
@@ -390,17 +245,7 @@ function ItemDetail() {
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />
-                    <div className={cx('item-detail-shop-info')}>
-                        <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{itemData.shop.name}</p>
-                        <Button
-                            size="large"
-                            style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
-                            icon={<WechatOutlined />}
-                            onClick={() => handleChatButtonClick(itemData.id_shop)}
-                        >
-                            Chat ngay
-                        </Button>
-                    </div>
+                    <p style={{ fontSize: '2rem', marginLeft: '15px' }}>{itemData.shop.name}</p>
                 </div>
                 <div className={cx('item-detail-shop-right')}>
                     <Descriptions layout="horizontal" title="Thông tin shop" items={items} />
@@ -419,68 +264,10 @@ function ItemDetail() {
                     </p>
                 </div>
             </div>
-            <div
-                className={cx('item-detail-rating')}
-                style={{ height: dataRating[currentPage] && dataRating[currentPage].length > 0 ? 'auto' : '300px' }}
-            >
-                <div className={cx('header-rating')}>
-                    <h2>Đánh giá sản phẩm</h2>
-                    {hasReviewed === 'not rated' ? (
-                        <Button className={cx('Button-rating')} size="large" onClick={handleReviewClick}>
-                            Đánh giá
-                        </Button>
-                    ) : hasReviewed === 'rated' ? (
-                        <div className={cx('rated-text')}>Bạn đã đánh giá sản phẩm!</div>
-                    ) : null}
-
-                    <Modal title="Viết đánh giá" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                        <Rate size="large" style={{ margin: '5px 0 20px 0' }} onChange={setRating} value={rating} />
-                        <Input.TextArea
-                            autoSize="true"
-                            placeholder="Viết đánh giá"
-                            onChange={(e) => setReview(e.target.value)}
-                            value={review}
-                            maxLength={200}
-                            showCount
-                            style={{ marginBottom: '25px' }}
-                        />
-                    </Modal>
-                </div>
-                {dataRating[currentPage] && dataRating[currentPage].length > 0 ? (
-                    <>
-                        {dataRating[currentPage].map((rate) => (
-                            <Rating key={rate.id_rate} data={rate} />
-                        ))}
-                        <div className={cx('pagination-container')}>
-                            <Pagination
-                                className={cx('pagination')}
-                                size="medium"
-                                defaultPageSize={limit}
-                                defaultCurrent={1}
-                                total={total}
-                                current={currentPage}
-                                onChange={handlePageChange}
-                            />
-                        </div>
-                    </>
-                ) : (
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <img src={nocomment} />
-                        <p>Chưa có đánh giá</p>
-                    </div>
-                )}
-            </div>
         </div>
     ) : (
         <Loading />
     );
 }
 
-export default ItemDetail;
+export default ItemRequestedInfo;

@@ -3,7 +3,7 @@ import { Image, Row, Col, Button } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './CardItemShop.module.scss';
 import { Link } from 'react-router-dom';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 
@@ -11,7 +11,7 @@ function CardItemShopRequest({ item, onRemove }) {
     return (
         <Row className={cx('cart-item')}>
             <Col span={5}>
-                <Link to={`/items/${item.id_item}`}>
+                <Link to={`/items/requested/${item.id_item}`}>
                     <Image
                         style={{
                             width: '130px',

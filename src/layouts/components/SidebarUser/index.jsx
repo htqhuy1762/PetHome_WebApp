@@ -1,10 +1,9 @@
 import classNames from 'classnames/bind';
 import styles from './SidebarUser.module.scss';
-import { Avatar, Menu } from 'antd';
+import { Avatar, Menu, Skeleton } from 'antd';
 import { UserOutlined, ContainerOutlined, ShopOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import * as userServices from '~/services/userServices';
-import Loading from '~/components/Loading';
 import { useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
@@ -64,7 +63,15 @@ function SidebarUser() {
     }, [location.pathname]);
 
     if (loading) {
-        return <Loading />;
+        return (
+            <div className={cx('wrapper')}>
+                <div className={cx('user')}>
+                    <Skeleton.Avatar active size={46} />
+                    <Skeleton active title={false} paragraph={{ rows: 1, width: '190px' }} />
+                </div>
+                <Skeleton active title={false} paragraph={{ rows: 4, width: 256 }} />
+            </div>
+        );
     }
 
     return (

@@ -11,7 +11,7 @@ function CardPetShopRequest({ pet, onRemove }) {
     return (
         <Row className={cx('cart-item')}>
             <Col span={5}>
-                <Link to={`/pets/${pet.id_pet}`}>
+                <Link to={`/pets/requested/${pet.id_pet}`}>
                     <Image
                         style={{
                             width: '130px',

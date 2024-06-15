@@ -7,6 +7,7 @@ import facebook_logo from '~/assets/images/Facebook_Logo.png';
 import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
+import * as shopServices from '~/services/shopServices';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
 import { useEffect, useContext, useRef } from 'react';
@@ -33,6 +34,15 @@ function Login() {
                 localStorage.setItem('refreshToken', refreshToken);
 
                 setIsLoggedIn(true);
+
+                const responseIsRegister = await shopServices.checkIsRegisterShop();
+                const responseIsActive = await shopServices.checkIsActiveShop();
+
+                if (responseIsRegister.status === 200 || responseIsRegister.status === 201) {
+                    if (responseIsRegister.data.message === 'User is shop owner') {
+                        localStorage.setItem('idShop', responseIsActive.data.id_shop);
+                    }
+                }
 
                 navigate('/');
             } else {

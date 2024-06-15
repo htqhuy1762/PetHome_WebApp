@@ -12,6 +12,7 @@ const cx = classNames.bind(styles);
 function ServicePet() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingServices, setLoadingServices] = useState(false);
     const [services, setServices] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
@@ -26,6 +27,7 @@ function ServicePet() {
     const [selectedKeys, setSelectedKeys] = useState([]);
 
     const fetchServices = async (id, page = 1) => {
+        setLoadingServices(true);
         if (id !== null) {
             try {
                 const response = await servicePetServices.getAllServicesByType({
@@ -50,6 +52,7 @@ function ServicePet() {
             setServices([]);
             setTotal(0);
         }
+        setLoadingServices(false);
     };
 
     useEffect(() => {
@@ -95,7 +98,9 @@ function ServicePet() {
 
                     // Fetch services if name is set in the URL
                     if (name) {
-                        const selectedDetail = newItems.flatMap(item => item.children).find(child => child.label === name);
+                        const selectedDetail = newItems
+                            .flatMap((item) => item.children)
+                            .find((child) => child.label === name);
                         if (selectedDetail) {
                             const detailId = selectedDetail.key.split('-detail-')[1];
                             setCurrentId(detailId);
@@ -121,7 +126,7 @@ function ServicePet() {
         setCurrentPage(newPage);
         setCurrentName(newName);
 
-        const selectedDetail = items.flatMap(item => item.children).find(child => child.label === newName);
+        const selectedDetail = items.flatMap((item) => item.children).find((child) => child.label === newName);
         if (selectedDetail) {
             const detailId = selectedDetail.key.split('-detail-')[1];
             setCurrentId(detailId);
@@ -137,10 +142,14 @@ function ServicePet() {
         window.scrollTo(0, 0);
     };
 
+    if (loading) {
+        return <Loading />;
+    }
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
-                {loading ? (
+                {/* {loading ? (
                     <Loading />
                 ) : (
                     <Menu
@@ -150,10 +159,17 @@ function ServicePet() {
                         items={items}
                         selectedKeys={selectedKeys}
                     />
-                )}
+                )} */}
+                <Menu
+                    style={{ width: 256 }}
+                    defaultOpenKeys={items.map((item) => item.key)}
+                    mode="inline"
+                    items={items}
+                    selectedKeys={selectedKeys}
+                />
             </div>
             <div className={cx('content')}>
-                {loading ? (
+                {loadingServices ? (
                     <Loading />
                 ) : (
                     <>
@@ -179,7 +195,10 @@ function ServicePet() {
                                 />
                             </>
                         ) : (
-                            <Empty description="Danh sách dịch vụ trống, vui lòng chọn loại dịch vụ!" image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
+                            <Empty
+                                description="Danh sách dịch vụ trống, vui lòng chọn loại dịch vụ!"
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            ></Empty>
                         )}
                     </>
                 )}
