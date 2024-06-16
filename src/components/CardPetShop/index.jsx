@@ -7,7 +7,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 
-function CardPetShop({ pet, onRemove }) {
+function CardPetShop({ pet, onRemove, onUpdate }) {
     return (
         <Row className={cx('cart-item')}>
             <Col span={4}>
@@ -49,7 +49,7 @@ function CardPetShop({ pet, onRemove }) {
                     icon={<EditOutlined />}
                     style={{ width: 115 }}
                     type="primary"
-                    onClick={() => onRemove(pet.id_pet)}
+                    onClick={() => onUpdate(pet)}
                 >
                     Chỉnh sửa
                 </Button>

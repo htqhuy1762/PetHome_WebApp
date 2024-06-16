@@ -28,7 +28,7 @@ dayjs.extend(timezone);
 
 const formatDateTime = (isoDateString) => {
     if (!isoDateString) {
-        return ''; 
+        return '';
     }
     const timezone = 'Asia/Ho_Chi_Minh';
     const date = dayjs.utc(isoDateString).tz(timezone);
@@ -103,52 +103,55 @@ function ChatBox({ shopInfo }) {
     };
 
     useEffect(() => {
-        if (shopInfo !== null && isChatBoxVisible) {
-            const fetchRoomUser = async () => {
-                const response = await chatServices.createRoomUser({ id_shop: shopInfo });
+        const initializeChatBox = async () => {
+            await checkAccountType();
+            if (isChatBoxVisible && shopInfo) {
+                // Thêm điều kiện shopInfo
+                try {
+                    const response = await chatServices.createRoomUser({ id_shop: shopInfo });
+                    if (response.status === 200) {
+                        const { id_room, id_user } = response.data;
+                        setCurrentRoomUser(response.data);
+                        setCurrentRoomShop(null);
+                        setMessages([]);
+                        setIdUser(id_user);
 
-                if (response.status === 200) {
-                    setCurrentRoomUser(response.data);
-                    setCurrentRoomShop(null);
-                    setMessages([]);
-                    const { id_room, id_user } = response.data;
-                    setIdUser(id_user);
-                    const wsURL = `wss://chat-service-uukxkowwha-as.a.run.app/ws/joinRoom/${id_room}?id_user=${id_user}`;
-                    socketRef.current = new WebSocket(wsURL);
+                        const wsURL = `wss://chat-service-uukxkowwha-as.a.run.app/ws/joinRoom/${id_room}?id_user=${id_user}`;
+                        socketRef.current = new WebSocket(wsURL);
 
-                    socketRef.current.onopen = () => {
-                        console.log('WebSocket is connected');
-                    };
+                        socketRef.current.onopen = () => {
+                            console.log('WebSocket is connected');
+                        };
 
-                    socketRef.current.onmessage = (event) => {
-                        const message = JSON.parse(event.data);
-                        setMessages((prevMessages) => [...prevMessages, message]);
-                    };
+                        socketRef.current.onmessage = (event) => {
+                            const message = JSON.parse(event.data);
+                            setMessages((prevMessages) => [...prevMessages, message]);
+                        };
 
-                    socketRef.current.onclose = () => {
-                        console.log('WebSocket is closed');
-                    };
+                        socketRef.current.onclose = () => {
+                            console.log('WebSocket is closed');
+                        };
 
-                    socketRef.current.onerror = (error) => {
-                        console.error('WebSocket error:', error);
-                    };
+                        socketRef.current.onerror = (error) => {
+                            console.error('WebSocket error:', error);
+                        };
+                    }
+                } catch (error) {
+                    console.error('Error initializing chat box:', error);
                 }
-            };
-
-            fetchRoomUser();
-
-            if (!isChatBoxVisible) {
-                setChatBoxVisible(true);
             }
+        };
 
-            return () => {
-                if (socketRef.current) {
-                    console.log('Component unmounted or room changed, closing WebSocket');
-                    socketRef.current.close();
-                    socketRef.current = null;
-                }
-            };
+        if (shopInfo !== null) {
+            initializeChatBox();
         }
+
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.close();
+                socketRef.current = null;
+            }
+        };
     }, [shopInfo, isChatBoxVisible]);
 
     useEffect(() => {
@@ -156,10 +159,6 @@ function ChatBox({ shopInfo }) {
             setChatBoxVisible(true);
         }
     }, [shopInfo]);
-    
-    useEffect(() => {
-        console.log(isChatBoxVisible);
-    }, [isChatBoxVisible]);
 
     useEffect(() => {
         const fetchRoomUser = async () => {
@@ -256,16 +255,23 @@ function ChatBox({ shopInfo }) {
 
     const toggleChatBox = async () => {
         const newVisibility = !isChatBoxVisible;
-        setChatBoxVisible(newVisibility);
 
-        if (!newVisibility) {
-            if (socketRef.current) {
-                socketRef.current.close();
-                socketRef.current = null;
-            }
-        } else if (isLoggedIn) {
-            await checkAccountType();
+        if (socketRef.current) {
+            socketRef.current.close();
+            socketRef.current = null;
         }
+        setCurrentRoomUser(null);
+        setCurrentRoomShop(null);
+        setMessages([]);
+        shopInfo = null;
+
+        if (newVisibility) {
+            if (isLoggedIn) {
+                await checkAccountType();
+            }
+        }
+
+        setChatBoxVisible(newVisibility);
     };
 
     const handleConversationClickUser = (room) => {
@@ -373,7 +379,12 @@ function ChatBox({ shopInfo }) {
                                                     active={currentRoomUser && currentRoomUser.id_room === room.id_room}
                                                     onClick={() => handleConversationClickUser(room)}
                                                 >
-                                                    <Avatar src={room?.shop_avatar || "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg"} />
+                                                    <Avatar
+                                                        src={
+                                                            room?.shop_avatar ||
+                                                            'https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg'
+                                                        }
+                                                    />
                                                 </Conversation>
                                             ))}
                                         </ConversationList>
@@ -388,7 +399,12 @@ function ChatBox({ shopInfo }) {
                                                     active={currentRoomShop && currentRoomShop.id_room === room.id_room}
                                                     onClick={() => handleConversationClickShop(room)}
                                                 >
-                                                    <Avatar src={room?.user_avatar || "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg"} />
+                                                    <Avatar
+                                                        src={
+                                                            room?.user_avatar ||
+                                                            'https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg'
+                                                        }
+                                                    />
                                                 </Conversation>
                                             ))}
                                         </ConversationList>
@@ -405,7 +421,12 @@ function ChatBox({ shopInfo }) {
                                             active={currentRoomUser && currentRoomUser.id_room === room.id_room}
                                             onClick={() => handleConversationClickUser(room)}
                                         >
-                                            <Avatar src={room?.shop_avatar || "https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg"} />
+                                            <Avatar
+                                                src={
+                                                    room?.shop_avatar ||
+                                                    'https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg'
+                                                }
+                                            />
                                         </Conversation>
                                     ))}
                                 </ConversationList>

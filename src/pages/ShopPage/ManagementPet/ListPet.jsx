@@ -3,29 +3,46 @@ import styles from './ListPet.module.scss';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
 import CardPetShop from '~/components/CardPetShop';
-import { Row, Col, message, Empty, Modal } from 'antd';
+import { Row, Col, message, Empty, Modal, Form, InputNumber, Radio } from 'antd';
 import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
 function ListPet() {
+    const [form] = Form.useForm(); // Sử dụng form hook để quản lý form state
+
     const [petData, setPetData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisibleDelete, setIsModalVisibleDelete] = useState(false);
+    const [isModalVisibleUpdate, setIsModalVisibleUpdate] = useState(false);
     const [selectedPetId, setSelectedPetId] = useState(null);
 
-    const success = () => {
+    const successDelete = () => {
         messageApi.open({
             type: 'success',
             content: 'Xóa pet thành công',
         });
     };
 
-    const errorMessage = () => {
+    const errorMessageDelete = () => {
         messageApi.open({
             type: 'error',
             content: 'Xóa pet thất bại',
+        });
+    };
+
+    const successUpdate = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Cập nhật pet thành công',
+        });
+    };
+
+    const errorMessageUpdate = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Cập nhật pet thất bại',
         });
     };
 
@@ -37,6 +54,7 @@ function ListPet() {
                 const response = await shopServices.getShopPets(idShop, { status: 'active' });
 
                 if (response.status === 200) {
+                    console.log(response.data.data);
                     setPetData(response.data.data || []);
                 }
             } catch (error) {
@@ -49,7 +67,18 @@ function ListPet() {
 
     const showDeleteConfirm = (idPet) => {
         setSelectedPetId(idPet);
-        setIsModalVisible(true);
+        setIsModalVisibleDelete(true);
+    };
+
+    const showUpdateConfirm = (pet) => {
+        setIsModalVisibleUpdate(true);
+        setSelectedPetId(pet.id_pet);
+
+        // Đặt giá trị mặc định cho form khi modal được mở
+        form.setFieldsValue({
+            price: pet.price, // Đặt giá trị cho InputNumber
+            instock: pet.instock, // Đặt giá trị cho Radio.Group
+        });
     };
 
     const handleRemovePet = async () => {
@@ -57,22 +86,62 @@ function ListPet() {
             const response = await shopServices.deleteShopPet(selectedPetId);
             if (response && response.status === 200) {
                 setPetData(petData.filter((pet) => pet.id_pet !== selectedPetId));
-                success();
+                successDelete();
             } else {
                 console.error('Failed to remove pet');
-                errorMessage();
+                errorMessageDelete();
             }
         } catch (error) {
             console.error('Failed to remove pet', error);
             console.log('Error:', error);
         } finally {
-            setIsModalVisible(false);
+            setIsModalVisibleDelete(false);
             setSelectedPetId(null);
         }
     };
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
+    const handleUpdatePet = async () => {
+        try {
+            await form.validateFields();
+            const values = form.getFieldsValue();
+            console.log(values.price);
+            console.log(values.instock);
+            console.log(selectedPetId);
+
+            const updatedFormData = new FormData();
+            updatedFormData.append('price', values.price);
+            updatedFormData.append('instock', values.instock);
+
+            const response = await shopServices.updateShopPet(selectedPetId, updatedFormData);
+            console.log(response.data);
+            if (response && response.status === 200) {
+                // Cập nhật lại petData sau khi cập nhật thành công
+                setPetData(
+                    petData.map((pet) =>
+                        pet.id_pet === selectedPetId ? { ...pet, price: values.price, instock: values.instock } : pet
+                    )
+                );
+                successUpdate();
+            } else {
+                console.error('Failed to update pet');
+                errorMessageUpdate();
+            }
+        } catch (error) {
+            console.error('Failed to update pet', error);
+            console.log('Error:', error);
+        } finally {
+            setIsModalVisibleUpdate(false);
+            setSelectedPetId(null);
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setIsModalVisibleDelete(false);
+        setSelectedPetId(null);
+    };
+
+    const handleCancelUpdate = () => {
+        setIsModalVisibleUpdate(false);
         setSelectedPetId(null);
     };
 
@@ -107,18 +176,48 @@ function ListPet() {
                 </Col>
             </Row>
             {petData?.map((pet) => (
-                <CardPetShop key={pet.id_pet} pet={pet} onRemove={showDeleteConfirm} />
+                <CardPetShop key={pet.id_pet} pet={pet} onRemove={showDeleteConfirm} onUpdate={showUpdateConfirm} />
             ))}
 
             <Modal
                 title="Xác nhận xóa"
-                open={isModalVisible}
+                open={isModalVisibleDelete}
                 onOk={handleRemovePet}
-                onCancel={handleCancel}
+                onCancel={handleCancelDelete}
                 okText="Xóa"
                 cancelText="Hủy"
             >
                 <p>Bạn có chắc chắn muốn xóa thú cưng này không?</p>
+            </Modal>
+
+            <Modal
+                title="Sửa thú cưng"
+                open={isModalVisibleUpdate}
+                onOk={handleUpdatePet}
+                onCancel={handleCancelUpdate}
+                okText="Cập nhật"
+                cancelText="Hủy"
+            >
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        label="Giá thú cưng"
+                        name="price"
+                        rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
+                    >
+                        <InputNumber min={0} style={{ width: '100%' }} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Tình trạng thú cưng"
+                        name="instock"
+                        rules={[{ required: true, message: 'Vui lòng chọn loại thú cưng!' }]}
+                    >
+                        <Radio.Group>
+                            <Radio value={true}>Còn hàng</Radio>
+                            <Radio value={false}>Hết hàng</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Form>
             </Modal>
         </div>
     );

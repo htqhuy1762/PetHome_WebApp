@@ -40,7 +40,6 @@ export const getShopInfo = async (id) => {
     }
 };
 
-
 // Management Pet
 export const getShopPets = async (id, data) => {
     try {
@@ -62,7 +61,7 @@ export const addPetRequest = async (data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const deleteShopPet = async (id) => {
     try {
@@ -71,8 +70,20 @@ export const deleteShopPet = async (id) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
+export const updateShopPet = async (id, data) => {
+    try {
+        const response = await authRequest.put(`/api/shop/pets/${id}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
 
 //Management Item
 
@@ -83,7 +94,7 @@ export const getShopItems = async (id, data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const addItemRequest = async (data) => {
     try {
@@ -96,7 +107,7 @@ export const addItemRequest = async (data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const deleteShopItem = async (id) => {
     try {
@@ -105,8 +116,7 @@ export const deleteShopItem = async (id) => {
     } catch (error) {
         return error.response;
     }
-}
-
+};
 
 // Management Services
 export const getShopServices = async (id, data) => {
@@ -116,7 +126,7 @@ export const getShopServices = async (id, data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const addServiceRequest = async (data) => {
     try {
@@ -129,7 +139,7 @@ export const addServiceRequest = async (data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const deleteShopService = async (id) => {
     try {
@@ -138,4 +148,5 @@ export const deleteShopService = async (id) => {
     } catch (error) {
         return error.response;
     }
-}
+};
+
