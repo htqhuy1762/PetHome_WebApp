@@ -1,5 +1,5 @@
 import Post from '~/components/Post';
-import { Form, Input, Button, Upload, Avatar, message, ConfigProvider } from 'antd';
+import { Form, Input, Button, Upload, Avatar, message, ConfigProvider, Select } from 'antd';
 import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Blog.module.scss';
@@ -134,6 +134,7 @@ function Blog() {
             const values = await form.validateFields();
             const formData = new FormData();
             formData.append('description', values.text);
+            formData.append('status', values.privillage);
             images.forEach((image) => {
                 formData.append('images', image);
             });
@@ -190,25 +191,30 @@ function Blog() {
                                 src={userData?.avatar}
                             />
                             <Form.Item style={{ width: '90%' }} name="text">
-                                <Input.TextArea placeholder="Bạn đang nghĩ gì thế?" autoSize={{ minRows: 3, maxRows: 6 }} />
+                                <Input.TextArea
+                                    placeholder="Bạn đang nghĩ gì thế?"
+                                    autoSize={{ minRows: 3, maxRows: 6 }}
+                                />
                             </Form.Item>
                         </div>
                         <div className={cx('form-footer')}>
-                            <Form.Item name="image">
-                                <Upload
-                                    listType="picture-card"
-                                    beforeUpload={beforeUploadImages}
-                                    fileList={images.map((file) => ({
-                                        uid: file.uid,
-                                        name: file.name,
-                                        status: 'done',
-                                        url: URL.createObjectURL(file),
-                                    }))}
-                                    onRemove={handleRemoveImage}
-                                    showUploadList={{ showRemoveIcon: true }}
-                                >
-                                    {uploadButtonImages}
-                                </Upload>
+                            <Form.Item name="privillage">
+                                <Select
+                                    defaultValue="public"
+                                    style={{
+                                        width: 120,
+                                    }}
+                                    options={[
+                                        {
+                                            value: 'public',
+                                            label: 'Công khai',
+                                        },
+                                        {
+                                            value: 'private',
+                                            label: 'Riêng tư',
+                                        },
+                                    ]}
+                                />
                             </Form.Item>
                             <Form.Item>
                                 <ConfigProvider
@@ -231,6 +237,22 @@ function Blog() {
                                 </ConfigProvider>
                             </Form.Item>
                         </div>
+                        <Form.Item name="image">
+                            <Upload
+                                listType="picture-card"
+                                beforeUpload={beforeUploadImages}
+                                fileList={images.map((file) => ({
+                                    uid: file.uid,
+                                    name: file.name,
+                                    status: 'done',
+                                    url: URL.createObjectURL(file),
+                                }))}
+                                onRemove={handleRemoveImage}
+                                showUploadList={{ showRemoveIcon: true }}
+                            >
+                                {uploadButtonImages}
+                            </Upload>
+                        </Form.Item>
                     </Form>
                 </div>
                 <div className={cx('list-post')}>

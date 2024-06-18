@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Skeleton, Card, Avatar, Image, Dropdown, Modal, Button, Input, Row, Col, Carousel } from 'antd';
+import { Skeleton, Card, Avatar, Image, Dropdown, Modal, Button, Input, Row, Col, Carousel, Form, Select } from 'antd';
 import { HeartOutlined, HeartFilled, EllipsisOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
@@ -13,6 +13,7 @@ dayjs.extend(utc);
 const cx = classNames.bind(styles);
 
 function Post({ data, showMenu, updateUI, deletePostUI }) {
+    const [form] = Form.useForm();
     const [updating, setUpdating] = useState(false);
     const [loading, setLoading] = useState(true);
     const [likes, setLikes] = useState(data.count || 0);
@@ -76,11 +77,24 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
         setEditContent(data.description || ''); // Load nội dung bài viết vào ô text
     };
 
+    useEffect(() => {
+        if (data) {
+            form.setFieldsValue({
+                text: data?.description,
+                privillage: data?.status,
+            });
+        }
+    }, [data, form]);
+
     const handleSaveChanges = async () => {
         try {
             setUpdating(true);
+            await form.validateFields();
+            const values = form.getFieldsValue();
+
             const formData = new FormData();
-            formData.append('description', editContent);
+            formData.append('description', values.text);
+            formData.append('status', values.privillage);
 
             const response = await blogServices.updateBlog(data.id_blog, formData);
             if (response.status === 200) {
@@ -286,7 +300,14 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
                         />
                         <div style={{ marginLeft: '10px' }}>
                             <Card.Meta title={data.username} description={null} />
-                            <Card.Meta style={{ marginTop: '5px' }} title={null} description={formattedDate} />
+                            <div style={{ display: 'flex' }}>
+                                <Card.Meta style={{ marginTop: '5px' }} title={null} description={formattedDate} />
+                                <Card.Meta
+                                    style={{ marginTop: '5px', marginLeft: '8px' }}
+                                    title={null}
+                                    description={data.status === 'public' ? 'Công khai' : 'Riêng tư'}
+                                />
+                            </div>
                         </div>
                         {showMenu && (
                             <div style={{ marginLeft: 'auto' }}>
@@ -327,12 +348,39 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
                     </Button>,
                 ]}
             >
-                <Input.TextArea
-                    value={editContent}
-                    onChange={handleEditContentChange}
-                    placeholder="Start a post"
-                    autoSize={{ minRows: 3, maxRows: 6 }}
-                />
+                <Form
+                    form={form}
+                    initialValues={{
+                        text: data?.description,
+                        privillage: data?.status,
+                    }}
+                >
+                    <Form.Item name="text">
+                        <Input
+                            value={editContent}
+                            onChange={handleEditContentChange}
+                            placeholder="Start a post"
+                            style={{ fontSize: '1.6rem' }}
+                        />
+                    </Form.Item>
+                    <Form.Item name="privillage">
+                        <Select
+                            style={{
+                                width: 120,
+                            }}
+                            options={[
+                                {
+                                    value: 'public',
+                                    label: 'Công khai',
+                                },
+                                {
+                                    value: 'private',
+                                    label: 'Riêng tư',
+                                },
+                            ]}
+                        />
+                    </Form.Item>
+                </Form>
             </Modal>
             <Modal
                 title="Xóa bài viết"
