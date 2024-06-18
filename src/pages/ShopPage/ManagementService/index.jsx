@@ -35,6 +35,8 @@ function ManagementService() {
     const [headerImage, setHeaderImage] = useState([]);
     const [images, setImages] = useState([]);
     const [itemMenu, setItemMenu] = useState([]);
+    const [serviceAdded, setServiceAdded] = useState(false);
+
 
     const [selectedServiceTypeDetailId, setSelectedServiceTypeDetailId] = useState(1);
     const [selectedServiceTypeDetailName, setSelectedServiceTypeDetailName] = useState('Tắm và vệ sinh');
@@ -215,6 +217,7 @@ function ManagementService() {
                 <ListServiceRequest
                     idServiceTypeDetail={selectedServiceTypeDetailId}
                     nameServiceTypeDetail={selectedServiceTypeDetailName}
+                    serviceAdded={serviceAdded}
                 />
             ),
         },
@@ -224,6 +227,16 @@ function ManagementService() {
         try {
             await form.validateFields();
             const values = form.getFieldsValue();
+
+            if (headerImage.length === 0) {
+                message.error('Vui lòng chọn ảnh đại diện!');
+                return;
+            }
+
+            if (images.length === 0) {
+                message.error('Vui lòng chọn ảnh mô tả!');
+                return;
+            }
 
             const updatedFormData = new FormData();
             updatedFormData.append('header_image', headerImage[0]);
@@ -250,6 +263,7 @@ function ManagementService() {
                 setHeaderImage([]);
                 setImages([]);
                 setIsModalVisible(false);
+                setServiceAdded(!serviceAdded);
             } else {
                 message.error('Thêm dịch vụ thất bại');
                 setIsModalVisible(false);

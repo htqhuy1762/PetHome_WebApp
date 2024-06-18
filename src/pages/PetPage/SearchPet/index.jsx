@@ -85,8 +85,11 @@ function SearchPet() {
     const [displayCount, setDisplayCount] = useState(5);
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get('page');
+
     const [data, setData] = useState({});
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(page || 1);
     const limit = 16;
     const [total, setTotal] = useState(0);
     const [lastQuery, setLastQuery] = useState(null);
@@ -109,6 +112,9 @@ function SearchPet() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        const query = new URLSearchParams(location.search).get('q');
+        navigate(`/search/pets?q=${query}&page=${page}`);
+        window.scrollTo(0, 0);
     };
 
     const goToPetDetail = (id) => {
@@ -135,7 +141,6 @@ function SearchPet() {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, location.search]);
-
 
     const filteredData = data[currentPage]?.filter(
         (pet) =>
@@ -175,6 +180,11 @@ function SearchPet() {
 
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const newPage = searchParams.get('page');
+        setCurrentPage(newPage || 1);
+    }, [location]);
 
     return (
         <div className={cx('wrapper')}>
@@ -236,7 +246,15 @@ function SearchPet() {
                             <CardPet key={pet.id_pet} pet={pet} onClick={() => goToPetDetail(pet.id_pet)} />
                         ))
                     ) : (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '965px', height: '366px' }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '965px',
+                                height: '366px',
+                            }}
+                        >
                             <Empty description="Danh sách trống" />
                         </div>
                     )}

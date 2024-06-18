@@ -4,19 +4,22 @@ import * as petServices from '~/services/petServices';
 import CardPet from '~/components/CardPet';
 import { useState, useEffect } from 'react';
 import { Pagination, Empty, Breadcrumb } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
 function PetTypePage() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get('page');
     const [loading, setLoading] = useState(false);
     const { type } = useParams();
     const [species, setSpecies] = useState([]);
 
     const [data, setData] = useState({});
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(page || 1);
     const limit = 20;
     const [total, setTotal] = useState(0);
 
@@ -30,6 +33,11 @@ function PetTypePage() {
 
         fetchDataSpecies();
     }, []);
+
+    useEffect(() => {
+        const newPage = searchParams.get('page');
+        setCurrentPage(newPage || 1);
+    }, [location]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,6 +67,8 @@ function PetTypePage() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        navigate(`/pets/type/${type}?page=${page}`);
+        window.scrollTo(0, 0);
     };
 
     const goToPetDetail = (id) => {

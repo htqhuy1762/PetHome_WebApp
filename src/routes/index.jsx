@@ -33,6 +33,8 @@ import ForgotPassword from '~/pages/AuthPage/ForgotPassword';
 import ServiceRequestedInfo from '~/pages/ServicePage/ServiceRequestedInfo';
 import ItemRequestedInfo from '~/pages/ItemPage/ItemRequestedInfo';
 import PetRequestedInfo from '~/pages/PetPage/PetRequestedInfo';
+import AddressShop from '~/pages/ShopPage/AddressShop';
+import ShopProfile from '~/pages/ShopPage/ShopProfile';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -66,6 +68,8 @@ const privateRoutes = [
     { path: '/user/shop/management/pet', component: ManagementPet, layout: ShopManagementLayout },
     { path: '/user/shop/management/item', component: ManagementItem, layout: ShopManagementLayout },
     { path: '/user/shop/management/service', component: ManagementService, layout: ShopManagementLayout },
+    { path: '/user/shop/management/profile', component: ShopProfile, layout: ShopManagementLayout },
+    { path: '/user/shop/management/address', component: AddressShop, layout: ShopManagementLayout },
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/user/account/changepass', component: ChangePass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },

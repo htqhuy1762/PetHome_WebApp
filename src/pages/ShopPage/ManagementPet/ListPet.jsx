@@ -17,6 +17,7 @@ function ListPet() {
     const [isModalVisibleDelete, setIsModalVisibleDelete] = useState(false);
     const [isModalVisibleUpdate, setIsModalVisibleUpdate] = useState(false);
     const [selectedPetId, setSelectedPetId] = useState(null);
+    const [selectedPetName, setSelectedPetName] = useState(null);
 
     const successDelete = () => {
         messageApi.open({
@@ -54,7 +55,6 @@ function ListPet() {
                 const response = await shopServices.getShopPets(idShop, { status: 'active' });
 
                 if (response.status === 200) {
-                    console.log(response.data.data);
                     setPetData(response.data.data || []);
                 }
             } catch (error) {
@@ -73,6 +73,7 @@ function ListPet() {
     const showUpdateConfirm = (pet) => {
         setIsModalVisibleUpdate(true);
         setSelectedPetId(pet.id_pet);
+        setSelectedPetName(pet.name)
 
         // Đặt giá trị mặc định cho form khi modal được mở
         form.setFieldsValue({
@@ -104,16 +105,12 @@ function ListPet() {
         try {
             await form.validateFields();
             const values = form.getFieldsValue();
-            console.log(values.price);
-            console.log(values.instock);
-            console.log(selectedPetId);
 
             const updatedFormData = new FormData();
             updatedFormData.append('price', values.price);
             updatedFormData.append('instock', values.instock);
 
             const response = await shopServices.updateShopPet(selectedPetId, updatedFormData);
-            console.log(response.data);
             if (response && response.status === 200) {
                 // Cập nhật lại petData sau khi cập nhật thành công
                 setPetData(
@@ -199,6 +196,7 @@ function ListPet() {
                 cancelText="Hủy"
             >
                 <Form form={form} layout="vertical">
+                    <h3>{selectedPetName}</h3>
                     <Form.Item
                         label="Giá thú cưng"
                         name="price"

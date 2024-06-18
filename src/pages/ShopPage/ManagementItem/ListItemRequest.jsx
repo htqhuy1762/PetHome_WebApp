@@ -8,7 +8,7 @@ import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
-function ListItemRequest() {
+function ListItemRequest({ itemAdded }) {
     const [itemData, setItemData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ function ListItemRequest() {
             setIsLoading(false);
         };
         fetchItemData();
-    }, []);
+    }, [itemAdded]);
 
     const showDeleteConfirm = (idItem) => {
         setSelectedItemId(idItem);

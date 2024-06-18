@@ -40,6 +40,46 @@ export const getShopInfo = async (id) => {
     }
 };
 
+export const getShopDetail = async () => {
+    try {
+        const response = await authRequest.get(`/api/shop`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updateShopLogo = async (data) => {
+    try {
+        const response = await authRequest.put(`/api/shop/logo`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const addShopAddress = async (data) => {
+    try {
+        const response = await authRequest.post(`/api/shop/address`, data);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const deleteShopAddress = async (id) => {
+    try {
+        const response = await authRequest.delete(`/api/shop/address/${id}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
 // Management Pet
 export const getShopPets = async (id, data) => {
     try {
@@ -118,6 +158,41 @@ export const deleteShopItem = async (id) => {
     }
 };
 
+export const addItemDetailRequest = async (id, data) => {
+    try {
+        const response = await authRequest.post(`/api/shop/items/${id}/detail/add`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updateItemDetail = async (idItem, idDetail, data) => {
+    try {
+        const response = await authRequest.put(`/api/shop/items/${idItem}/detail/${idDetail}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const deleteItemDetail = async (idItem, idDetail) => {
+    try {
+        const response = await authRequest.delete(`/api/shop/items/${idItem}/detail/${idDetail}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
 // Management Services
 export const getShopServices = async (id, data) => {
     try {
@@ -150,3 +225,28 @@ export const deleteShopService = async (id) => {
     }
 };
 
+export const updatePriceService = async (id, data) => {
+    try {
+        const response = await authRequest.put(`/api/shop/services/${id}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updateAddressService = async (id, data) => {
+    try {
+        const response = await authRequest.put(`/api/shop/services/${id}/addresses`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};

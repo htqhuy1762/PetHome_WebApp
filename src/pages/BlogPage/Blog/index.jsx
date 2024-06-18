@@ -1,6 +1,6 @@
 import Post from '~/components/Post';
 import { Form, Input, Button, Upload, Avatar, message, ConfigProvider } from 'antd';
-import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Blog.module.scss';
 import { useState, useEffect, useCallback } from 'react';
@@ -17,19 +17,12 @@ function Blog() {
     const [currentPage, setCurrentPage] = useState(1);
     const [userData, setUserData] = useState(null);
     const [form] = Form.useForm();
-    const [imageUrl, setImageUrl] = useState(null);
-    const [fileList, setFileList] = useState([]);
+    const [images, setImages] = useState([]);
     const [loadingUser, setLoadingUser] = useState(true);
     const [loadingBlogs, setLoadingBlogs] = useState(true);
     const [hasMore, setHasMore] = useState(true);
 
-    const getBase64 = (img, callback) => {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => callback(reader.result));
-        reader.readAsDataURL(img);
-    };
-
-    const beforeUpload = (file) => {
+    const beforeUploadImages = (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');
@@ -40,12 +33,32 @@ function Blog() {
             message.error('Image must be smaller than 2MB!');
             return false;
         }
-        getBase64(file, (url) => {
-            setImageUrl(url);
-            setFileList([file]);
-        });
+        setImages([...images, file]);
         return false;
     };
+
+    const handleRemoveImage = (file) => {
+        setImages(images.filter((image) => image.uid !== file.uid));
+    };
+
+    const uploadButtonImages = (
+        <button
+            style={{
+                border: 0,
+                background: 'none',
+            }}
+            type="button"
+        >
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Thêm ảnh
+            </div>
+        </button>
+    );
 
     const fetchBlogs = useCallback(
         async (reset = false) => {
@@ -60,6 +73,7 @@ function Blog() {
                     const newPosts = response.data.data;
                     if (Array.isArray(newPosts) && newPosts.length > 0) {
                         setPosts((prevPosts) => (reset ? newPosts : [...prevPosts, ...newPosts]));
+                        console.log(posts);
                         if (totalCount <= currentPage * limit) {
                             setHasMore(false);
                         }
@@ -120,17 +134,16 @@ function Blog() {
             const values = await form.validateFields();
             const formData = new FormData();
             formData.append('description', values.text);
-            if (fileList.length > 0) {
-                formData.append('picture', fileList[0]);
-            }
+            images.forEach((image) => {
+                formData.append('images', image);
+            });
 
             const response = await blogServices.addBlog(formData);
             if (response.status === 200) {
                 message.success('Post submitted successfully!');
                 fetchBlogs(true);
                 form.resetFields();
-                setFileList([]);
-                setImageUrl(null);
+                setImages([]);
                 setCurrentPage(1);
                 setHasMore(true);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -177,20 +190,24 @@ function Blog() {
                                 src={userData?.avatar}
                             />
                             <Form.Item style={{ width: '90%' }} name="text">
-                                <Input.TextArea placeholder="Start a post" autoSize={{ minRows: 3, maxRows: 6 }} />
+                                <Input.TextArea placeholder="Bạn đang nghĩ gì thế?" autoSize={{ minRows: 3, maxRows: 6 }} />
                             </Form.Item>
                         </div>
                         <div className={cx('form-footer')}>
                             <Form.Item name="image">
                                 <Upload
-                                    beforeUpload={beforeUpload}
-                                    fileList={fileList}
-                                    onRemove={() => {
-                                        setFileList([]);
-                                        setImageUrl(null);
-                                    }}
+                                    listType="picture-card"
+                                    beforeUpload={beforeUploadImages}
+                                    fileList={images.map((file) => ({
+                                        uid: file.uid,
+                                        name: file.name,
+                                        status: 'done',
+                                        url: URL.createObjectURL(file),
+                                    }))}
+                                    onRemove={handleRemoveImage}
+                                    showUploadList={{ showRemoveIcon: true }}
                                 >
-                                    <Button icon={<UploadOutlined />}>Thêm ảnh</Button>
+                                    {uploadButtonImages}
                                 </Upload>
                             </Form.Item>
                             <Form.Item>

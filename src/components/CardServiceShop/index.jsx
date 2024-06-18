@@ -1,11 +1,29 @@
 import classNames from 'classnames/bind';
 import styles from './CardServiceShop.module.scss';
-import { Card, Button } from 'antd';
+import { Card, Button, ConfigProvider } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { useState, useEffect } from 'react';
+import * as servicePetServices from '~/services/servicePetServices';
 
 const cx = classNames.bind(styles);
 
-function CardServiceShop({ service, onClick, onRemove }) {
+function CardServiceShop({ service, onClick, onRemove, onUpdatePrice, onUpdateAddress, isUpdated }) {
+    const [serviceData, setServiceData] = useState(null);
+    const handleButtonClick = (e, callback) => {
+        e.stopPropagation();
+        callback();
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await servicePetServices.getServiceDetailById(service.id_service);
+            if (response.status === 200) {
+                setServiceData(response.data);
+            }
+        };
+        fetchData();
+    }, [isUpdated]);
+
     return (
         <Card type="inner" className={cx('card')} onClick={onClick} hoverable>
             <Card.Meta
@@ -31,20 +49,42 @@ function CardServiceShop({ service, onClick, onRemove }) {
                     </>
                 }
             />
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Button: {
+                            colorPrimary: 'green',
+                            colorPrimaryHover: 'green',
+                            colorPrimaryActive: 'green',
+                            lineWidth: 0,
+                        },
+                    },
+                }}
+            >
+                <Button
+                    icon={<EditOutlined />}
+                    style={{ width: 160, marginRight: 10 }}
+                    type="primary"
+                    onClick={(e) => handleButtonClick(e, () => onUpdatePrice(service))}
+                >
+                    Chỉnh sửa giá
+                </Button>
+            </ConfigProvider>
+
             <Button
                 icon={<EditOutlined />}
-                style={{ width: 115, marginRight: 10}}
+                style={{ width: 160, marginRight: 10 }}
                 type="primary"
-                onClick={() => onRemove(service.id_service)}
+                onClick={(e) => handleButtonClick(e, () => onUpdateAddress(serviceData))}
             >
-                Chỉnh sửa
+                Chỉnh sửa địa chỉ
             </Button>
             <Button
                 icon={<DeleteOutlined />}
-                style={{ width: 115, marginTop: 10 }}
+                style={{ width: 160, marginTop: 10 }}
                 type="primary"
                 danger
-                onClick={() => onRemove(service.id_service)}
+                onClick={(e) => handleButtonClick(e, () => onRemove(service.id_service))}
             >
                 Xóa
             </Button>

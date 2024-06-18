@@ -4,10 +4,24 @@ import classNames from 'classnames/bind';
 import styles from './CardItemShop.module.scss';
 import { Link } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import * as itemServices from '~/services/itemServices';
+import { useState, useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
-function CardItemShop({ item, onRemove }) {
+function CardItemShop({ item, onRemove, onUpdate, isUpdated }) {
+    const [itemDetailData, setItemDetailData] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await itemServices.getItemDetailById(item.id_item);
+            if (response.status === 200) {
+                setItemDetailData(response.data);
+            }
+        };
+        fetchData();
+    }, [isUpdated]);
+
     return (
         <Row className={cx('cart-item')}>
             <Col span={4}>
@@ -34,12 +48,12 @@ function CardItemShop({ item, onRemove }) {
                     <p className={cx('shop-name')}>{item.shop_name}</p>
                 </Row>
             </Col>
-            <Col span={4}>
+            <Col span={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Row>
                     <p className={cx('price')}>{item.min_price.toLocaleString('vi-VN')}đ</p>
                 </Row>
             </Col>
-            <Col span={4}>
+            <Col span={4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <p className={cx('stock', item?.instock ? 'in-stock' : 'out-of-stock')}>
                     {item?.instock ? 'Còn hàng' : 'Hết hàng'}
                 </p>
@@ -47,15 +61,15 @@ function CardItemShop({ item, onRemove }) {
             <Col span={4}>
                 <Button
                     icon={<EditOutlined />}
-                    style={{ width: 115 }}
+                    style={{ width: 115, marginLeft: '20px' }}
                     type="primary"
-                    onClick={() => onRemove(item.id_item)}
+                    onClick={() => onUpdate(itemDetailData)}
                 >
                     Chỉnh sửa
                 </Button>
                 <Button
                     icon={<DeleteOutlined />}
-                    style={{ width: 115, marginTop: 10 }}
+                    style={{ width: 115, marginTop: 10, marginLeft: '20px' }}
                     type="primary"
                     danger
                     onClick={() => onRemove(item.id_item)}

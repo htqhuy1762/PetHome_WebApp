@@ -18,6 +18,8 @@ function ManagementItem() {
     const [images, setImages] = useState([]);
     const [itemDetails, setItemDetails] = useState([]); // State để lưu trữ các phân loại vật phẩm
     const [newItemDetail, setNewItemDetail] = useState({ price: '', size: '', quantity: '' }); // State cho phân loại mới
+    const [itemAdded, setItemAdded] = useState(false);
+
 
     const handleAddItemClick = () => {
         setIsModalVisible(true);
@@ -108,7 +110,7 @@ function ManagementItem() {
         {
             key: '2',
             label: 'Đang yêu cầu',
-            children: <ListItemRequest />,
+            children: <ListItemRequest itemAdded={itemAdded}/>,
         },
     ];
 
@@ -116,6 +118,16 @@ function ManagementItem() {
         try {
             await form.validateFields();
             const values = form.getFieldsValue();
+
+            if (headerImage.length === 0) {
+                message.error('Vui lòng chọn ảnh đại diện!');
+                return;
+            }
+
+            if (images.length === 0) {
+                message.error('Vui lòng chọn ảnh mô tả!');
+                return;
+            }
 
             const updatedFormData = new FormData();
             updatedFormData.append('header_image', headerImage[0]);
@@ -146,6 +158,7 @@ function ManagementItem() {
                 setImages([]);
                 setItemDetails([]); // Reset danh sách phân loại sau khi thêm thành công
                 setIsModalVisible(false);
+                setItemAdded(!itemAdded);
             } else {
                 message.error('Thêm vật phẩm thất bại');
                 setIsModalVisible(false);

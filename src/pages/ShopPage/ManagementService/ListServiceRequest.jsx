@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail }) {
+function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail, serviceAdded }) {
     const navigate = useNavigate();
     const [serviceData, setServiceData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
@@ -50,7 +50,7 @@ function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail }) {
             setIsLoading(false);
         };
         fetchServiceData();
-    }, [idServiceTypeDetail]);
+    }, [idServiceTypeDetail, serviceAdded]);
 
     const showDeleteConfirm = (idService) => {
         setSelectedServiceId(idService);

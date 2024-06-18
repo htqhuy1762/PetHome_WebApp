@@ -8,7 +8,7 @@ import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
-function ListPetRequest() {
+function ListPetRequest({ petAdded }) {
     const [petData, setPetData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ function ListPetRequest() {
             setIsLoading(false);
         };
         fetchPetData();
-    }, []);
+    }, [petAdded]);
 
     const showDeleteConfirm = (idPet) => {
         setSelectedPetId(idPet);

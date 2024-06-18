@@ -4,19 +4,24 @@ import * as itemServices from '~/services/itemServices';
 import CardItems from '~/components/CardItems';
 import { useState, useEffect } from 'react';
 import { Pagination, Breadcrumb, Empty } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
 function ItemTypePage() {
     const navigate = useNavigate();
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get('page');
+
     const { type } = useParams();
     const [itemTypes, setItemTypes] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [data, setData] = useState({});
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(page || 1);
     const limit = 20;
     const [total, setTotal] = useState(0);
 
@@ -31,8 +36,15 @@ function ItemTypePage() {
         fetchDataItemTypes();
     }, []);
 
+    useEffect(() => {
+        const newPage = searchParams.get('page');
+        setCurrentPage(newPage || 1);
+    }, [location]);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        navigate(`/items/type/${type}?page=${page}`);
+        window.scrollTo(0, 0);
     };
 
     const goToItemDetail = (id) => {

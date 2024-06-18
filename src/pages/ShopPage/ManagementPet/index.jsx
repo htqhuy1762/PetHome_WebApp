@@ -17,6 +17,7 @@ function ManagementPet() {
     const [listAge, setListAge] = useState([]);
     const [headerImage, setHeaderImage] = useState([]);
     const [images, setImages] = useState([]);
+    const [petAdded, setPetAdded] = useState(false);
 
     const handleAddPetClick = () => {
         setIsModalVisible(true);
@@ -107,7 +108,7 @@ function ManagementPet() {
         {
             key: '2',
             label: 'Đang yêu cầu',
-            children: <ListPetRequest />,
+            children: <ListPetRequest petAdded={petAdded}/>,
         },
     ];
 
@@ -115,6 +116,16 @@ function ManagementPet() {
         try {
             await form.validateFields();
             const values = form.getFieldsValue();
+
+            if (headerImage.length === 0) {
+                message.error('Vui lòng chọn ảnh đại diện!');
+                return;
+            }
+
+            if (images.length === 0) {
+                message.error('Vui lòng chọn ảnh mô tả!');
+                return;
+            }
 
             const updatedFormData = new FormData();
             updatedFormData.append('header_image', headerImage[0]);
@@ -139,6 +150,7 @@ function ManagementPet() {
                 setHeaderImage([]);
                 setImages([]);
                 setIsModalVisible(false);
+                setPetAdded(!petAdded); 
             } else {
                 message.error('Thêm thú cưng thất bại');
                 setIsModalVisible(false);

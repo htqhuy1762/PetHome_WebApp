@@ -82,8 +82,11 @@ function SearchItem() {
     const [displayCount, setDisplayCount] = useState(5);
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get('page');
+
     const [data, setData] = useState({});
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(page || 1);
     const limit = 16;
     const [total, setTotal] = useState(0);
     const [lastQuery, setLastQuery] = useState(null);
@@ -96,6 +99,9 @@ function SearchItem() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        const query = new URLSearchParams(location.search).get('q');
+        navigate(`/search/items?q=${query}&page=${page}`);
+        window.scrollTo(0, 0);
     };
 
     const goToItemDetail = (id) => {
@@ -134,6 +140,11 @@ function SearchItem() {
         }
         setIsExpanded(!isExpanded); // toggle expanded state
     };
+
+    useEffect(() => {
+        const newPage = searchParams.get('page');
+        setCurrentPage(newPage || 1);
+    }, [location]);
 
     return (
         <div className={cx('wrapper')}>

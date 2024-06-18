@@ -37,15 +37,15 @@ function SidebarShopManagement() {
             children: [
                 {
                     key: '2.1',
-                    label: <Link to='/user/shop/management/pet'>Thú cưng</Link>,
+                    label: <Link to="/user/shop/management/pet">Thú cưng</Link>,
                 },
                 {
                     key: '2.2',
-                    label: <Link to='/user/shop/management/item'>Vật phẩm</Link>,
+                    label: <Link to="/user/shop/management/item">Vật phẩm</Link>,
                 },
                 {
                     key: '2.3',
-                    label: <Link to='/user/shop/management/service'>Dịch vụ</Link>,
+                    label: <Link to="/user/shop/management/service">Dịch vụ</Link>,
                 },
             ],
         },
@@ -57,7 +57,16 @@ function SidebarShopManagement() {
         {
             key: '4',
             label: 'Thông tin cửa hàng',
-            children: [],
+            children: [
+                {
+                    key: '4.1',
+                    label: <Link to="/user/shop/management/profile">Thông tin chi tiết</Link>,
+                },
+                {
+                    key: '4.2',
+                    label: <Link to="/user/shop/management/address">Địa chỉ</Link>,
+                },
+            ],
         },
     ];
 
