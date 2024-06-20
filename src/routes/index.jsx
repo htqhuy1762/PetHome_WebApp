@@ -35,6 +35,7 @@ import ItemRequestedInfo from '~/pages/ItemPage/ItemRequestedInfo';
 import PetRequestedInfo from '~/pages/PetPage/PetRequestedInfo';
 import AddressShop from '~/pages/ShopPage/AddressShop';
 import ShopProfile from '~/pages/ShopPage/ShopProfile';
+import Checkout from '~/pages/CheckoutPage/Checkout';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -73,6 +74,7 @@ const privateRoutes = [
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/user/account/changepass', component: ChangePass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },
+    { path: '/checkout', component: Checkout, layout: HeaderFooter },
     { path: '/user/purchase', component: Purchase, layout: UserLayout },
     { path: '/user/account/payment', component: Payment, layout: UserLayout },
 ];

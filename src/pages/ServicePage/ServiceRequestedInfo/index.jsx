@@ -133,8 +133,8 @@ function ServiceRequestedInfo() {
             <div className={cx('pet-detail-shop')}>
                 <div className={cx('pet-detail-shop-left')}>
                     <Avatar
-                        src={serviceData.shop?.avatar ? serviceData.shop.avatar : null}
-                        icon={!serviceData.shop?.avatar ? <UserOutlined /> : null}
+                        src={serviceData.shop?.logo ? serviceData.shop.logo : null}
+                        icon={!serviceData.shop?.logo ? <UserOutlined /> : null}
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />

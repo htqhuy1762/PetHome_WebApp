@@ -1,10 +1,9 @@
-import { Button, Image, Rate, Avatar, Descriptions, Breadcrumb, message, ConfigProvider, Carousel } from 'antd';
+import { Button, Image, Rate, Avatar, Descriptions, Breadcrumb, Carousel } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './ItemRequestedInfo.module.scss';
-import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as itemServices from '~/services/itemServices';
-import * as cartServices from '~/services/cartServices';
 import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import React from 'react';
@@ -12,7 +11,6 @@ import React from 'react';
 const cx = classNames.bind(styles);
 
 function ItemRequestedInfo() {
-    const [messageApi, contextHolder] = message.useMessage();
     const [options, setOptions] = useState(null);
 
     const [selectedItem, setSelectedItem] = useState(null);
@@ -24,20 +22,6 @@ function ItemRequestedInfo() {
             instock: instock,
             id_item: id_item,
             id_item_detail: id_item_detail,
-        });
-    };
-
-    const cartSuccess = () => {
-        messageApi.open({
-            type: 'success',
-            content: 'Thêm vào giỏ hàng thành công',
-        });
-    };
-
-    const cartError = () => {
-        messageApi.open({
-            type: 'error',
-            content: 'Thêm vào giỏ hàng thất bại',
         });
     };
 
@@ -74,35 +58,6 @@ function ItemRequestedInfo() {
         }
     }, [options]);
 
-    const handleAddToCart = async (id) => {
-        if (selectedItem) {
-            if (id === localStorage.getItem('idShop')) {
-                messageApi.open({
-                    type: 'error',
-                    content: 'Xin lỗi, sản phẩm này thuộc cửa hàng của bạn!',
-                });
-
-                return;
-            }
-            try {
-                const response = await cartServices.addItemToCart({
-                    id_item: selectedItem.id_item,
-                    id_item_detail: selectedItem.id_item_detail,
-                });
-                if (response.status === 200) {
-                    cartSuccess();
-                } else {
-                    cartError();
-                }
-            } catch (error) {
-                console.error('Exception adding to cart:', error);
-                cartError();
-            }
-        } else {
-            cartError();
-        }
-    };
-
     const items = useMemo(() => {
         if (!itemData) {
             return [];
@@ -128,7 +83,6 @@ function ItemRequestedInfo() {
 
     return itemData ? (
         <div className={cx('wrapper')}>
-            {contextHolder}
             <Breadcrumb
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
@@ -240,8 +194,8 @@ function ItemRequestedInfo() {
             <div className={cx('item-detail-shop')}>
                 <div className={cx('item-detail-shop-left')}>
                     <Avatar
-                        src={itemData.shop?.avatar ? itemData.shop.avatar : null}
-                        icon={!itemData.shop?.avatar ? <UserOutlined /> : null}
+                        src={itemData.shop?.logo ? itemData.shop.logo : null}
+                        icon={!itemData.shop?.logo ? <UserOutlined /> : null}
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />

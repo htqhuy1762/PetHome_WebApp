@@ -1,61 +1,83 @@
-//import { Card, InputNumber, Button, Image } from 'antd';
-import { Image, Row, Col, Button, Input, Checkbox } from 'antd';
+import { Image, Row, Col, Button, Input } from 'antd';
 import classNames from 'classnames/bind';
-import styles from './ItemCartElement.module.scss';
-import { useState } from 'react';
+import styles from './ItemCheckoutElement.module.scss';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function CustomInputNumber({ id, onQuantityChange, item, disabled }) {
-    const [value, setValue] = useState(1);
+function CustomInputNumber({ id, quantityWant, onQuantityChange, fromCart, item }) {
+    const [value, setValue] = useState(quantityWant|| 1);
+    const [isEditable, setIsEditable] = useState(!fromCart);
 
     function increase() {
-        if (!disabled) {
-            const newValue = value + 1;
-            // Kiểm tra xem số lượng mới không vượt quá số lượng hiện có nếu còn hàng
-            if (newValue <= item.quantity) {
-                setValue(newValue);
-                onQuantityChange(id, newValue);
-            }
+        const newValue = value + 1;
+        if (!fromCart && newValue > item.quantity) {
+            return; // Không cho tăng nếu vượt quá số lượng hiện có
         }
+        setValue(newValue);
+        onQuantityChange(id, newValue); // Gọi hàm này để cập nhật quantity
     }
 
     function decrease() {
-        if (!disabled && value > 1) {
+        if (value > 1) {
             const newValue = value - 1;
             setValue(newValue);
-            onQuantityChange(id, newValue);
+            onQuantityChange(id, newValue); // Gọi hàm này để cập nhật quantity
         }
     }
 
+    useEffect(() => {
+        setIsEditable(!fromCart);
+        setValue(quantityWant || 1); // Đặt lại value ban đầu khi fromCart thay đổi
+    }, [fromCart, quantityWant]);
+
     return (
         <div className={cx('input-num')}>
-            <Button
-                style={{ width: '30px', display: 'flex', justifyContent: 'center' }}
-                onClick={decrease}
-                disabled={disabled}
-            >
-                -
-            </Button>
+            {isEditable && (
+                <Button
+                    style={{ width: '30px', display: 'flex', justifyContent: 'center' }}
+                    onClick={decrease}
+                >
+                    -
+                </Button>
+            )}
             <Input style={{ textAlign: 'center', width: '60px' }} value={value} readOnly />
-            <Button
-                style={{ width: '30px', display: 'flex', justifyContent: 'center' }}
-                onClick={increase}
-                disabled={disabled || value >= item.quantity} // Disable nếu đã đạt số lượng hiện có
-            >
-                +
-            </Button>
+            {isEditable && (
+                <Button
+                    style={{ width: '30px', display: 'flex', justifyContent: 'center' }}
+                    onClick={increase}
+                    disabled={!fromCart && value >= item.quantity}
+                >
+                    +
+                </Button>
+            )}
         </div>
     );
 }
 
-function ItemCartElement({ item, selected, onSelect, onQuantityChange, onRemove }) {
+function ItemCheckoutElement({ item, onQuantityChange }) {
+    const [quantityWant, setQuantityWant] = useState(item.quantityWant || 1);
+
+    useEffect(() => {
+        setQuantityWant(item.quantityWant || 1);
+    }, [item.quantityWant]);
+
+    const [totalPrice, setTotalPrice] = useState(item.price * (item.quantityWant || 1));
+
+    useEffect(() => {
+        // Tính toán tổng giá trị khi số lượng thay đổi
+        const newTotalPrice = item.price * quantityWant;
+        setTotalPrice(newTotalPrice);
+        onQuantityChange(item.id_item_detail, quantityWant); 
+    }, [quantityWant]);
+
+    const handleQuantityChange = (id, newValue) => {
+        setQuantityWant(newValue);
+    };
+
     return (
         <Row className={cx('cart-item')}>
-            <Col span={1} style={{ display: 'flex', justifyContent: 'center' }}>
-                <Checkbox checked={selected} onChange={onSelect} disabled={!item.instock} />
-            </Col>
             <Col span={4}>
                 <Link to={`/items/${item.id_item}`}>
                     <Image
@@ -71,7 +93,7 @@ function ItemCartElement({ item, selected, onSelect, onQuantityChange, onRemove 
                     />
                 </Link>
             </Col>
-            <Col span={4}>
+            <Col span={5}>
                 <Row>
                     <Link to={`/items/${item.id_item}`}>
                         <p className={cx('item-name')}>{item.name}</p>
@@ -91,36 +113,32 @@ function ItemCartElement({ item, selected, onSelect, onQuantityChange, onRemove 
                     </p>
                 </Row>
             </Col>
-            <Col span={3}>
+            <Col span={4}>
                 <Row>
                     <p className={cx('price')}>{item.price.toLocaleString('vi-VN')}đ</p>
                 </Row>
             </Col>
             <Col span={4}>
-                <Row className={cx('input-quantity')} style={{ marginTop: 33 }}>
+                <Row className={cx('input-quantity')}>
                     <CustomInputNumber
                         id={item.id_item_detail}
-                        onQuantityChange={onQuantityChange}
+                        quantityWant={quantityWant}
+                        onQuantityChange={handleQuantityChange}
+                        fromCart={item.fromCart}
                         item={item}
-                        disabled={!item.instock}
                     />
-                </Row>
-                <Row className={cx('input-quantity')} style={{ marginTop: 10 }}>
-                    <span>Số lượng hiện có: {item.quantity}</span>
+                    {!item.fromCart && (
+                        <span>Số lượng hiện có: {item.quantity}</span>
+                    )}
                 </Row>
             </Col>
-            <Col span={2}>
-                <p className={cx('stock', item?.instock ? 'in-stock' : 'out-of-stock')}>
-                    {item?.instock ? 'Còn hàng' : 'Hết hàng'}
-                </p>
-            </Col>
-            <Col span={3}>
-                <Button className={cx('remove-btn')} danger type="text" onClick={() => onRemove(item.id_item_detail)}>
-                    Xóa
-                </Button>
+            <Col span={4}>
+                <Row>
+                    <p className={cx('price')}>{totalPrice.toLocaleString('vi-VN')}đ</p>
+                </Row>
             </Col>
         </Row>
     );
 }
 
-export default ItemCartElement;
+export default ItemCheckoutElement;

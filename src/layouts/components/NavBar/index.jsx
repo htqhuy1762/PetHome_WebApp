@@ -12,23 +12,35 @@ const cx = classNames.bind(styles);
 function Navbar() {
     const [items, setItems] = useState([
         {
-            label: <p>THÚ CƯNG <DownOutlined /></p>,
+            label: (
+                <p style={{ color: 'white' }}>
+                    THÚ CƯNG <DownOutlined />
+                </p>
+            ),
             key: 'pets',
-            theme: 'dark',
+            theme: 'light',
             children: [],
         },
         {
-            label: <p>VẬT PHẨM <DownOutlined /></p>,
+            label: (
+                <p style={{ color: 'white' }}>
+                    VẬT PHẨM <DownOutlined />
+                </p>
+            ),
             key: 'items',
-            theme: 'dark',
+            theme: 'light',
             children: [],
         },
         {
-            label: 'DỊCH VỤ',
+            label: <p style={{ color: 'white' }}>DỊCH VỤ</p>,
             key: 'services',
         },
         {
-            label: 'BLOG',
+            label: (
+                <p style={{ color: 'white' }}>
+                    BLOG
+                </p>
+            ),
             key: 'blogs',
         },
     ]);
@@ -60,7 +72,7 @@ function Navbar() {
                     .map((type) => ({
                         label: type.name,
                         key: type.id_item_type,
-                        theme: 'dark',
+                        theme: 'light',
                         children: type.item_type_detail.map((subType) => ({
                             label: subType.name,
                             key: subType.name,
@@ -90,13 +102,13 @@ function Navbar() {
                 theme={{
                     components: {
                         Menu: {
-                            itemColor: 'white',
-                            itemHoverColor: 'white',
-                            itemSelectedColor: 'white',
+                            itemColor: 'black',
+                            itemHoverColor: 'black',
+                            itemSelectedColor: 'black',
                             horizontalItemSelectedColor: 'none', //
                             horizontalItemHoverBg: '#fd4f55', //
-                            horizontalItemHoverColor: 'white', //
-                            darkItemHoverBg: '#fd4f55', //
+                            horizontalItemHoverColor: 'black', //
+                            lightItemHoverBg: '#fd4f55', //
                         },
                     },
                 }}

@@ -1,31 +1,16 @@
-import { Button, Image, Rate, Avatar, Descriptions, Breadcrumb, message, Carousel } from 'antd';
+import { Image, Rate, Avatar, Descriptions, Breadcrumb, Carousel } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './PetRequestedInfo.module.scss';
-import { WechatOutlined, UserOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
-import { useState, useEffect, useMemo, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Loading from '~/components/Loading';
 import React from 'react';
-import { ChatContext } from '~/components/ChatProvider';
 
 const cx = classNames.bind(styles);
 
 function PetRequestedInfo() {
-    const [messageApi, contextHolder] = message.useMessage();
-    const { setIdShop } = useContext(ChatContext);
-
-    const handleChatButtonClick = (id) => {
-        if (id === localStorage.getItem('idShop')) {
-            messageApi.open({
-                type: 'error',
-                content: 'Xin lỗi, thú cưng này thuộc cửa hàng của bạn!',
-            });
-
-            return;
-        }
-        setIdShop(id);
-    };
 
     const { id } = useParams();
     const [petData, setPetData] = useState(null);
@@ -66,7 +51,6 @@ function PetRequestedInfo() {
 
     return petData ? (
         <div className={cx('wrapper')}>
-            {contextHolder}
             <Breadcrumb
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
@@ -145,8 +129,8 @@ function PetRequestedInfo() {
             <div className={cx('pet-detail-shop')}>
                 <div className={cx('pet-detail-shop-left')}>
                     <Avatar
-                        src={petData.shop?.avatar ? petData.shop.avatar : null}
-                        icon={!petData.shop?.avatar ? <UserOutlined /> : null}
+                        src={petData.shop?.logo ? petData.shop.logo : null}
+                        icon={!petData.shop?.logo ? <UserOutlined /> : null}
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />

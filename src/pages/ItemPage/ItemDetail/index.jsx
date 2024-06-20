@@ -24,12 +24,16 @@ import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
 import { ChatContext } from '~/components/ChatProvider';
+import CryptoJS from 'crypto-js';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
+const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
 
 function ItemDetail() {
     const [messageApi, contextHolder] = message.useMessage();
     const [options, setOptions] = useState(null);
+    const navigate = useNavigate();
 
     const { setIdShop } = useContext(ChatContext);
 
@@ -47,13 +51,22 @@ function ItemDetail() {
 
     const [selectedItem, setSelectedItem] = useState(null);
 
-    const handleButtonClick = (value, price, instock, id_item, id_item_detail) => {
+    const handleButtonClick = (id_item, id_item_detail, instock, price, size) => {
+        const findItem = itemData.details.find((item) => item.id_item_detail === id_item_detail);
         setSelectedItem({
-            size: value,
-            price: price,
-            instock: instock,
-            id_item: id_item,
-            id_item_detail: id_item_detail,
+            id_item,
+            id_item_detail,
+            instock,
+            price,
+            size,
+            id_shop: itemData.id_shop,
+            name: itemData.name,
+            picture: itemData.picture,
+            shop_name: itemData.shop.name,
+            status: itemData.status,
+            unit: itemData.unit,
+            quantity: findItem.quantity,
+            fromCart: false,
         });
     };
 
@@ -119,11 +132,11 @@ function ItemDetail() {
     useEffect(() => {
         if (options && options.length > 0) {
             handleButtonClick(
-                options[0].size,
-                options[0].price,
-                options[0].instock,
                 options[0].id_item,
                 options[0].id_item_detail,
+                options[0].instock,
+                options[0].price,
+                options[0].size,
             );
         }
     }, [options]);
@@ -189,6 +202,30 @@ function ItemDetail() {
 
     const handleCancel = () => {
         setIsModalVisible(false);
+    };
+
+    const handleBuyNow = () => {
+        if (id === localStorage.getItem('idShop')) {
+            messageApi.open({
+                type: 'error',
+                content: 'Xin lỗi, sản phẩm này thuộc cửa hàng của bạn!',
+            });
+
+            return;
+        }
+
+        if (selectedItem.instock === false) {
+            messageApi.open({
+                type: 'error',
+                content: 'Xin lỗi, sản phẩm này đã hết hàng!',
+            });
+
+            return;
+        }
+        const encryptedData = encodeURIComponent(
+            CryptoJS.AES.encrypt(JSON.stringify(selectedItem), secretKey).toString(),
+        );
+        navigate(`/checkout?data=${encryptedData}`);
     };
 
     const handleAddToCart = async (id) => {
@@ -337,11 +374,11 @@ function ItemDetail() {
                                 }}
                                 onClick={() =>
                                     handleButtonClick(
-                                        option.size,
-                                        option.price,
-                                        option.instock,
                                         option.id_item,
                                         option.id_item_detail,
+                                        option.instock,
+                                        option.price,
+                                        option.size,
                                     )
                                 }
                             >
@@ -376,7 +413,7 @@ function ItemDetail() {
                                 Thêm vào giỏ hàng
                             </Button>
                         </ConfigProvider>
-                        <Button className={cx('button2')} size="large">
+                        <Button className={cx('button2')} size="large" onClick={() => handleBuyNow(itemData.id_shop)}>
                             Mua ngay
                         </Button>
                     </div>
@@ -385,21 +422,36 @@ function ItemDetail() {
             <div className={cx('item-detail-shop')}>
                 <div className={cx('item-detail-shop-left')}>
                     <Avatar
-                        src={itemData.shop?.avatar ? itemData.shop.avatar : null}
-                        icon={!itemData.shop?.avatar ? <UserOutlined /> : null}
+                        src={itemData.shop?.logo ? itemData.shop.logo : null}
+                        icon={!itemData.shop?.logo ? <UserOutlined /> : null}
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />
                     <div className={cx('item-detail-shop-info')}>
                         <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{itemData.shop.name}</p>
-                        <Button
-                            size="large"
-                            style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
-                            icon={<WechatOutlined />}
-                            onClick={() => handleChatButtonClick(itemData.id_shop)}
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'var(--button-next-color)',
+                                        defaultBg: 'var(--button-back-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-back-color)',
+                                        defaultHoverColor: 'var(--button-next-color)',
+                                    },
+                                },
+                            }}
                         >
-                            Chat ngay
-                        </Button>
+                            <Button
+                                size="large"
+                                style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
+                                icon={<WechatOutlined />}
+                                onClick={() => handleChatButtonClick(itemData.id_shop)}
+                            >
+                                Chat ngay
+                            </Button>
+                        </ConfigProvider>
                     </div>
                 </div>
                 <div className={cx('item-detail-shop-right')}>

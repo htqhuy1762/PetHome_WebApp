@@ -166,7 +166,6 @@ function PetDetail() {
                 type: 'error',
                 content: 'Xin lỗi, thú cưng này thuộc cửa hàng của bạn!',
             });
-
             return;
         }
         try {
@@ -314,21 +313,36 @@ function PetDetail() {
             <div className={cx('pet-detail-shop')}>
                 <div className={cx('pet-detail-shop-left')}>
                     <Avatar
-                        src={petData.shop?.avatar ? petData.shop.avatar : null}
-                        icon={!petData.shop?.avatar ? <UserOutlined /> : null}
+                        src={petData.shop?.logo ? petData.shop.logo : null}
+                        icon={!petData.shop?.logo ? <UserOutlined /> : null}
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />
                     <div className={cx('pet-detail-shop-info')}>
                         <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{petData.shop.name}</p>
-                        <Button
-                            size="large"
-                            style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
-                            icon={<WechatOutlined />}
-                            onClick={() => handleChatButtonClick(petData.id_shop)}
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'var(--button-next-color)',
+                                        defaultBg: 'var(--button-back-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-back-color)',
+                                        defaultHoverColor: 'var(--button-next-color)',
+                                    },
+                                },
+                            }}
                         >
-                            Chat ngay
-                        </Button>
+                            <Button
+                                size="large"
+                                style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
+                                icon={<WechatOutlined />}
+                                onClick={() => handleChatButtonClick(petData.id_shop)}
+                            >
+                                Chat ngay
+                            </Button>
+                        </ConfigProvider>
                     </div>
                 </div>
                 <div className={cx('pet-detail-shop-right')}>

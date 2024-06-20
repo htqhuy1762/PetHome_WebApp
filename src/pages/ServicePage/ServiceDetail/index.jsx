@@ -10,6 +10,7 @@ import {
     Input,
     message,
     Carousel,
+    ConfigProvider,
 } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './ServiceDetail.module.scss';
@@ -244,28 +245,45 @@ function ServiceDetail() {
                         </p>
                     </div>
                     <div className={cx('tutorial')}>
-                        <span>Nếu bạn muốn sử dụng dịch vụ, vui lòng bấm chat ngay ở phía bên dưới để liên hệ với shop!</span>
+                        <span>
+                            Nếu bạn muốn sử dụng dịch vụ, vui lòng bấm chat ngay ở phía bên dưới để liên hệ với shop!
+                        </span>
                     </div>
                 </div>
             </div>
             <div className={cx('pet-detail-shop')}>
                 <div className={cx('pet-detail-shop-left')}>
                     <Avatar
-                        src={serviceData.shop?.avatar ? serviceData.shop.avatar : null}
-                        icon={!serviceData.shop?.avatar ? <UserOutlined /> : null}
+                        src={serviceData.shop?.logo ? serviceData.shop.logo : null}
+                        icon={!serviceData.shop?.logo ? <UserOutlined /> : null}
                         size={100}
                         style={{ border: '1px solid rgb(0, 0, 0, 0.25)' }}
                     />
                     <div className={cx('pet-detail-shop-info')}>
                         <p style={{ fontSize: '2rem', marginBottom: '15px' }}>{serviceData.shop.name}</p>
-                        <Button
-                            size="large"
-                            style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
-                            icon={<WechatOutlined />}
-                            onClick={() => handleChatButtonClick(serviceData.id_shop)}
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'var(--button-next-color)',
+                                        defaultBg: 'var(--button-back-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-back-color)',
+                                        defaultHoverColor: 'var(--button-next-color)',
+                                    },
+                                },
+                            }}
                         >
-                            Chat ngay
-                        </Button>
+                            <Button
+                                size="large"
+                                style={{ width: '200px', fontSize: '2rem', lineHeight: '1' }}
+                                icon={<WechatOutlined />}
+                                onClick={() => handleChatButtonClick(serviceData.id_shop)}
+                            >
+                                Chat ngay
+                            </Button>
+                        </ConfigProvider>
                     </div>
                 </div>
                 <div className={cx('pet-detail-shop-right')}>
