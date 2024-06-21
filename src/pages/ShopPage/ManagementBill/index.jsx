@@ -1,15 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
 import classNames from 'classnames/bind';
+import styles from './ManagementBill.module.scss';
+import ListNewBillShop from './ListNewBillShop';
+import ListAllBillShop from './ListAllBillShop';
+import ListDoneBillShop from './ListDoneBillShop';
+import ListCanceledBillShop from './ListCanceledBillShop';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styles from './Purchase.module.scss';
 import { Tabs } from 'antd';
-import ListAllBill from './ListAllBill';
-import ListDoneBill from './ListDoneBill';
-import ListCanceledBill from './ListCanceledBill';
 
 const cx = classNames.bind(styles);
 
-function Purchase() {
+function ManagementBill() {
     const location = useLocation();
     const navigate = useNavigate();
     const [isDone, setIsDone] = useState(false);
@@ -21,18 +22,23 @@ function Purchase() {
     const items = [
         {
             key: '1',
-            label: 'Tất cả',
-            children: <ListAllBill isDone={isDone} isCanceled={isCanceled} setIsDone={setIsDone} setIsCanceled={setIsCanceled}/>,
+            label: 'Đơn hàng mới',
+            children: <ListNewBillShop isDone={isDone} isCanceled={isCanceled} setIsDone={setIsDone} setIsCanceled={setIsCanceled}/>,
         },
         {
             key: '2',
-            label: 'Đã nhận hàng',
-            children: <ListDoneBill isDone={isDone}/>,
+            label: 'Đơn hàng đang xử lý',
+            children: <ListAllBillShop isDone={isDone}/>,
         },
         {
             key: '3',
-            label: 'Hủy đơn',
-            children: <ListCanceledBill isCanceled={isCanceled}/>,
+            label: 'Đơn hàng thành công',
+            children: <ListDoneBillShop isCanceled={isCanceled}/>,
+        },
+        {
+            key: '4',
+            label: 'Đơn hàng bị hủy',
+            children: <ListCanceledBillShop isCanceled={isCanceled}/>,
         },
     ];
 
@@ -57,10 +63,10 @@ function Purchase() {
                 items={items}
                 size="large"
                 centered
-                tabBarGutter={250}
+                tabBarGutter={110}
             />
         </div>
     );
 }
 
-export default Purchase;
+export default ManagementBill;

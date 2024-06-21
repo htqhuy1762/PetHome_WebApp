@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Checkout.module.scss';
-import { Modal, Button, Radio, Row, Col, ConfigProvider, message } from 'antd';
+import { Modal, Button, Radio, Row, Col, ConfigProvider, message, Input } from 'antd';
 import * as userServices from '~/services/userServices';
 import * as paymentServices from '~/services/paymentServices';
 import * as billServices from '~/services/billServices';
@@ -13,18 +13,23 @@ import ItemCheckoutElement from '~/components/ItemCheckoutElement';
 import { useLocation } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import * as cartServices from '~/services/cartServices';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
 
 function Checkout() {
+    const navigate = useNavigate();
     const [addresses, setAddresses] = useState([]);
     const [userData, setUserData] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalPhoneNumVisible, setIsModalPhoneNumVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [selectedArea, setselectedArea] = useState(null);
     const [selectedPayment, setSelectedPayment] = useState(1);
     const [selectedItems, setSelectedItems] = useState([]);
+    const [selectedPhoneNum, setSelectedPhoneNum] = useState('');
+    const [tempPhoneNum, setTempPhoneNum] = useState('');
     const [totalAmount, setTotalAmount] = useState(0);
     const [paymentMethods, setPaymentMethods] = useState([]);
 
@@ -96,6 +101,7 @@ function Checkout() {
                 const response = await userServices.getUser();
                 if (response.status === 200) {
                     setUserData(response.data);
+                    setSelectedPhoneNum(response.data.phone_num);
                 }
             } catch (error) {
                 // Handle error
@@ -118,12 +124,26 @@ function Checkout() {
         setIsModalVisible(true);
     };
 
+    const showModalPhoneNum = () => {
+        setTempPhoneNum(selectedPhoneNum);
+        setIsModalPhoneNumVisible(true);
+    };
+
     const handleOk = () => {
         setIsModalVisible(false);
     };
 
     const handleCancel = () => {
         setIsModalVisible(false);
+    };
+
+    const handlePhoneNumOk = () => {
+        setSelectedPhoneNum(tempPhoneNum);
+        setIsModalPhoneNumVisible(false);
+    };
+
+    const handlePhoneNumCancel = () => {
+        setIsModalPhoneNumVisible(false);
     };
 
     const handleAddressChange = (e) => {
@@ -155,6 +175,7 @@ function Checkout() {
             formData.append('area', selectedArea);
             formData.append('id_method', selectedPayment);
             formData.append('address', selectedAddress);
+            formData.append('phone_number', selectedPhoneNum);
             selectedItems.forEach((item) => {
                 let itemString = `${item.id_item}^${item.id_item_detail}^${item.quantityWant}`;
                 formData.append('cart', itemString);
@@ -165,23 +186,22 @@ function Checkout() {
             if (response.status === 200) {
                 message.success('Đặt hàng thành công');
 
-                const itemsFromCart = selectedItems.filter(item => item.fromCart);
+                const itemsFromCart = selectedItems.filter((item) => item.fromCart);
                 if (itemsFromCart.length > 0) {
                     const removeItemPromises = itemsFromCart.map((item) =>
-                        cartServices.removeItemFromCart(item.id_item_detail)
+                        cartServices.removeItemFromCart(item.id_item_detail),
                     );
                     await Promise.all(removeItemPromises);
                 }
+                navigate('/user/purchase');
             } else {
-                const itemsFromCart = selectedItems.filter(item => item.fromCart);
+                const itemsFromCart = selectedItems.filter((item) => item.fromCart);
                 if (itemsFromCart.length > 0) {
                     message.error('Đặt hàng thất bại đặt quá số lượng hiện có, vui lỏng kiểm tra lại giỏ hàng');
-                }
-                else {
+                } else {
                     message.error('Đặt hàng thất bại do đặt quá số lượng hiện có');
                 }
             }
-
         } catch (error) {
             console.error('Failed to create bill', error);
             message.error('Đặt hàng thất bại');
@@ -199,9 +219,14 @@ function Checkout() {
                 <div className={cx('address-content')}>
                     <div className={cx('user')}>
                         <span style={{ fontWeight: 600, fontSize: '1.8rem' }}>{userData?.name}</span>
-                        <span style={{ marginLeft: 8, fontWeight: 600, fontSize: '1.8rem' }}>
-                            {userData?.phone_num}
-                        </span>
+                        <span style={{ marginLeft: 8, fontWeight: 600, fontSize: '1.8rem' }}>{selectedPhoneNum}</span>
+                        <Button
+                            type="link"
+                            style={{ marginLeft: 10, textTransform: 'capitalize' }}
+                            onClick={showModalPhoneNum}
+                        >
+                            Thay đổi
+                        </Button>
                     </div>
                     <div className={cx('address-user')}>
                         {addresses && addresses.length > 0 ? (
@@ -301,6 +326,26 @@ function Checkout() {
                     </ConfigProvider>
                 </div>
             </div>
+
+            <Modal
+                title="Thay đổi số điện thoại"
+                open={isModalPhoneNumVisible}
+                onOk={handlePhoneNumOk}
+                onCancel={handlePhoneNumCancel}
+            >
+                <Input
+                    style={{ width: '100%' }}
+                    value={tempPhoneNum}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^[0-9]*$/.test(value)) {
+                            setTempPhoneNum(value);
+                        }
+                    }}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                />
+            </Modal>
 
             <Modal title="Chọn địa chỉ" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 <Radio.Group onChange={handleAddressChange} value={selectedAddress}>

@@ -15,21 +15,8 @@ function SidebarShopManagement() {
     const items = [
         {
             key: '1',
-            label: 'Quản lý đơn hàng',
-            children: [
-                {
-                    key: '1.1',
-                    label: 'Tất cả',
-                },
-                {
-                    key: '1.2',
-                    label: 'Đơn hủy',
-                },
-                {
-                    key: '1.3',
-                    label: 'Trả hàng/Hoàn tiền',
-                },
-            ],
+            label: <Link to="/user/shop/management/bill">Quản lý đơn hàng</Link>,
+            children: null,
         },
         {
             key: '2',
@@ -52,7 +39,7 @@ function SidebarShopManagement() {
         {
             key: '3',
             label: 'Quản lý doanh thu',
-            children: [],
+            children: null,
         },
         {
             key: '4',

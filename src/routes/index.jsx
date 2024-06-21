@@ -36,6 +36,7 @@ import PetRequestedInfo from '~/pages/PetPage/PetRequestedInfo';
 import AddressShop from '~/pages/ShopPage/AddressShop';
 import ShopProfile from '~/pages/ShopPage/ShopProfile';
 import Checkout from '~/pages/CheckoutPage/Checkout';
+import ManagementBill from '~/pages/ShopPage/ManagementBill';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -71,6 +72,7 @@ const privateRoutes = [
     { path: '/user/shop/management/service', component: ManagementService, layout: ShopManagementLayout },
     { path: '/user/shop/management/profile', component: ShopProfile, layout: ShopManagementLayout },
     { path: '/user/shop/management/address', component: AddressShop, layout: ShopManagementLayout },
+    { path: '/user/shop/management/bill', component: ManagementBill, layout: ShopManagementLayout },
     { path: '/user/account/address', component: AddressUser, layout: UserLayout },
     { path: '/user/account/changepass', component: ChangePass, layout: UserLayout },
     { path: '/cart', component: Cart, layout: HeaderFooter },

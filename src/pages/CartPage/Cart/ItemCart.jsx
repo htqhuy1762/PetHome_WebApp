@@ -106,7 +106,7 @@ function ItemCart() {
         return (
             <div className={cx('wrapper')}>
                 {contextHolder}
-                <Empty description="Giỏ hàng trống" image={CartEmpty} />
+                <Empty description="Giỏ hàng trống" image={Empty.PRESENTED_IMAGE_SIMPLE} />
             </div>
         );
     }
