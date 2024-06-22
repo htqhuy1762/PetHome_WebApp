@@ -1,8 +1,8 @@
 import classNames from 'classnames/bind';
 import styles from './ManagementBill.module.scss';
 import * as billServices from '~/services/billServices';
-import { useEffect, useState } from 'react';
-import Bill from '~/components/Bill';
+import { useEffect, useState, useRef } from 'react';
+import BillShop from '~/components/BillShop';
 import { Empty, Spin } from 'antd';
 
 const cx = classNames.bind(styles);
@@ -13,11 +13,12 @@ function ListCanceledBill({ isCanceled }) {
     const [hasMore, setHasMore] = useState(true);
     const [start, setStart] = useState(0);
     const limit = 5; // Số lượng item cần lấy mỗi lần
+    const allBillsLoaded = useRef(false);
 
     const fetchData = async (start) => {
         try {
             setLoading(true);
-            const response = await billServices.getUserBills({
+            const response = await billServices.getShopBills({
                 start,
                 limit,
                 status: "'canceled'",
@@ -34,6 +35,7 @@ function ListCanceledBill({ isCanceled }) {
                     setHasMore(newData.length === limit);
                 } else {
                     setHasMore(false);
+                    allBillsLoaded.current = true;
                 }
             }
         } catch (error) {
@@ -53,7 +55,7 @@ function ListCanceledBill({ isCanceled }) {
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
-        if (scrolledToBottom && hasMore && !loading) {
+        if (scrolledToBottom && hasMore && !loading && !allBillsLoaded.current) {
             setStart(prevStart => prevStart + limit);
         }
     };
@@ -76,7 +78,7 @@ function ListCanceledBill({ isCanceled }) {
     return (
         <div className={cx('wrapper')}>
             {bills.map((bill) => (
-                <Bill key={bill.id_bill} bill={bill} />
+                <BillShop key={bill.id_bill} bill={bill} />
             ))}
             {loading && <Spin className={cx('spin')} />}
             {!loading && !hasMore && (

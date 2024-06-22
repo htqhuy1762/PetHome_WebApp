@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Purchase.module.scss';
 import * as billServices from '~/services/billServices';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Bill from '~/components/Bill';
 import { Empty, Spin } from 'antd';
 
@@ -13,6 +13,7 @@ function ListDoneBill({ isDone }) {
     const [hasMore, setHasMore] = useState(true);
     const [start, setStart] = useState(0);
     const limit = 5; // Số lượng item cần lấy mỗi lần
+    const allBillsLoaded = useRef(false);
 
     const fetchData = async (start) => {
         try {
@@ -34,6 +35,7 @@ function ListDoneBill({ isDone }) {
                     setHasMore(newData.length === limit);
                 } else {
                     setHasMore(false);
+                    allBillsLoaded.current = true;
                 }
             }
         } catch (error) {
@@ -53,7 +55,7 @@ function ListDoneBill({ isDone }) {
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
-        if (scrolledToBottom && hasMore && !loading) {
+        if (scrolledToBottom && hasMore && !loading && !allBillsLoaded.current) {
             setStart(prevStart => prevStart + limit);
         }
     };

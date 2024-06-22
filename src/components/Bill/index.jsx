@@ -62,7 +62,7 @@ function Bill({ bill, onCancel, onConfirm }) {
                     <p>x{bill.quantity}</p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <MoneyCollectFilled />
+                            <MoneyCollectFilled /> {' '}
                             Giá:
                         </span>{' '}
                         <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
@@ -71,7 +71,7 @@ function Bill({ bill, onCancel, onConfirm }) {
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <CalendarFilled />
+                            <CalendarFilled /> {' '}
                             Thời gian đặt hàng:
                         </span>{' '}
                         {formattedDate}
@@ -79,7 +79,7 @@ function Bill({ bill, onCancel, onConfirm }) {
 
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <EnvironmentFilled />
+                            <EnvironmentFilled /> {' '}
                             Địa chỉ nhận hàng:
                         </span>{' '}
                         {bill.address}
@@ -88,7 +88,7 @@ function Bill({ bill, onCancel, onConfirm }) {
             </div>
             <div className={cx('action')}>
                 <p style={{ display: 'flex', alignItems: 'center' }}>
-                    <SafetyCertificateFilled />
+                    <SafetyCertificateFilled /> {' '}
                     Tổng cộng:
                     <span
                         style={{

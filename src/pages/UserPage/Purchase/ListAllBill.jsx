@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Purchase.module.scss';
 import * as billServices from '~/services/billServices';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Bill from '~/components/Bill';
 import { Modal, message, Spin, Empty } from 'antd';
 
@@ -9,13 +9,14 @@ const cx = classNames.bind(styles);
 
 function ListAllBill({ isDone, isCanceled, setIsDone, setIsCanceled }) {
     const [bills, setBills] = useState([]);
+    const allBillsLoaded = useRef(false);
     const [selectedBillId, setSelectedBillId] = useState(null);
     const [isModalVisibleCancel, setIsModalVisibleCancel] = useState(false);
     const [isModalVisibleConfirm, setIsModalVisibleConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [start, setStart] = useState(0);
-    const limit = 5; // Số lượng item cần lấy mỗi lần
+    const limit = 2; // Số lượng item cần lấy mỗi lần
 
     const fetchData = async (start) => {
         try {
@@ -37,6 +38,7 @@ function ListAllBill({ isDone, isCanceled, setIsDone, setIsCanceled }) {
                     setHasMore(newData.length === limit);
                 } else {
                     setHasMore(false);
+                    allBillsLoaded.current = true;
                 }
             }
         } catch (error) {
@@ -124,7 +126,7 @@ function ListAllBill({ isDone, isCanceled, setIsDone, setIsCanceled }) {
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
-        if (scrolledToBottom && hasMore && !loading) {
+        if (scrolledToBottom && hasMore && !loading && !allBillsLoaded.current) {
             setStart(prevStart => prevStart + limit);
         }
     };

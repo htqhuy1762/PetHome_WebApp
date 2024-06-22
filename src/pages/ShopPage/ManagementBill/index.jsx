@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 function ManagementBill() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [isDone, setIsDone] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
     const [isCanceled, setIsCanceled] = useState(false);
 
     const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -23,22 +23,29 @@ function ManagementBill() {
         {
             key: '1',
             label: 'Đơn hàng mới',
-            children: <ListNewBillShop isDone={isDone} isCanceled={isCanceled} setIsDone={setIsDone} setIsCanceled={setIsCanceled}/>,
+            children: (
+                <ListNewBillShop
+                    isUpdate={isUpdate}
+                    isCanceled={isCanceled}
+                    setIsUpdate={setIsUpdate}
+                    setIsCanceled={setIsCanceled}
+                />
+            ),
         },
         {
             key: '2',
             label: 'Đơn hàng đang xử lý',
-            children: <ListAllBillShop isDone={isDone}/>,
+            children: <ListAllBillShop isUpdate={isUpdate} setIsUpdate={setIsUpdate} />,
         },
         {
             key: '3',
             label: 'Đơn hàng thành công',
-            children: <ListDoneBillShop isCanceled={isCanceled}/>,
+            children: <ListDoneBillShop />,
         },
         {
             key: '4',
             label: 'Đơn hàng bị hủy',
-            children: <ListCanceledBillShop isCanceled={isCanceled}/>,
+            children: <ListCanceledBillShop isCanceled={isCanceled} />,
         },
     ];
 
