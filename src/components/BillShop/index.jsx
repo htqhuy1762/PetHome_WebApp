@@ -4,12 +4,13 @@ import { Image, Button, ConfigProvider } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {
-    CalendarFilled,
-    EnvironmentFilled,
-    MoneyCollectFilled,
-    SafetyCertificateFilled,
-    WalletFilled,
-    PhoneFilled,
+    CalendarOutlined,
+    EnvironmentOutlined,
+    MoneyCollectOutlined,
+    SafetyCertificateOutlined,
+    WalletOutlined,
+    PhoneOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 
 dayjs.extend(utc);
@@ -60,7 +61,7 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
                     <p>x{bill.quantity}</p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <MoneyCollectFilled /> Giá:
+                            <MoneyCollectOutlined /> Giá:
                         </span>{' '}
                         <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
                             {bill.price.toLocaleString('vi-VN')}đ
@@ -68,34 +69,39 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <CalendarFilled /> Thời gian đặt hàng:
+                            <UserOutlined /> Tên khách hàng:
                         </span>{' '}
-                        {formattedDate}
-                    </p>
-
-                    <p>
-                        <span style={{ fontWeight: 500 }}>
-                            <EnvironmentFilled /> Địa chỉ nhận hàng:
-                        </span>{' '}
-                        {bill.address}
+                        {bill.username}
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <WalletFilled /> Phương thức thanh toán:
+                            <PhoneOutlined /> Số điện thoại:
+                        </span>{' '}
+                        {bill.phone_number}
+                    </p>
+                    <p>
+                        <span style={{ fontWeight: 500 }}>
+                            <WalletOutlined /> Phương thức thanh toán:
                         </span>{' '}
                         {bill.payment_description}
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <PhoneFilled /> Số điện thoại:
+                            <EnvironmentOutlined /> Địa chỉ nhận hàng:
                         </span>{' '}
-                        {bill.phone_number}
+                        {bill.address}
+                    </p>
+                    <p>
+                        <span style={{ fontWeight: 500 }}>
+                            <CalendarOutlined /> Thời gian đặt hàng:
+                        </span>{' '}
+                        {formattedDate}
                     </p>
                 </div>
             </div>
             <div className={cx('action')}>
                 <p style={{ display: 'flex', alignItems: 'center' }}>
-                    <SafetyCertificateFilled />
+                    <SafetyCertificateOutlined />
                     Tổng cộng:
                     <span
                         style={{

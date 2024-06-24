@@ -2,8 +2,8 @@ import styles from './Login.module.scss';
 import classNames from 'classnames/bind';
 import logo from '~/assets/images/logo.png';
 import logotitle from '~/assets/images/logo-title.png';
-import google_logo from '~/assets/images/Google_Logo.png';
-import facebook_logo from '~/assets/images/Facebook_Logo.png';
+//import google_logo from '~/assets/images/Google_Logo.png';
+//import facebook_logo from '~/assets/images/Facebook_Logo.png';
 import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
@@ -11,6 +11,8 @@ import * as shopServices from '~/services/shopServices';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
 import { useEffect, useContext, useRef } from 'react';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 const cx = classNames.bind(styles);
 
@@ -94,6 +96,47 @@ function Login() {
         }
     };
 
+    const handleGoogleLogin = async (credentialResponse) => {
+        try {
+            const credentialResponseDecode = jwtDecode(credentialResponse.credential);
+            const data = {
+                email: credentialResponseDecode.email,
+                name: credentialResponseDecode.name,
+            };
+
+            const response = await authServices.googleLogin(data);
+            if (response.status === 200) {
+                const accessToken = response.data.accessToken;
+                const expiredAt = response.data.expiredAt;
+                const refreshToken = response.data.refreshToken;
+
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('expiredAt', expiredAt);
+                localStorage.setItem('refreshToken', refreshToken);
+
+                setIsLoggedIn(true);
+
+                const responseIsRegister = await shopServices.checkIsRegisterShop();
+                const responseIsActive = await shopServices.checkIsActiveShop();
+
+                if (responseIsRegister.status === 200 || responseIsRegister.status === 201) {
+                    if (responseIsRegister.data.message === 'User is shop owner') {
+                        localStorage.setItem('idShop', responseIsActive.data.id_shop);
+                    }
+                }
+
+                navigate('/');
+            } else {
+                notification.error({
+                    message: 'Error',
+                    description: 'Đăng nhập không thành công!',
+                });
+            }
+        } catch (error) {
+            console.error('Đăng nhập bằng Google không thành công:', error);
+        }
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('logo_container')}>
@@ -152,34 +195,12 @@ function Login() {
                     <Form.Item>
                         <div style={{ textAlign: 'center', fontSize: '1.6rem' }}>Hoặc đăng nhập bằng:</div>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                            <Button
-                                className={cx('ortherLogin')}
-                                size="large"
-                                icon={
-                                    <img
-                                        src={google_logo}
-                                        alt="Google"
-                                        style={{ height: '2.5rem', marginRight: '10px' }}
-                                    />
-                                }
-                                style={{ marginRight: '10px', fontSize: '1.7rem' }}
-                            >
-                                Google
-                            </Button>
-                            <Button
-                                className={cx('ortherLogin')}
-                                size="large"
-                                icon={
-                                    <img
-                                        src={facebook_logo}
-                                        alt="Google"
-                                        style={{ height: '2.5rem', marginRight: '10px' }}
-                                    />
-                                }
-                                style={{ fontSize: '1.7rem' }}
-                            >
-                                Facebook
-                            </Button>
+                            <GoogleLogin
+                                onSuccess={handleGoogleLogin}
+                                onError={() => {
+                                    console.log('Login Failed');
+                                }}
+                            />
                         </div>
                     </Form.Item>
                     <Form.Item>

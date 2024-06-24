@@ -4,11 +4,13 @@ import { Image, Button, ConfigProvider } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {
-    CalendarFilled,
-    EnvironmentFilled,
-    MoneyCollectFilled,
-    SafetyCertificateFilled,
-    ShopFilled,
+    CalendarOutlined,
+    EnvironmentOutlined,
+    MoneyCollectOutlined,
+    SafetyCertificateOutlined,
+    ShopOutlined,
+    PhoneOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 
 dayjs.extend(utc);
@@ -42,7 +44,7 @@ function Bill({ bill, onCancel, onConfirm }) {
         <div className={cx('wrapper')}>
             <div className={cx('shop-status')}>
                 <p style={{ fontWeight: 600, fontSize: '1.8rem' }}>
-                    <ShopFilled /> {bill.shop_name}
+                    <ShopOutlined /> {bill.shop_name}
                 </p>
                 <p style={{ color: getStatusColor(bill.status), fontWeight: 500, fontSize: '1.6rem' }}>{statusText}</p>
             </div>
@@ -62,8 +64,7 @@ function Bill({ bill, onCancel, onConfirm }) {
                     <p>x{bill.quantity}</p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <MoneyCollectFilled /> {' '}
-                            Giá:
+                            <MoneyCollectOutlined /> Giá:
                         </span>{' '}
                         <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
                             {bill.price.toLocaleString('vi-VN')}đ
@@ -71,16 +72,26 @@ function Bill({ bill, onCancel, onConfirm }) {
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <CalendarFilled /> {' '}
-                            Thời gian đặt hàng:
+                            <UserOutlined /> Tên khách hàng:
+                        </span>{' '}
+                        {bill.username}
+                    </p>
+                    <p>
+                        <span style={{ fontWeight: 500 }}>
+                            <PhoneOutlined /> Số điện thoại:
+                        </span>{' '}
+                        {bill.phone_number}
+                    </p>
+                    <p>
+                        <span style={{ fontWeight: 500 }}>
+                            <CalendarOutlined /> Thời gian đặt hàng:
                         </span>{' '}
                         {formattedDate}
                     </p>
 
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <EnvironmentFilled /> {' '}
-                            Địa chỉ nhận hàng:
+                            <EnvironmentOutlined /> Địa chỉ nhận hàng:
                         </span>{' '}
                         {bill.address}
                     </p>
@@ -88,8 +99,7 @@ function Bill({ bill, onCancel, onConfirm }) {
             </div>
             <div className={cx('action')}>
                 <p style={{ display: 'flex', alignItems: 'center' }}>
-                    <SafetyCertificateFilled /> {' '}
-                    Tổng cộng:
+                    <SafetyCertificateOutlined /> Tổng cộng:
                     <span
                         style={{
                             fontSize: '2.4rem',

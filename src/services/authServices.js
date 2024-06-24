@@ -143,3 +143,18 @@ export const changePassword = async (data, token) => {
         return error.response;
     }
 };
+
+
+//OAuth
+export const googleLogin = async (data) => {
+    try {
+        const response = await httpRequestAuth.post('/google_login', data, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
