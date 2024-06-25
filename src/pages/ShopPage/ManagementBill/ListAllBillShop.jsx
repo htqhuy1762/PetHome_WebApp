@@ -12,6 +12,7 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
     const [selectedBillId, setSelectedBillId] = useState(null);
     const [isModalVisibleDelivering, setIsModalVisibleDelivering] = useState(false);
     const [isModalVisibleDelivered, setIsModalVisibleDelivered] = useState(false);
+    const [isModalVisibleDone, setIsModalVisibleDone] = useState(false);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [start, setStart] = useState(0);
@@ -54,17 +55,16 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
 
     const handleDeliveringBill = async () => {
         try {
-            console.log('selectedBillId', selectedBillId);
             const response = await billServices.updateShopBillStatus(selectedBillId, { status: 'delivering' });
-            console.log('response', response);
 
             if (response.status === 200) {
-                const newBills = bills.filter((bill) => bill.id_bill !== selectedBillId);
+                const newBills = bills.map((bill) => 
+                    bill.id_bill === selectedBillId ? { ...bill, status: 'delivering' } : bill
+                );
                 setBills(newBills);
-                message.success('Cập nhật hàng thành công');
-                setIsUpdate(!isUpdate);
+                message.success('Cập nhật đơn hàng thành công');
             } else {
-                message.error('Cập nhật hàng thất bại');
+                message.error('Cập nhật đơn hàng thất bại');
             }
 
             setIsModalVisibleDelivering(false);
@@ -78,9 +78,30 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
 
     const handleDeliveredBill = async () => {
         try {
-            console.log('selectedBillId', selectedBillId);
             const response = await billServices.updateShopBillStatus(selectedBillId, { status: 'delivered' });
-            console.log('response', response);
+
+            if (response.status === 200) {
+                const newBills = bills.map((bill) => 
+                    bill.id_bill === selectedBillId ? { ...bill, status: 'delivered' } : bill
+                );
+                setBills(newBills);
+                message.success('Cập nhật đơn hàng thành công');
+            } else {
+                message.error('Cập nhật đơn hàng thất bại');
+            }
+
+            setIsModalVisibleDelivered(false);
+            setSelectedBillId(null);
+        } catch (error) {
+            console.error('Failed to update bill:', error);
+            setIsModalVisibleDelivered(false);
+            setSelectedBillId(null);
+        }
+    };
+
+    const handleDoneBill = async () => {
+        try {
+            const response = await billServices.updateShopBillStatus(selectedBillId, { status: 'done' });
 
             if (response.status === 200) {
                 const newBills = bills.filter((bill) => bill.id_bill !== selectedBillId);
@@ -91,11 +112,11 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
                 message.error('Cập nhật đơn hàng thất bại');
             }
 
-            setIsModalVisibleDelivered(false);
+            setIsModalVisibleDone(false);
             setSelectedBillId(null);
         } catch (error) {
             console.error('Failed to update bill:', error);
-            setIsModalVisibleDelivered(false);
+            setIsModalVisibleDone(false);
             setSelectedBillId(null);
         }
     };
@@ -110,6 +131,11 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
         setIsModalVisibleDelivered(true);
     };
 
+    const showModalDone = (idBill) => {
+        setSelectedBillId(idBill);
+        setIsModalVisibleDone(true);
+    };
+
     const handleCancelModalDelivering = () => {
         setIsModalVisibleDelivering(false);
         setSelectedBillId(null);
@@ -117,6 +143,11 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
 
     const handleCancelModalDelivered = () => {
         setIsModalVisibleDelivered(false);
+        setSelectedBillId(null);
+    };
+
+    const handleCancelModalDone = () => {
+        setIsModalVisibleDone(false);
         setSelectedBillId(null);
     };
 
@@ -149,14 +180,14 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
     return (
         <div className={cx('wrapper')}>
             {bills.map((bill) => (
-                <BillShop key={bill.id_bill} bill={bill} onDelivering={showModalDelivering} onDelivered={showModalDelivered} />
+                <BillShop key={bill.id_bill} bill={bill} onDelivering={showModalDelivering} onDelivered={showModalDelivered} onDone={showModalDone} />
             ))}
             {loading && <Spin className={cx('spin')} />}
             {!loading && !hasMore && bills.length > 0 && (
                 <div className={cx('end-message')}>Bạn đã xem hết đơn hàng</div>
             )}
             <Modal
-                title="Cập nhật đơn hàng thành delivering?"
+                title="Cập nhật đơn hàng thành đang giao hàng?"
                 open={isModalVisibleDelivering}
                 onOk={handleDeliveringBill}
                 onCancel={handleCancelModalDelivering}
@@ -166,7 +197,7 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
                 <p>Bạn chắc chắn muốn cập nhật đơn hàng thành đang giao hàng?</p>
             </Modal>
             <Modal
-                title="Xác nhận hủy đơn hàng?"
+                title="Cập nhật đơn hàng thành đã giao hàng?"
                 open={isModalVisibleDelivered}
                 onOk={handleDeliveredBill}
                 onCancel={handleCancelModalDelivered}
@@ -174,6 +205,17 @@ function ListAllBillShop({ isUpdate, setIsUpdate }) {
                 cancelText="Hủy"
             >
                 <p>Bạn chắc chắn muốn cập nhật đơn hàng thành đã giao hàng?</p>
+            </Modal>
+
+            <Modal
+                title="Cập nhật đơn hàng thành đã hoàn thành?"
+                open={isModalVisibleDone}
+                onOk={handleDoneBill}
+                onCancel={handleCancelModalDone}
+                okText="OK"
+                cancelText="Hủy"
+            >
+                <p>Bạn chắc chắn muốn cập nhật đơn hàng thành đã hoàn thành?</p>
             </Modal>
         </div>
     );

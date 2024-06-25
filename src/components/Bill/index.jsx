@@ -10,7 +10,7 @@ import {
     SafetyCertificateOutlined,
     ShopOutlined,
     PhoneOutlined,
-    UserOutlined
+    WalletOutlined,
 } from '@ant-design/icons';
 
 dayjs.extend(utc);
@@ -18,15 +18,15 @@ dayjs.extend(utc);
 const cx = classNames.bind(styles);
 
 const statusMap = {
-    pending: 'Đang chờ xác nhận',
-    preparing: 'Đang chuẩn bị',
+    pending: 'Chưa nhận đơn',
+    preparing: 'Đã nhận đơn',
     delivering: 'Đang giao hàng',
     delivered: 'Đã giao hàng',
-    done: 'Đã nhận hàng',
-    canceled: 'Hủy đơn',
+    done: 'Đã hoàn thành',
+    canceled: 'Đã hủy',
 };
 
-function Bill({ bill, onCancel, onConfirm }) {
+function Bill({ bill, onCancel, onPayment }) {
     const formattedDate = dayjs.utc(bill.created_at).utcOffset(7).format('HH:mm DD/MM/YYYY');
     const statusText = statusMap[bill.status] || bill.status;
     const getStatusColor = (status) => {
@@ -72,15 +72,19 @@ function Bill({ bill, onCancel, onConfirm }) {
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
-                            <UserOutlined /> Tên khách hàng:
-                        </span>{' '}
-                        {bill.username}
-                    </p>
-                    <p>
-                        <span style={{ fontWeight: 500 }}>
                             <PhoneOutlined /> Số điện thoại:
                         </span>{' '}
                         {bill.phone_number}
+                    </p>
+                    <p>
+                        <span style={{ fontWeight: 500 }}>
+                            <WalletOutlined /> Phương thức thanh toán:
+                        </span>{' '}
+                        {bill.payment_description}
+                        {' - '}
+                        <span style={{ fontWeight: 500, color: bill.payment_status === 'pending' ? 'red' : 'green' }}>
+                            {bill.payment_status === 'pending' ? 'Chưa thanh toán' : 'Đã thanh toán'}
+                        </span>{' '}
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
@@ -113,22 +117,24 @@ function Bill({ bill, onCancel, onConfirm }) {
                     </span>
                 </p>
                 <div className={cx('list-button')}>
-                    {bill.status === 'delivered' && (
+                    {bill.payment_description === 'Ví điện tử VNPAY' && bill.payment_status === 'pending' && (
                         <ConfigProvider
                             theme={{
                                 components: {
                                     Button: {
-                                        defaultColor: 'white',
-                                        defaultBg: 'var(--button-next-color)',
-                                        defaultBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBorderColor: 'var(--button-next-color)',
-                                        defaultHoverBg: 'var(--button-next-color)',
-                                        defaultHoverColor: 'white',
+                                        defaultColor: 'green',
+                                        defaultBg: 'white',
+                                        defaultBorderColor: 'green',
+                                        defaultHoverBorderColor: 'green',
+                                        defaultHoverBg: 'white',
+                                        defaultHoverColor: 'green',
                                     },
                                 },
                             }}
                         >
-                            <Button onClick={() => onConfirm(bill.id_bill)}>Đã nhận được hàng</Button>
+                            <Button style={{ marginLeft: 10 }} onClick={() => onPayment(bill.id_bill)}>
+                                Thanh toán
+                            </Button>
                         </ConfigProvider>
                     )}
 

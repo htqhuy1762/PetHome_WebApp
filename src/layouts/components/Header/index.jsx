@@ -56,7 +56,7 @@ function Header({ fixedHeader }) {
     const items = [
         {
             key: '1',
-            label: <a href="/user/account/profile">Đơn hàng của tôi</a>,
+            label: <a href="/user/account/profile">Hồ sơ của tôi</a>,
         },
         {
             key: '2',

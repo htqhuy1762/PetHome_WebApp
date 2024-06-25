@@ -22,6 +22,7 @@ function ListCanceledBill({ isCanceled }) {
                 start,
                 limit,
                 status: "'canceled'",
+                payment_status: "'paid', 'pending'",
             });
 
             if (response.status === 200) {

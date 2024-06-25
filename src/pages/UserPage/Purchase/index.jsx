@@ -12,7 +12,6 @@ const cx = classNames.bind(styles);
 function Purchase() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [isDone, setIsDone] = useState(false);
     const [isCanceled, setIsCanceled] = useState(false);
 
     const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -22,17 +21,17 @@ function Purchase() {
         {
             key: '1',
             label: 'Tất cả',
-            children: <ListAllBill isDone={isDone} isCanceled={isCanceled} setIsDone={setIsDone} setIsCanceled={setIsCanceled}/>,
+            children: <ListAllBill isCanceled={isCanceled} setIsCanceled={setIsCanceled} />,
         },
         {
             key: '2',
             label: 'Đã nhận hàng',
-            children: <ListDoneBill isDone={isDone}/>,
+            children: <ListDoneBill />,
         },
         {
             key: '3',
             label: 'Hủy đơn',
-            children: <ListCanceledBill isCanceled={isCanceled}/>,
+            children: <ListCanceledBill isCanceled={isCanceled} />,
         },
     ];
 

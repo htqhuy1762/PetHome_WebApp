@@ -7,7 +7,7 @@ import { Empty, Spin } from 'antd';
 
 const cx = classNames.bind(styles);
 
-function ListDoneBill() {
+function ListDoneBill({ isDone }) {
     const [bills, setBills] = useState([]);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -30,7 +30,7 @@ function ListDoneBill() {
                     if (start === 0) {
                         setBills(newData); // Nếu là lần đầu tiên load (start === 0), thì setBills mới
                     } else {
-                        setBills(prevBills => [...prevBills, ...newData]); // Nếu không, thì cộng thêm vào mảng bills cũ
+                        setBills((prevBills) => [...prevBills, ...newData]); // Nếu không, thì cộng thêm vào mảng bills cũ
                     }
                     setHasMore(newData.length === limit);
                 } else {
@@ -47,16 +47,17 @@ function ListDoneBill() {
 
     useEffect(() => {
         fetchData(start);
-    }, [start]);
+    }, [start, isDone]);
 
     const handleScroll = () => {
         const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
-        const scrollHeight = (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
+        const scrollHeight =
+            (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
         if (scrolledToBottom && hasMore && !loading && !allBillsLoaded.current) {
-            setStart(prevStart => prevStart + limit);
+            setStart((prevStart) => prevStart + limit);
         }
     };
 
@@ -81,9 +82,7 @@ function ListDoneBill() {
                 <BillShop key={bill.id_bill} bill={bill} />
             ))}
             {loading && <Spin className={cx('spin')} />}
-            {!loading && !hasMore && (
-                <div className={cx('end-message')}>Bạn đã xem hết danh sách đơn hàng</div>
-            )}
+            {!loading && !hasMore && <div className={cx('end-message')}>Bạn đã xem hết danh sách đơn hàng</div>}
         </div>
     );
 }

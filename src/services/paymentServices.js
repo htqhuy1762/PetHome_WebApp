@@ -9,9 +9,9 @@ export const getPaymentMethods = async () => {
     }
 };
 
-export const getUrlVNPay = async (data) => {
+export const createUrlVNPay = async (data) => {
     try {
-        const response = await authRequest.post('/payment/create_url', { params: data });
+        const response = await authRequest.post(`/payment/create_url_v2?id_bill=${data}`);
         return response;
     } catch (error) {
         return error.response;

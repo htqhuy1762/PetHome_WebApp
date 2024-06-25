@@ -10,7 +10,7 @@ import {
     SafetyCertificateOutlined,
     WalletOutlined,
     PhoneOutlined,
-    UserOutlined
+    UserOutlined,
 } from '@ant-design/icons';
 
 dayjs.extend(utc);
@@ -18,15 +18,15 @@ dayjs.extend(utc);
 const cx = classNames.bind(styles);
 
 const statusMap = {
-    pending: 'Đang chờ xác nhận',
-    preparing: 'Đang chuẩn bị',
+    pending: 'Chưa nhận đơn',
+    preparing: 'Đã nhận đơn',
     delivering: 'Đang giao hàng',
     delivered: 'Đã giao hàng',
-    done: 'Đã nhận hàng',
-    canceled: 'Hủy đơn',
+    done: 'Đã hoàn thành',
+    canceled: 'Đã hủy',
 };
 
-function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
+function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered, onDone }) {
     const formattedDate = dayjs.utc(bill.created_at).utcOffset(7).format('HH:mm DD/MM/YYYY');
     const statusText = statusMap[bill.status] || bill.status;
     const getStatusColor = (status) => {
@@ -84,6 +84,10 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
                             <WalletOutlined /> Phương thức thanh toán:
                         </span>{' '}
                         {bill.payment_description}
+                        {' - '}
+                        <span style={{ fontWeight: 500, color: bill.payment_status === 'pending' ? 'red' : 'green' }}>
+                            {bill.payment_status === 'pending' ? 'Chưa thanh toán' : 'Đã thanh toán'}
+                        </span>{' '}
                     </p>
                     <p>
                         <span style={{ fontWeight: 500 }}>
@@ -133,7 +137,7 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
                                 }}
                             >
                                 <Button style={{ marginLeft: 10 }} onClick={() => onConfirm(bill.id_bill)}>
-                                    Xác nhận đơn hàng
+                                    Nhận đơn hàng
                                 </Button>
                             </ConfigProvider>
 
@@ -172,7 +176,7 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
                                 },
                             }}
                         >
-                            <Button onClick={() => onDelivering(bill.id_bill)}>Cập nhật trạng thái delivering</Button>
+                            <Button onClick={() => onDelivering(bill.id_bill)}>Giao hàng</Button>
                         </ConfigProvider>
                     )}
                     {bill.status === 'delivering' && (
@@ -190,7 +194,26 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered }) {
                                 },
                             }}
                         >
-                            <Button onClick={() => onDelivered(bill.id_bill)}>Cập nhật trạng thái delivered</Button>
+                            <Button onClick={() => onDelivered(bill.id_bill)}>Đã giao hàng</Button>
+                        </ConfigProvider>
+                    )}
+
+                    {bill.status === 'delivered' && (
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        defaultColor: 'white',
+                                        defaultBg: 'var(--button-next-color)',
+                                        defaultBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBorderColor: 'var(--button-next-color)',
+                                        defaultHoverBg: 'var(--button-next-color)',
+                                        defaultHoverColor: 'white',
+                                    },
+                                },
+                            }}
+                        >
+                            <Button onClick={() => onDone(bill.id_bill)}>Đã hoàn thành</Button>
                         </ConfigProvider>
                     )}
                 </div>

@@ -40,7 +40,7 @@ function ManagementBill() {
         {
             key: '3',
             label: 'Đơn hàng thành công',
-            children: <ListDoneBillShop />,
+            children: <ListDoneBillShop isUpdate={isUpdate} />,
         },
         {
             key: '4',

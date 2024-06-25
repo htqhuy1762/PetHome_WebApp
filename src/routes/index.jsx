@@ -37,6 +37,7 @@ import AddressShop from '~/pages/ShopPage/AddressShop';
 import ShopProfile from '~/pages/ShopPage/ShopProfile';
 import Checkout from '~/pages/CheckoutPage/Checkout';
 import ManagementBill from '~/pages/ShopPage/ManagementBill';
+import PaymentResult from '~/pages/UserPage/PaymentResult';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -79,6 +80,7 @@ const privateRoutes = [
     { path: '/checkout', component: Checkout, layout: HeaderFooter },
     { path: '/user/purchase', component: Purchase, layout: UserLayout },
     { path: '/user/account/payment', component: Payment, layout: UserLayout },
+    { path: '/payment/result', component: PaymentResult, layout: HeaderFooter },
 ];
 
 export { publicRoutes, privateRoutes };
