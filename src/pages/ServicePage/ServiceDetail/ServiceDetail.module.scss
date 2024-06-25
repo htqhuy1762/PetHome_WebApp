@@ -6,7 +6,7 @@
 .pet-detail-image {
     height: 400px;
     width: 450px;
-} 
+}
 
 .pet-detail-information {
     display: flex;
@@ -47,6 +47,12 @@
             margin-top: 3rem;
         }
     }
+}
+
+.button2 {
+    background-color: var(--button-next-color);
+    color: white;
+    margin-top: 40px;
 }
 
 .pet-detail-shop {
@@ -92,7 +98,7 @@
         align-items: center;
         margin-bottom: 20px;
     }
-    
+
     .Button-rating {
         position: absolute;
         right: 30px;
@@ -110,7 +116,6 @@
         color: red;
     }
 }
-
 
 .pagination-container {
     display: flex;

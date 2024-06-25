@@ -259,6 +259,7 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
                                 style={{
                                     width: 700,
                                     height: 460,
+                                    objectFit: 'contain',
                                 }}
                                 src={image}
                                 alt={`Post image ${index + 1}`}

@@ -29,12 +29,12 @@ export const getServiceDetailById = async (id) => {
 
 export const getAllServicesByType = async (data) => {
     try {
-        const response = await publicRequest.get('/services', {params: data});
+        const response = await publicRequest.get('/services', { params: data });
         return response;
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const getServiceRatings = async (id) => {
     try {
@@ -43,7 +43,7 @@ export const getServiceRatings = async (id) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const checkRatedOrNot = async (id) => {
     try {
@@ -52,7 +52,7 @@ export const checkRatedOrNot = async (id) => {
     } catch (error) {
         return error.response;
     }
-}
+};
 
 export const postServiceRating = async (id, data) => {
     try {
@@ -61,4 +61,13 @@ export const postServiceRating = async (id, data) => {
     } catch (error) {
         return error.response;
     }
-}
+};
+
+export const getServiceGallery = async (id) => {
+    try {
+        const response = await publicRequest.get(`/service/${id}/gallery`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};

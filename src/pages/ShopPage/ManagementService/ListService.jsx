@@ -3,15 +3,17 @@ import styles from './ListService.module.scss';
 import { useState, useEffect } from 'react';
 import * as shopServices from '~/services/shopServices';
 import CardServiceShop from '~/components/CardServiceShop';
-import { message, Empty, Modal, Form, InputNumber, Checkbox } from 'antd';
+import { message, Empty, Modal, Form, InputNumber, Checkbox, Upload, Popconfirm } from 'antd';
 import Loading from '~/components/Loading';
 import { useNavigate } from 'react-router-dom';
+import { PlusOutlined } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
 
 function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
     const [form] = Form.useForm();
     const [form1] = Form.useForm();
+    const [form2] = Form.useForm();
     const navigate = useNavigate();
     const [serviceData, setServiceData] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
@@ -19,11 +21,14 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
     const [isModalVisibleDelete, setIsModalVisibleDelete] = useState(false);
     const [isModalVisibleUpdatePrice, setIsModalVisibleUpdatePrice] = useState(false);
     const [isModalVisibleUpdateAddress, setIsModalVisibleUpdateAddress] = useState(false);
+    const [isModalVisibleUpdateGallery, setIsModalVisibleUpdateGallery] = useState(false);
     const [selectedServiceId, setSelectedServiceId] = useState(null);
     const [selectedServiceName, setSelectedServiceName] = useState(null);
     const [listAddress, setListAddress] = useState([]);
     const [initialAddresses, setInitialAddresses] = useState([]);
     const [isUpdated, setIsUpdated] = useState(false);
+    const [images, setImages] = useState([]);
+    const [listImageGallery, setListImageGallery] = useState([]);
 
     const successDelete = () => {
         messageApi.open({
@@ -64,6 +69,20 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
         messageApi.open({
             type: 'error',
             content: 'Cập nhật địa chỉ dịch vụ thất bại',
+        });
+    };
+
+    const successUpdateGallery = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Cập nhật gallery dịch vụ thành công',
+        });
+    };
+
+    const errorMessageUpdateGallery = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Cập nhật gallery dịch vụ thất bại',
         });
     };
 
@@ -124,6 +143,17 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
         form1.setFieldsValue({
             addresses: initialSelectedAddresses,
         });
+    };
+
+    const showUpdateGalleryConfirm = async (service) => {
+        setSelectedServiceId(service.id_service);
+        setIsModalVisibleUpdateGallery(true);
+
+        const response = await shopServices.getServiceGallery(service.id_service);
+        if (response.status === 200) {
+            const activeImages = response.data.filter((image) => image.status === 'active');
+            setListImageGallery(activeImages);
+        }
     };
 
     const handleRemoveService = async () => {
@@ -228,6 +258,72 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
         }
     };
 
+    const handleUpdateGalleryService = async () => {
+        try {
+            if (images.length === 0) {
+                return;
+            }
+            const formData = new FormData();
+            formData.append('id_service', selectedServiceId);
+            images.forEach((image) => {
+                formData.append('images', image);
+            });
+
+            const response = await shopServices.addServiceGallery(selectedServiceId, formData);
+            console.log(response);
+            if (response && response.status === 200) {
+                const responseGallery = await shopServices.getServiceGallery(selectedServiceId);
+                if (responseGallery.status === 200) {
+                    setListImageGallery(responseGallery.data);
+                }
+                successUpdateGallery();
+            }
+
+            setImages([]);
+        } catch (error) {
+            console.log('Error:', error);
+            errorMessageUpdateGallery();
+        } finally {
+            setIsModalVisibleUpdateGallery(false);
+            setSelectedServiceId(null);
+        }
+    };
+
+    const handleDeleteImage = async (imageId) => {
+        try {
+            const response = await shopServices.updateGalleryImage(selectedServiceId, imageId, 'inactive');
+            if (response && response.status === 200) {
+                setListImageGallery(listImageGallery.filter((image) => image.id_image !== imageId));
+                successUpdateGallery();
+            } else {
+                console.error('Failed to delete image');
+                errorMessageUpdateGallery();
+            }
+        } catch (error) {
+            console.error('Failed to delete image', error);
+            console.log('Error:', error);
+        }
+    };
+
+    const beforeUploadImages = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+            return false;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must be smaller than 2MB!');
+            return false;
+        }
+        setImages([...images, file]);
+        return false;
+    };
+
+    const handleRemoveImage = (file) => {
+        setImages(images.filter((image) => image.uid !== file.uid));
+    };
+
     const handleCancelDelete = () => {
         setIsModalVisibleDelete(false);
         setSelectedServiceId(null);
@@ -242,6 +338,30 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
         setIsModalVisibleUpdateAddress(false);
         setSelectedServiceId(null);
     };
+
+    const handleCancelUpdateGallery = () => {
+        setIsModalVisibleUpdateGallery(false);
+        setSelectedServiceId(null);
+    };
+
+    const uploadButtonImages = images.length < 4 && (
+        <button
+            style={{
+                border: 0,
+                background: 'none',
+            }}
+            type="button"
+        >
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </button>
+    );
 
     if (isLoading) {
         return <Loading />;
@@ -267,6 +387,7 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
                     onRemove={showDeleteConfirm}
                     onUpdatePrice={showUpdatePriceConfirm}
                     onUpdateAddress={showUpdateAddressConfirm}
+                    onGallery={showUpdateGalleryConfirm}
                     onClick={() => navigate(`/services/${service.id_service}`)}
                     isUpdated={isUpdated}
                 />
@@ -332,6 +453,72 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
                                 value: address.id_address,
                             }))}
                         />
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+                title="Cập nhật gallery"
+                open={isModalVisibleUpdateGallery}
+                onOk={handleUpdateGalleryService}
+                onCancel={handleCancelUpdateGallery}
+                okText="Cập nhật"
+                cancelText="Hủy"
+                width={710}
+            >
+                <Form form={form2} layout="vertical">
+                    <h3>{selectedServiceName}</h3>
+                    {listImageGallery?.length === 0 ? (
+                        <p>Danh sách ảnh trống</p>
+                    ) : (
+                        listImageGallery.map((image) => (
+                            <div
+                                key={image.id_image}
+                                style={{ display: 'inline-block', position: 'relative', margin: 5 }}
+                            >
+                                <img
+                                    src={image.url}
+                                    alt={image.id_image}
+                                    style={{ width: 100, height: 100, objectFit: 'cover' }}
+                                />
+                                <Popconfirm
+                                    title="Bạn có chắc chắn muốn xóa ảnh này không?"
+                                    onConfirm={() => handleDeleteImage(image.id_image)}
+                                    okText="Có"
+                                    cancelText="Không"
+                                >
+                                    <button
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            border: 'none',
+                                            background: 'rgba(255, 255, 255, 0.8)',
+                                            padding: 5,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        X
+                                    </button>
+                                </Popconfirm>
+                            </div>
+                        ))
+                    )}
+                    <br />
+                    <Form.Item label="Thêm ảnh mới" name="gallery_images">
+                        <Upload
+                            listType="picture-card"
+                            fileList={images.map((file) => ({
+                                uid: file.uid,
+                                name: file.name,
+                                status: 'done',
+                                url: URL.createObjectURL(file),
+                            }))}
+                            showUploadList={{ showRemoveIcon: true }}
+                            beforeUpload={beforeUploadImages}
+                            onRemove={handleRemoveImage}
+                        >
+                            {uploadButtonImages}
+                        </Upload>
                     </Form.Item>
                 </Form>
             </Modal>

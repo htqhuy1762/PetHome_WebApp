@@ -7,7 +7,7 @@ import * as servicePetServices from '~/services/servicePetServices';
 
 const cx = classNames.bind(styles);
 
-function CardServiceShop({ service, onClick, onRemove, onUpdatePrice, onUpdateAddress, isUpdated }) {
+function CardServiceShop({ service, onClick, onRemove, onUpdatePrice, onUpdateAddress, isUpdated, onGallery }) {
     const [serviceData, setServiceData] = useState(null);
     const handleButtonClick = (e, callback) => {
         e.stopPropagation();
@@ -79,9 +79,31 @@ function CardServiceShop({ service, onClick, onRemove, onUpdatePrice, onUpdateAd
             >
                 Chỉnh sửa địa chỉ
             </Button>
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Button: {
+                            colorPrimary: 'orange',
+                            colorPrimaryHover: 'orange',
+                            colorPrimaryActive: 'orange',
+                            lineWidth: 0,
+                        },
+                    },
+                }}
+            >
+                <Button
+                    icon={<EditOutlined />}
+                    style={{ width: 160, marginRight: 10 }}
+                    type="primary"
+                    onClick={(e) => handleButtonClick(e, () => onGallery(service))}
+                >
+                    Chỉnh sửa gallery
+                </Button>
+            </ConfigProvider>
+
             <Button
                 icon={<DeleteOutlined />}
-                style={{ width: 160, marginTop: 10 }}
+                style={{ width: 160, marginTop: 10, marginLeft: 129}}
                 type="primary"
                 danger
                 onClick={(e) => handleButtonClick(e, () => onRemove(service.id_service))}

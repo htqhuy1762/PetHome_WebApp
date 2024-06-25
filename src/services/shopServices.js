@@ -250,3 +250,34 @@ export const updateAddressService = async (id, data) => {
         return error.response;
     }
 };
+
+export const getServiceGallery = async (id) => {
+    try {
+        const response = await authRequest.get(`/api/shop/services/${id}/gallery`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const addServiceGallery = async (id, data) => {
+    try {
+        const response = await authRequest.post(`/api/shop/services/${id}/gallery`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updateGalleryImage = async (idService, idImage, status) => {
+    try {
+        const response = await authRequest.put(`/api/shop/services/${idService}/gallery/${idImage}?status=${status}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
