@@ -25,7 +25,6 @@ import MyShop from '~/pages/UserPage/MyShop';
 import MyBlog from '~/pages/BlogPage/MyBlog';
 import ServiceDetail from '~/pages/ServicePage/ServiceDetail';
 import Purchase from '~/pages/UserPage/Purchase';
-import Payment from '~/pages/UserPage/Payment';
 import ManagementPet from '~/pages/ShopPage/ManagementPet';
 import ManagementItem from '~/pages/ShopPage/ManagementItem';
 import ManagementService from '~/pages/ShopPage/ManagementService';
@@ -79,7 +78,6 @@ const privateRoutes = [
     { path: '/cart', component: Cart, layout: HeaderFooter },
     { path: '/checkout', component: Checkout, layout: HeaderFooter },
     { path: '/user/purchase', component: Purchase, layout: UserLayout },
-    { path: '/user/account/payment', component: Payment, layout: UserLayout },
     { path: '/payment/result', component: PaymentResult, layout: HeaderFooter },
 ];
 

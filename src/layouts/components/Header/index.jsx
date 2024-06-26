@@ -11,6 +11,10 @@ import * as authServices from '~/services/authServices';
 import * as notificationServices from '~/services/notificationServices';
 import Loading from '~/components/Loading';
 import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const cx = classNames.bind(styles);
 
@@ -257,11 +261,21 @@ function Header({ fixedHeader }) {
                                                             markAsRead(item.id_noti);
                                                         }}
                                                     >
-                                                        <List.Item.Meta title={item.title} description={item.message} />
+                                                        <List.Item.Meta
+                                                            title={
+                                                                <div>
+                                                                    <span>{item.title}</span>
+                                                                    <div className={cx('notification-time')}>
+                                                                        {dayjs(item.created_at).utc().format('HH:mm DD/MM/YYYY')}
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            description={item.message}
+                                                        />
                                                         {!item.is_read && <div className={cx('notification-dot')} />}
                                                     </List.Item>
                                                 )}
-                                                style={{ maxHeight: '300px' }}
+                                                style={{ maxHeight: '400px'}}
                                                 locale={{ emptyText: 'Không có thông báo nào' }}
                                             />
                                         </div>

@@ -18,7 +18,6 @@ function SidebarUser() {
             icon: <UserOutlined />,
             children: [
                 { key: '/user/account/profile', label: <a href="/user/account/profile">Hồ sơ</a> },
-                { key: '/user/account/payment', label: <a href="/user/account/payment">Phương thức thanh toán</a> },
                 { key: '/user/account/address', label: <a href="/user/account/address">Địa chỉ</a> },
                 { key: '/user/account/changepass', label: <a href="/user/account/changepass">Đổi mật khẩu</a> },
             ],
