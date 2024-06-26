@@ -204,7 +204,7 @@ function ItemDetail() {
         setIsModalVisible(false);
     };
 
-    const handleBuyNow = () => {
+    const handleBuyNow = (id) => {
         if (id === localStorage.getItem('idShop')) {
             messageApi.open({
                 type: 'error',
