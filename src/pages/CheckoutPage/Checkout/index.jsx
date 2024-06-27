@@ -75,7 +75,7 @@ function Checkout() {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const encryptedData = searchParams.get('data');
+        const encryptedData = searchParams.get('state');
 
         if (encryptedData) {
             const decryptedBytes = CryptoJS.AES.decrypt(decodeURIComponent(encryptedData), secretKey);

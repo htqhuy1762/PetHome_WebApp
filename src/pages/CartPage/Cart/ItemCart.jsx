@@ -95,7 +95,7 @@ function ItemCart() {
         const itemsWithFromCart = selectedItems.map((item) => ({ ...item, fromCart: true }));
         const itemsString = JSON.stringify(itemsWithFromCart);
         const encryptedItems = CryptoJS.AES.encrypt(itemsString, secretKey).toString();
-        navigate(`/checkout?data=${encodeURIComponent(encryptedItems)}`);
+        navigate(`/checkout?state=${encodeURIComponent(encryptedItems)}`);
     };
 
     if (isLoading) {
@@ -106,7 +106,7 @@ function ItemCart() {
         return (
             <div className={cx('wrapper')}>
                 {contextHolder}
-                <Empty description="Giỏ hàng trống" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <Empty description="Giỏ hàng trống" image={CartEmpty} />
             </div>
         );
     }

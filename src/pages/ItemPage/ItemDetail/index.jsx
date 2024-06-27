@@ -225,7 +225,7 @@ function ItemDetail() {
         const encryptedData = encodeURIComponent(
             CryptoJS.AES.encrypt(JSON.stringify(selectedItem), secretKey).toString(),
         );
-        navigate(`/checkout?data=${encryptedData}`);
+        navigate(`/checkout?state=${encryptedData}`);
     };
 
     const handleAddToCart = async (id) => {
