@@ -171,6 +171,10 @@ function Checkout() {
 
     const handleOrder = async () => {
         try {
+            if (!selectedArea || !selectedAddress || !selectedPhoneNum) {
+                message.error('Bạn cần hoàn tất các thông tin cá nhân trước khi thanh toán');
+                return;
+            }
             const formData = new FormData();
             formData.append('area', selectedArea);
             formData.append('id_method', selectedPayment);
