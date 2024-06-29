@@ -23,7 +23,7 @@ import Loading from '~/components/Loading';
 import Rating from '~/components/Rating';
 import nocomment from '~/assets/images/nocomment.png';
 import React from 'react';
-import { ChatContext } from '~/components/ChatProvider';
+import { ChatContext } from '~/context/ChatProvider';
 
 const cx = classNames.bind(styles);
 

@@ -9,7 +9,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
 import * as shopServices from '~/services/shopServices';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import { AuthContext } from '~/context/AuthProvider/index.jsx';
 import { useEffect, useContext, useRef } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";

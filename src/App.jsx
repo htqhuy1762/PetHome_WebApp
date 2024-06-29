@@ -2,8 +2,8 @@ import { Fragment, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from '~/routes';
 import { DefaultLayout } from './layouts';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
-import { ChatContext } from '~/components/ChatProvider/index.jsx';
+import { AuthContext } from '~/context/AuthProvider/index.jsx';
+import { ChatContext } from '~/context/ChatProvider/index.jsx';
 import ChatBox from '~/components/ChatBox';
 
 function PrivateRoute({ children }) {

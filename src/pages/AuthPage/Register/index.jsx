@@ -8,7 +8,7 @@ import logotitle from '~/assets/images/logo-title.png';
 import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined, LeftOutlined } from '@ant-design/icons';
 import { sendCodeEmail, verifyCodeEmail, register } from '~/services/authServices';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import { AuthContext } from '~/context/AuthProvider/index.jsx';
 
 const cx = classNames.bind(styles);
 

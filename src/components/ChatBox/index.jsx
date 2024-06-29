@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styless from './ChatBox.module.scss';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import { AuthContext } from '~/context/AuthProvider/index.jsx';
 import {
     MainContainer,
     Sidebar,

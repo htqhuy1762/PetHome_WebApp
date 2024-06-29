@@ -10,7 +10,7 @@ import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import * as notificationServices from '~/services/notificationServices';
 import Loading from '~/components/Loading';
-import { AuthContext } from '~/components/AuthProvider/index.jsx';
+import { AuthContext } from '~/context/AuthProvider/index.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
