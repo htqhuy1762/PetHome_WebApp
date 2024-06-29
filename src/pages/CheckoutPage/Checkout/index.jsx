@@ -198,7 +198,7 @@ function Checkout() {
                     await Promise.all(removeItemPromises);
                 }
                 navigate('/user/purchase');
-            } else if (response.status === 400) {
+            } else if (response.status === 403) {
                 message.error('Đặt hàng thất bại tài khoản của bạn đã bị hạn chế bởi quản trị viên');
                 return;
             } else {
