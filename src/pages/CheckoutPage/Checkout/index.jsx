@@ -198,6 +198,9 @@ function Checkout() {
                     await Promise.all(removeItemPromises);
                 }
                 navigate('/user/purchase');
+            } else if (response.status === 400) {
+                message.error('Đặt hàng thất bại tài khoản của bạn đã bị hạn chế bởi quản trị viên');
+                return;
             } else {
                 const itemsFromCart = selectedItems.filter((item) => item.fromCart);
                 if (itemsFromCart.length > 0) {
