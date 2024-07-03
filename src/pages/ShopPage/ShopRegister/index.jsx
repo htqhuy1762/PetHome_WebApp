@@ -5,6 +5,7 @@ import { Form, Button, ConfigProvider, Input, Radio, Upload, Flex, message, Step
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import * as shopServices from '~/services/shopServices';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -326,6 +327,13 @@ function TaxInfor({ onNext, onBack, formData, setFormData }) {
     );
 }
 
+TaxInfor.propTypes = {
+    onNext: PropTypes.func.isRequired,
+    onBack: PropTypes.func.isRequired,
+    formData: PropTypes.object.isRequired,
+    setFormData: PropTypes.func.isRequired,
+};
+
 function IdentificationInfor({ onBack, formData, setFormData }) {
     const [form] = Form.useForm();
     const navigate = useNavigate();
@@ -398,7 +406,7 @@ function IdentificationInfor({ onBack, formData, setFormData }) {
             }));
 
             const dataform = new FormData();
-            
+
             dataform.append('name', formData.name);
             dataform.append('address', formData.address);
             dataform.append('area', formData.area);
@@ -410,9 +418,8 @@ function IdentificationInfor({ onBack, formData, setFormData }) {
             dataform.append('front_id_card', formData.front_id_card);
             dataform.append('back_id_card', formData.back_id_card);
 
-    
             const response = await shopServices.registerShop(dataform);
-    
+
             if (response.status === 200) {
                 console.log('Đăng ký shop thành công');
                 navigate('/user/shop/complete');
@@ -613,6 +620,13 @@ function IdentificationInfor({ onBack, formData, setFormData }) {
     );
 }
 
+IdentificationInfor.propTypes = {
+    onBack: PropTypes.func.isRequired,
+    onNext: PropTypes.func.isRequired,
+    formData: PropTypes.object.isRequired,
+    setFormData: PropTypes.func.isRequired,
+};
+
 function ShopRegister() {
     const [step, setStep] = useState(1);
     const { Step } = Steps;
@@ -668,5 +682,11 @@ function ShopRegister() {
         </div>
     );
 }
+
+ShopInfor.propTypes = {
+    onNext: PropTypes.func.isRequired,
+    formData: PropTypes.object.isRequired,
+    setFormData: PropTypes.func.isRequired,
+};
 
 export default ShopRegister;

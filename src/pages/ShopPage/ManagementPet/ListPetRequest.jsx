@@ -5,6 +5,7 @@ import * as shopServices from '~/services/shopServices';
 import CardPetShopRequest from '~/components/CardPetShopRequest';
 import { Row, Col, message, Empty, Modal } from 'antd';
 import Loading from '~/components/Loading';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -120,5 +121,9 @@ function ListPetRequest({ petAdded }) {
         </div>
     );
 }
+
+ListPetRequest.propTypes = {
+    petAdded: PropTypes.bool,
+};
 
 export default ListPetRequest;

@@ -182,7 +182,7 @@ function Blog() {
             </div>
             <div className={cx('content')}>
                 <div className={cx('form-post')}>
-                    <Form onFinish={handlePostSubmit} form={form}>
+                    <Form onFinish={handlePostSubmit} form={form} initialValues={{ privillage: 'public' }}>
                         <div className={cx('form-header')}>
                             <Avatar
                                 style={{ marginRight: '10px' }}
@@ -200,7 +200,6 @@ function Blog() {
                         <div className={cx('form-footer')}>
                             <Form.Item name="privillage">
                                 <Select
-                                    defaultValue="public"
                                     style={{
                                         width: 120,
                                     }}

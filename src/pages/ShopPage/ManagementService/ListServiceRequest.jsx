@@ -6,6 +6,7 @@ import CardServiceShopRequest from '~/components/CardServiceShopRequest';
 import { message, Empty, Modal } from 'antd';
 import Loading from '~/components/Loading';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -120,5 +121,11 @@ function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail, servic
         </div>
     );
 }
+
+ListServiceRequest.propTypes = {
+    idServiceTypeDetail: PropTypes.number,
+    nameServiceTypeDetail: PropTypes.string,
+    serviceAdded: PropTypes.bool,
+};
 
 export default ListServiceRequest;

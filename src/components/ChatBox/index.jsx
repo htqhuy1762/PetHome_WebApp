@@ -22,6 +22,7 @@ import * as shopServices from '~/services/shopServices';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import PropTypes from 'prop-types';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -513,5 +514,9 @@ function ChatBox({ shopInfo }) {
         </div>
     );
 }
+
+ChatBox.propTypes = {
+    shopInfo: PropTypes.string,
+};
 
 export default ChatBox;

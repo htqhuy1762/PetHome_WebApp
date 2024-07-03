@@ -7,6 +7,7 @@ import * as blogServices from '~/services/blogServices';
 import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import PropTypes from 'prop-types';
 
 dayjs.extend(utc);
 
@@ -401,5 +402,12 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
         </div>
     );
 }
+
+Post.propTypes = {
+    data: PropTypes.object.isRequired,
+    showMenu: PropTypes.bool,
+    updateUI: PropTypes.func,
+    deletePostUI: PropTypes.func,
+};
 
 export default Post;

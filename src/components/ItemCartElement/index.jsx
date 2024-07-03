@@ -1,9 +1,9 @@
-//import { Card, InputNumber, Button, Image } from 'antd';
 import { Image, Row, Col, Button, Input, Checkbox } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './ItemCartElement.module.scss';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -49,6 +49,13 @@ function CustomInputNumber({ id, onQuantityChange, item, disabled }) {
         </div>
     );
 }
+
+CustomInputNumber.propTypes = {
+    id: PropTypes.string.isRequired,
+    onQuantityChange: PropTypes.func.isRequired,
+    item: PropTypes.object.isRequired,
+    disabled: PropTypes.bool,
+};
 
 function ItemCartElement({ item, selected, onSelect, onQuantityChange, onRemove }) {
     return (
@@ -122,5 +129,13 @@ function ItemCartElement({ item, selected, onSelect, onQuantityChange, onRemove 
         </Row>
     );
 }
+
+ItemCartElement.propTypes = {
+    item: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    onQuantityChange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+};
 
 export default ItemCartElement;

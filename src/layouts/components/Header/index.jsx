@@ -13,6 +13,7 @@ import Loading from '~/components/Loading';
 import { AuthContext } from '~/context/AuthProvider/index.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import PropTypes from 'prop-types';
 
 dayjs.extend(utc);
 
@@ -155,8 +156,6 @@ function Header({ fixedHeader }) {
         return <Loading />;
     }
 
-    console.log(notifications);
-
     return (
         <header className={cx(fixedHeader ? 'wrapperfixed' : 'wrappernonfixed')}>
             <div className={cx('inner')}>
@@ -266,7 +265,9 @@ function Header({ fixedHeader }) {
                                                                 <div>
                                                                     <span>{item.title}</span>
                                                                     <div className={cx('notification-time')}>
-                                                                        {dayjs(item.created_at).utc().format('HH:mm DD/MM/YYYY')}
+                                                                        {dayjs(item.created_at)
+                                                                            .utc()
+                                                                            .format('HH:mm DD/MM/YYYY')}
                                                                     </div>
                                                                 </div>
                                                             }
@@ -275,7 +276,7 @@ function Header({ fixedHeader }) {
                                                         {!item.is_read && <div className={cx('notification-dot')} />}
                                                     </List.Item>
                                                 )}
-                                                style={{ maxHeight: '400px'}}
+                                                style={{ maxHeight: '400px' }}
                                                 locale={{ emptyText: 'Không có thông báo nào' }}
                                             />
                                         </div>
@@ -323,5 +324,9 @@ function Header({ fixedHeader }) {
         </header>
     );
 }
+
+Header.propTypes = {
+    fixedHeader: PropTypes.bool,
+};
 
 export default Header;

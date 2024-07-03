@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './ItemCheckoutElement.module.scss';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -55,6 +56,14 @@ function CustomInputNumber({ id, quantityWant, onQuantityChange, fromCart, item 
         </div>
     );
 }
+
+CustomInputNumber.propTypes = {
+    id: PropTypes.string.isRequired,
+    quantityWant: PropTypes.number,
+    onQuantityChange: PropTypes.func.isRequired,
+    fromCart: PropTypes.bool,
+    item: PropTypes.object.isRequired,
+};
 
 function ItemCheckoutElement({ item, onQuantityChange }) {
     const [quantityWant, setQuantityWant] = useState(item.quantityWant || 1);
@@ -140,5 +149,10 @@ function ItemCheckoutElement({ item, onQuantityChange }) {
         </Row>
     );
 }
+
+ItemCheckoutElement.propTypes = {
+    item: PropTypes.object.isRequired,
+    onQuantityChange: PropTypes.func.isRequired,
+};
 
 export default ItemCheckoutElement;

@@ -5,6 +5,7 @@ import * as paymentServices from '~/services/paymentServices';
 import { useEffect, useState, useRef } from 'react';
 import Bill from '~/components/Bill';
 import { Modal, message, Spin, Empty } from 'antd';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -52,8 +53,6 @@ function ListAllBill({ isCanceled, setIsCanceled }) {
     useEffect(() => {
         fetchData(start);
     }, [start]);
-
-    console.log(bills);
 
     const handleCancelBill = async () => {
         try {
@@ -160,5 +159,10 @@ function ListAllBill({ isCanceled, setIsCanceled }) {
         </div>
     );
 }
+
+ListAllBill.propTypes = {
+    isCanceled: PropTypes.bool,
+    setIsCanceled: PropTypes.func,
+};
 
 export default ListAllBill;

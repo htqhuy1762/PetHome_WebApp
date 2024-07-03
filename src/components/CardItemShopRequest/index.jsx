@@ -4,6 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './CardItemShop.module.scss';
 import { Link } from 'react-router-dom';
 import { DeleteOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -53,5 +54,10 @@ function CardItemShopRequest({ item, onRemove }) {
         </Row>
     );
 }
+
+CardItemShopRequest.propTypes = {
+    item: PropTypes.object.isRequired,
+    onRemove: PropTypes.func.isRequired,
+};
 
 export default CardItemShopRequest;

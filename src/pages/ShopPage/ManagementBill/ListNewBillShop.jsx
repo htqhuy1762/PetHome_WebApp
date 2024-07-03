@@ -4,6 +4,7 @@ import * as billServices from '~/services/billServices';
 import { useEffect, useState, useRef } from 'react';
 import BillShop from '~/components/BillShop';
 import { Modal, message, Spin, Empty } from 'antd';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -178,5 +179,12 @@ function ListAllBillShop({ isUpdate, isCanceled, setIsUpdate, setIsCanceled }) {
         </div>
     );
 }
+
+ListAllBillShop.propTypes = {
+    isUpdate: PropTypes.bool,
+    isCanceled: PropTypes.bool,
+    setIsUpdate: PropTypes.func,
+    setIsCanceled: PropTypes.func,
+};
 
 export default ListAllBillShop;

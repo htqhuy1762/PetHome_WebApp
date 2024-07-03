@@ -1,6 +1,7 @@
 import { Button } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './AddressCard.module.scss';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -23,5 +24,10 @@ function AddressCard({ address, onRemove }) {
         </div>
     );
 }
+
+AddressCard.propTypes = {
+    address: PropTypes.object.isRequired,
+    onRemove: PropTypes.func.isRequired,
+};
 
 export default AddressCard;

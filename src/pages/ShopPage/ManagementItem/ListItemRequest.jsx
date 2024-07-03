@@ -5,6 +5,7 @@ import * as shopServices from '~/services/shopServices';
 import CardItemShopRequest from '~/components/CardItemShopRequest';
 import { Row, Col, message, Empty, Modal } from 'antd';
 import Loading from '~/components/Loading';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -120,5 +121,9 @@ function ListItemRequest({ itemAdded }) {
         </div>
     );
 }
+
+ListItemRequest.propTypes = {
+    itemAdded: PropTypes.bool,
+};
 
 export default ListItemRequest;

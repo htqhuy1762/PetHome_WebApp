@@ -5,6 +5,7 @@ import { DefaultLayout } from './layouts';
 import { AuthContext } from '~/context/AuthProvider/index.jsx';
 import { ChatContext } from '~/context/ChatProvider/index.jsx';
 import ChatBox from '~/components/ChatBox';
+import PropTypes from 'prop-types';
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
@@ -28,6 +29,10 @@ function PrivateRoute({ children }) {
 
     return isLoggedIn ? children : null;
 }
+
+PrivateRoute.propTypes = {
+    children: PropTypes.node.isRequired,
+};
 
 function App() {
     const { isLoggedIn, isLoading } = useContext(AuthContext);

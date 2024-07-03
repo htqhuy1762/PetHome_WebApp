@@ -4,6 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './CardPetShop.module.scss';
 import { Link } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -66,5 +67,11 @@ function CardPetShop({ pet, onRemove, onUpdate }) {
         </Row>
     );
 }
+
+CardPetShop.propTypes = {
+    pet: PropTypes.object,
+    onRemove: PropTypes.func,
+    onUpdate: PropTypes.func,
+};
 
 export default CardPetShop;

@@ -4,6 +4,7 @@ import * as billServices from '~/services/billServices';
 import { useEffect, useState, useRef } from 'react';
 import BillShop from '~/components/BillShop';
 import { Empty, Spin } from 'antd';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -86,5 +87,9 @@ function ListDoneBill({ isDone }) {
         </div>
     );
 }
+
+ListDoneBill.propTypes = {
+    isDone: PropTypes.bool,
+};
 
 export default ListDoneBill;

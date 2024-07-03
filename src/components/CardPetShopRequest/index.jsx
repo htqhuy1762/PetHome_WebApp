@@ -4,6 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './CardPetShopRequest.module.scss';
 import { Link } from 'react-router-dom';
 import { DeleteOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -53,5 +54,10 @@ function CardPetShopRequest({ pet, onRemove }) {
         </Row>
     );
 }
+
+CardPetShopRequest.propTypes = {
+    pet: PropTypes.object.isRequired,
+    onRemove: PropTypes.func.isRequired,
+};
 
 export default CardPetShopRequest;

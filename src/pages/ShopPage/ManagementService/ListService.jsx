@@ -7,6 +7,7 @@ import { message, Empty, Modal, Form, InputNumber, Checkbox, Upload, Popconfirm 
 import Loading from '~/components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -525,5 +526,10 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
         </div>
     );
 }
+
+ListService.propTypes = {
+    idServiceTypeDetail: PropTypes.number,
+    nameServiceTypeDetail: PropTypes.string,
+};
 
 export default ListService;

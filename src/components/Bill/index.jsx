@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Bill.module.scss';
+import PropTypes from 'prop-types';
 import { Image, Button, ConfigProvider } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -163,5 +164,11 @@ function Bill({ bill, onCancel, onPayment }) {
         </div>
     );
 }
+
+Bill.propTypes = {
+    bill: PropTypes.object.isRequired,
+    onCancel: PropTypes.func,
+    onPayment: PropTypes.func,
+};
 
 export default Bill;

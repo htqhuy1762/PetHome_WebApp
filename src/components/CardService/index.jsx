@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './CardService.module.scss';
 import { Card, Rate } from 'antd';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -37,5 +38,10 @@ function CardService({ service, onClick }) {
         </Card>
     );
 }
+
+CardService.propTypes = {
+    service: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
+};
 
 export default CardService;

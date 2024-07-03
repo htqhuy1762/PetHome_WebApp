@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import * as itemServices from '~/services/itemServices';
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -80,5 +81,12 @@ function CardItemShop({ item, onRemove, onUpdate, isUpdated }) {
         </Row>
     );
 }
+
+CardItemShop.propTypes = {
+    item: PropTypes.object.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
+    isUpdated: PropTypes.bool.isRequired,
+};
 
 export default CardItemShop;

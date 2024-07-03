@@ -8,6 +8,7 @@ import * as authServices from '~/services/authServices';
 import logo from '~/assets/images/logo.png';
 import logotitle from '~/assets/images/logo-title.png';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -165,6 +166,10 @@ function InputOTP({ onNext }) {
     );
 }
 
+InputOTP.propTypes = {
+    onNext: PropTypes.func.isRequired,
+};
+
 function ChangePassForm({ onBack }) {
     const navigate = useNavigate();
     const onFinish = async (values) => {
@@ -274,6 +279,10 @@ function ChangePassForm({ onBack }) {
         </div>
     );
 }
+
+ChangePassForm.propTypes = {
+    onBack: PropTypes.func.isRequired,
+};
 
 function ForgotPassword() {
     const [step, setStep] = useState(1);

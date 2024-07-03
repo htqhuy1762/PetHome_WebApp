@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Rating.module.scss';
 import { Rate, Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -31,5 +32,9 @@ function Rating({ data }) {
         </div>
     );
 }
+
+Rating.propTypes = {
+    data: PropTypes.object.isRequired,
+};
 
 export default Rating;

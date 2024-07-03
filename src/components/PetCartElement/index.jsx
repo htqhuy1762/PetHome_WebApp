@@ -3,6 +3,7 @@ import { Image, Row, Col, Button } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './PetCartElement.module.scss';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -51,5 +52,10 @@ function PetCartElement({ pet, onRemove }) {
         </Row>
     );
 }
+
+PetCartElement.propTypes = {
+    pet: PropTypes.object.isRequired,
+    onRemove: PropTypes.func.isRequired,
+};
 
 export default PetCartElement;

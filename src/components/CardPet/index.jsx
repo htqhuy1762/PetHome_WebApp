@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './CardPet.module.scss';
 import { Card, Image, Rate } from 'antd';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -53,5 +54,10 @@ function CardPet({ pet, onClick }) {
         </>
     );
 }
+
+CardPet.propTypes = {
+    pet: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
+};
 
 export default CardPet;

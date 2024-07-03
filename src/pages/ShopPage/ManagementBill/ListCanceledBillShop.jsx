@@ -4,6 +4,7 @@ import * as billServices from '~/services/billServices';
 import { useEffect, useState, useRef } from 'react';
 import BillShop from '~/components/BillShop';
 import { Empty, Spin } from 'antd';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -87,5 +88,9 @@ function ListCanceledBill({ isCanceled }) {
         </div>
     );
 }
+
+ListCanceledBill.propTypes = {
+    isCanceled: PropTypes.bool,
+};
 
 export default ListCanceledBill;

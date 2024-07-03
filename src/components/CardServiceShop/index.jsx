@@ -4,6 +4,7 @@ import { Card, Button, ConfigProvider } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import * as servicePetServices from '~/services/servicePetServices';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -113,5 +114,15 @@ function CardServiceShop({ service, onClick, onRemove, onUpdatePrice, onUpdateAd
         </Card>
     );
 }
+
+CardServiceShop.propTypes = {
+    service: PropTypes.object,
+    onClick: PropTypes.func,
+    onRemove: PropTypes.func,
+    onUpdatePrice: PropTypes.func,
+    onUpdateAddress: PropTypes.func,
+    isUpdated: PropTypes.bool,
+    onGallery: PropTypes.func,
+};
 
 export default CardServiceShop;

@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './CardServiceShopRequest.module.scss';
 import { Card, Button } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -43,5 +44,11 @@ function CardServiceShopRequest({ service, onClick, onRemove }) {
         </Card>
     );
 }
+
+CardServiceShopRequest.propTypes = {
+    service: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+};
 
 export default CardServiceShopRequest;

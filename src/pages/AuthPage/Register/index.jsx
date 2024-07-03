@@ -9,6 +9,7 @@ import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined, LeftOutlined } from '@ant-design/icons';
 import { sendCodeEmail, verifyCodeEmail, register } from '~/services/authServices';
 import { AuthContext } from '~/context/AuthProvider/index.jsx';
+import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
 
@@ -107,6 +108,13 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
         </div>
     );
 }
+
+InputEmail.propTypes = {
+    onNext: PropTypes.func.isRequired,
+    setToken: PropTypes.func.isRequired,
+    setExpiry: PropTypes.func.isRequired,
+    setEmail: PropTypes.func.isRequired,
+};
 
 function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry }) {
     const [otp, setOtp] = useState('');
@@ -249,6 +257,16 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
     );
 }
 
+InputOTP.propTypes = {
+    onNext: PropTypes.func.isRequired,
+    onBack: PropTypes.func.isRequired,
+    token: PropTypes.string.isRequired,
+    expiry: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    setToken: PropTypes.func.isRequired,
+    setExpiry: PropTypes.func.isRequired,
+};
+
 function RegisterForm({ onBack, email }) {
     const navigate = useNavigate();
     const onFinish = async (values) => {
@@ -363,6 +381,11 @@ function RegisterForm({ onBack, email }) {
         </div>
     );
 }
+
+RegisterForm.propTypes = {
+    onBack: PropTypes.func.isRequired,
+    email: PropTypes.string.isRequired,
+};
 
 function Register() {
     const navigate = useNavigate();

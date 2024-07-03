@@ -5,7 +5,6 @@ import * as shopServices from '~/services/shopServices';
 import Loading from '~/components/Loading';
 import { Form, Button, Input, Upload, message, Avatar, Image } from 'antd';
 import { ShopOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
 
 const cx = classNames.bind(styles);
 

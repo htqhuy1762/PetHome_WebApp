@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './BillShop.module.scss';
 import { Image, Button, ConfigProvider } from 'antd';
+import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {
@@ -221,5 +222,14 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered, onDone
         </div>
     );
 }
+
+BillShop.propTypes = {
+    bill: PropTypes.object.isRequired,
+    onCancel: PropTypes.func,
+    onConfirm: PropTypes.func,
+    onDelivering: PropTypes.func,
+    onDelivered: PropTypes.func,
+    onDone: PropTypes.func,
+};
 
 export default BillShop;
