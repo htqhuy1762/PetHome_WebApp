@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <GlobalStyles>
             <AuthProvider>
-                <GoogleOAuthProvider clientId="166899803953-spkq46d1namegkbkgigjmtrpikub48bv.apps.googleusercontent.com">
+                <GoogleOAuthProvider clientId={import.meta.env.VITE_APP_CLIENT_ID_GOOGLE}>
                     <ChatProvider>
                         <App />
                     </ChatProvider>

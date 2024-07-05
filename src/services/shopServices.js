@@ -281,3 +281,13 @@ export const updateGalleryImage = async (idService, idImage, status) => {
         return error.response;
     }
 };
+
+// Management Income
+export const getShopIncomes = async (from, to) => {
+    try {
+        const response = await authRequest.get(`/api/shop/income?from=${from}&to=${to}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};

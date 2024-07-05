@@ -2,8 +2,6 @@ import styles from './Login.module.scss';
 import classNames from 'classnames/bind';
 import logo from '~/assets/images/logo.png';
 import logotitle from '~/assets/images/logo-title.png';
-//import google_logo from '~/assets/images/Google_Logo.png';
-import facebook_logo from '~/assets/images/Facebook_Logo.png';
 import { Form, Input, Button, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import * as authServices from '~/services/authServices';
@@ -12,11 +10,39 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/context/AuthProvider/index.jsx';
 import { useEffect, useContext, useRef } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
+import { LoginSocialFacebook } from 'reactjs-social-login';
+import { createButton } from 'react-social-login-buttons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 const cx = classNames.bind(styles);
 
+const config = {
+    text: 'Đăng nhập bằng Facebook',
+    icon: () => <FontAwesomeIcon style={{ color: '#0866ff', fontSize: '20px', paddingRight: 0 }} icon={faFacebook} />,
+    style: {
+        background: 'white',
+        padding: '0 8px',
+        color: '#3c4043',
+        fontSize: '14px',
+        fontWeight: '500',
+        fontFamily: '"Google Sans",arial,sans-serif',
+        height: '40px',
+        margin: '1px 0 0 5px',
+        boxShadow: 'none',
+        borderRadius: '4px',
+        border: '1px solid #dadce0',
+        width: '227px',
+        display: 'flex',
+        alignItems: 'center',
+        cursor: 'pointer',
+    },
+    activeStyle: { background: 'white' },
+};
+
 function Login() {
+    const MyFacebookLoginButton = createButton(config);
     const navigate = useNavigate();
     const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
     const formRef = useRef(null);
@@ -137,6 +163,47 @@ function Login() {
         }
     };
 
+    const handleFacebookLogin = async (facebookResponse) => {
+        try {
+            const data = {
+                email: facebookResponse.data.email,
+                name: facebookResponse.data.name,
+                facebook_id: facebookResponse.data.id,
+            };
+
+            const response = await authServices.facebookLogin(data);
+            if (response.status === 200) {
+                const accessToken = response.data.accessToken;
+                const expiredAt = response.data.expiredAt;
+                const refreshToken = response.data.refreshToken;
+
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('expiredAt', expiredAt);
+                localStorage.setItem('refreshToken', refreshToken);
+
+                setIsLoggedIn(true);
+
+                const responseIsRegister = await shopServices.checkIsRegisterShop();
+                const responseIsActive = await shopServices.checkIsActiveShop();
+
+                if (responseIsRegister.status === 200 || responseIsRegister.status === 201) {
+                    if (responseIsRegister.data.message === 'User is shop owner') {
+                        localStorage.setItem('idShop', responseIsActive.data.id_shop);
+                    }
+                }
+
+                navigate('/');
+            } else {
+                notification.error({
+                    message: 'Error',
+                    description: 'Đăng nhập không thành công!',
+                });
+            }
+        } catch (error) {
+            console.error('Đăng nhập bằng Facebook không thành công:', error);
+        }
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('logo_container')}>
@@ -196,25 +263,24 @@ function Login() {
                         <div style={{ textAlign: 'center', fontSize: '1.6rem' }}>Hoặc đăng nhập bằng:</div>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                             <GoogleLogin
+                                style={{ width: '230px' }}
                                 onSuccess={handleGoogleLogin}
                                 onError={() => {
                                     console.log('Login Failed');
                                 }}
                             />
-                            <Button
-                                className={cx('ortherLogin')}
-                                size="large"
-                                icon={
-                                    <img
-                                        src={facebook_logo}
-                                        alt="Facebook"
-                                        style={{ height: '2.5rem', marginRight: '10px'}}
-                                    />
-                                }
-                                style={{ fontSize: '1.7rem'}}
+                            <LoginSocialFacebook
+                                style={{ width: '50%' }}
+                                appId={import.meta.env.VITE_APP_APP_ID_FACEBOOK}
+                                onResolve={(response) => {
+                                    handleFacebookLogin(response);
+                                }}
+                                onReject={(error) => {
+                                    console.log(error);
+                                }}
                             >
-                                Facebook
-                            </Button>
+                                <MyFacebookLoginButton />
+                            </LoginSocialFacebook>
                         </div>
                     </Form.Item>
                     <Form.Item>

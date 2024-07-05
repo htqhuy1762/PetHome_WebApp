@@ -38,7 +38,7 @@ function SidebarShopManagement() {
         },
         {
             key: '3',
-            label: 'Quản lý doanh thu',
+            label: <Link to="/user/shop/management/income">Quản lý doanh thu</Link>,
             children: null,
         },
         {
