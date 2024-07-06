@@ -117,6 +117,14 @@ function Header({ fixedHeader }) {
 
     useEffect(() => {
         getNotifications();
+
+        // Update notifications every 10 seconds
+        const intervalId = setInterval(() => {
+            getNotifications();
+        }, 30000); // 30 seconds
+
+        // Cleanup the interval on component unmount
+        return () => clearInterval(intervalId);
     }, []);
 
     const handleBellClick = () => {

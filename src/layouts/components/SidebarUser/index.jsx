@@ -19,6 +19,7 @@ function SidebarUser() {
             children: [
                 { key: '/user/account/profile', label: <a href="/user/account/profile">Hồ sơ</a> },
                 { key: '/user/account/address', label: <a href="/user/account/address">Địa chỉ</a> },
+                { key: '/user/account/favorite-pet', label: <a href="/user/account/favorite-pet">Thú cưng yêu thích</a> },
                 { key: '/user/account/changepass', label: <a href="/user/account/changepass">Đổi mật khẩu</a> },
             ],
         },

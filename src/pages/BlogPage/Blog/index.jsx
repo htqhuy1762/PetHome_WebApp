@@ -23,6 +23,11 @@ function Blog() {
     const [hasMore, setHasMore] = useState(true);
 
     const beforeUploadImages = (file) => {
+        if (images.length >= 10) {
+            message.error('Chỉ được phép tải lên tối đa 10 hình!');
+            return false;
+        }
+
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');
@@ -249,7 +254,7 @@ function Blog() {
                                 onRemove={handleRemoveImage}
                                 showUploadList={{ showRemoveIcon: true }}
                             >
-                                {uploadButtonImages}
+                                {images.length < 10 && uploadButtonImages}
                             </Upload>
                         </Form.Item>
                     </Form>

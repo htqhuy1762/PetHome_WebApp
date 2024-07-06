@@ -38,6 +38,7 @@ import Checkout from '~/pages/CheckoutPage/Checkout';
 import ManagementBill from '~/pages/ShopPage/ManagementBill';
 import PaymentResult from '~/pages/UserPage/PaymentResult';
 import ShopIncome from '~/pages/ShopPage/ShopIncome';
+import FavoritePet from '~/pages/UserPage/FavoritePet';
 
 const publicRoutes = [
     { path: '/', component: Pet },
@@ -63,6 +64,7 @@ const publicRoutes = [
 
 const privateRoutes = [
     { path: '/user/account/profile', component: Profile, layout: UserLayout },
+    { path: '/user/account/favorite-pet', component: FavoritePet, layout: UserLayout },
     { path: '/user/shop', component: MyShop, layout: UserLayout },
     { path: '/user/shop/subcribe', component: ShopSubcribe, layout: UserLayout },
     { path: '/user/shop/register', component: ShopRegister, layout: UserLayout },

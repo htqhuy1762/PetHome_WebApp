@@ -1,6 +1,6 @@
 import { Row, Col, message, Empty } from 'antd';
 import classNames from 'classnames/bind';
-import styles from './PetCart.module.scss';
+import styles from './FavoritePet.module.scss';
 import PetCartElement from '~/components/PetCartElement';
 import * as cartServices from '~/services/cartServices';
 import { useState, useEffect } from 'react';
@@ -9,7 +9,7 @@ import CartEmpty from '~/assets/images/CartEmpty.png';
 
 const cx = classNames.bind(styles);
 
-function PetCart() {
+function FavoritePet() {
     const [messageApi, contextHolder] = message.useMessage();
     const [pets, setPets] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -61,14 +61,18 @@ function PetCart() {
     };
 
     if (isLoading) {
-        return <Loading />;
+        return (
+            <div className={cx('wrapper')}>
+                <Loading />
+            </div>
+        );
     }
 
     if (pets.length === 0) {
         return (
             <div className={cx('wrapper')}>
                 {contextHolder}
-                <Empty description="Giỏ hàng trống" image={CartEmpty} />
+                <Empty description="Danh sách trống" image={CartEmpty} />
             </div>
         );
     }
@@ -76,21 +80,24 @@ function PetCart() {
     return (
         <div className={cx('wrapper')}>
             {contextHolder}
-            <Row className={cx('header')}>
-                <Col span={12}><p style={{fontSize: '2rem'}}>Thú cưng</p></Col>
-                <Col span={4}><p style={{fontSize: '2rem'}}>Số tiền</p></Col>
-                <Col span={4}><p style={{fontSize: '2rem'}}>Tình trạng</p></Col>
-                <Col span={4}><p style={{fontSize: '2rem'}}>Thao tác</p></Col>
-            </Row>
-            {pets.map((pet) => (
-                <PetCartElement
-                    key={pet.id_pet}
-                    pet={pet}
-                    onRemove={handleRemovePet}
-                />
-            ))}
+            <h1>Thú cưng yêu thích</h1>
+            <div className={cx('content')}>
+                <Row className={cx('header')}>
+                    <Col span={12}><p style={{fontSize: '2rem'}}>Thú cưng</p></Col>
+                    <Col span={4}><p style={{fontSize: '2rem'}}>Số tiền</p></Col>
+                    <Col span={4}><p style={{fontSize: '2rem'}}>Tình trạng</p></Col>
+                    <Col span={4}><p style={{fontSize: '2rem'}}>Thao tác</p></Col>
+                </Row>
+                {pets.map((pet) => (
+                    <PetCartElement
+                        key={pet.id_pet}
+                        pet={pet}
+                        onRemove={handleRemovePet}
+                    />
+                ))}
+            </div>
         </div>
     );
 }
 
-export default PetCart;
+export default FavoritePet;

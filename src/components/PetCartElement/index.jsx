@@ -14,8 +14,8 @@ function PetCartElement({ pet, onRemove }) {
                 <Link to={`/pets/${pet.id_pet}`}>
                     <Image
                         style={{
-                            width: '150px',
-                            height: '150px',
+                            width: '125px',
+                            height: '125px',
                         }}
                         alt="example"
                         preview={false}

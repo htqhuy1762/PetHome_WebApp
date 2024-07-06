@@ -99,7 +99,11 @@ function Profile() {
     }, [userData, form]);
 
     if (loading) {
-        return <Loading />;
+        return (
+            <div className={cx('wrapper')}>
+                <Loading />
+            </div>
+        );
     }
 
     return (

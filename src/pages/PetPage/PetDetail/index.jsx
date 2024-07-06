@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import classNames from 'classnames/bind';
 import styles from './PetDetail.module.scss';
-import { ShoppingCartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
+import { HeartOutlined, WechatOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import * as petServices from '~/services/petServices';
 import * as cartServices from '~/services/cartServices';
@@ -60,14 +60,14 @@ function PetDetail() {
     const cartSuccess = () => {
         messageApi.open({
             type: 'success',
-            content: 'Thêm vào giỏ hàng thành công',
+            content: 'Thêm vào mục yêu thích thành công',
         });
     };
 
     const cartError = () => {
         messageApi.open({
             type: 'error',
-            content: 'Thêm vào giỏ hàng thất bại',
+            content: 'Thêm vào mục yêu thích thất bại',
         });
     };
 
@@ -300,12 +300,12 @@ function PetDetail() {
                         >
                             <Button
                                 className={cx('button1')}
-                                icon={<ShoppingCartOutlined />}
+                                icon={<HeartOutlined />}
                                 size="large"
                                 onClick={() => handleAddToCart(petData.id_shop)}
                                 type="default"
                             >
-                                Thêm vào giỏ hàng
+                                Thêm vào mục yêu thích
                             </Button>
                         </ConfigProvider>
                     </div>

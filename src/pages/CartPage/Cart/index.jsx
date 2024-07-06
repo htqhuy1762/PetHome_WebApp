@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Cart.module.scss';
 import { Tabs } from 'antd';
-import PetCart from './PetCart';
 import ItemCart from './ItemCart';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo } from 'react';
@@ -16,13 +15,13 @@ function Cart() {
     const activeTabKey = query.get('type') || '1';
 
     const tabs = [
+        // {
+        //     key: '1',
+        //     label: 'Thú cưng',
+        //     children: <PetCart />,
+        // },
         {
             key: '1',
-            label: 'Thú cưng',
-            children: <PetCart />,
-        },
-        {
-            key: '2',
             label: 'Vật phẩm',
             children: <ItemCart />,
         },

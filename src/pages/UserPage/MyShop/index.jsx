@@ -2,6 +2,10 @@ import * as shopServices from '~/services/shopServices';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '~/components/Loading';
+import classNames from 'classnames/bind';
+import styles from './MyShop.module.scss';
+
+const cx = classNames.bind(styles);
 
 function MyShop() {
     const navigate = useNavigate();
@@ -55,7 +59,11 @@ function MyShop() {
     });
 
     if (loading) {
-        return <Loading />;
+        return (
+            <div className={cx('wrapper')}>
+                <Loading />
+            </div>
+        );
     }
 
     return <div></div>;
