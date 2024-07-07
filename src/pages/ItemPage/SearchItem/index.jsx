@@ -182,10 +182,10 @@ function SearchItem() {
                 </div>
             </div>
             <div className={cx('contents')}>
-            <div className={cx('sort-header')}>
-                    <p>Sắp xếp theo</p>
+                <div className={cx('sort-header')}>
+                    <p style={{ fontWeight: 700 }}>Sắp xếp theo</p>
                     <div className={cx('sort-price')}>
-                        <p>Giá</p>
+                        <p>Giá:</p>
                         <Select
                             style={{
                                 backgroundColor: '#e6e6e6',
@@ -214,7 +214,7 @@ function SearchItem() {
                     </div>
 
                     <div className={cx('sort-star')}>
-                        <p>Đánh giá sao</p>
+                        <p>Đánh giá sao:</p>
                         <Select
                             style={{
                                 backgroundColor: '#e6e6e6',
@@ -248,8 +248,16 @@ function SearchItem() {
                             <CardItems key={item.id_item} item={item} onClick={() => goToItemDetail(item.id_item)} />
                         ))
                     ) : (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '965px', height: '366px' }}>
-                            <Empty description="Danh sách trống"/>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '965px',
+                                height: '366px',
+                            }}
+                        >
+                            <Empty description="Danh sách trống" />
                         </div>
                     )}
                 </div>

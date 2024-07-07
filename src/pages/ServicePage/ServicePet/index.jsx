@@ -166,9 +166,9 @@ function ServicePet() {
                         {services && services.length > 0 ? (
                             <>
                                 <div className={cx('sort-header')}>
-                                    <p>Sắp xếp theo</p>
+                                    <p style={{ fontWeight: 700 }}>Sắp xếp theo</p>
                                     <div className={cx('sort-star')}>
-                                        <p>Đánh giá sao</p>
+                                        <p>Đánh giá sao:</p>
                                         <Select
                                             style={{
                                                 backgroundColor: '#e6e6e6',

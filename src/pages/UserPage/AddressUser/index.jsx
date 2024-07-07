@@ -5,6 +5,7 @@ import classNames from 'classnames/bind';
 import styles from './AddressUser.module.scss';
 import AddressCard from '~/components/AddressCard';
 import * as userServices from '~/services/userServices';
+import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 const areas = [
@@ -77,7 +78,8 @@ function AddressUser() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [addressContent, setAddressContent] = useState('');
-    const [areaContent, setAreaContent] = useState('Hà Nội'); // Khởi tạo state với giá trị mặc định
+    const [areaContent, setAreaContent] = useState('Hà Nội');
+    const [loading, setLoading] = useState(false);
 
     const areaOptions = areas.map((area) => ({
         value: area,
@@ -150,6 +152,7 @@ function AddressUser() {
 
     useEffect(() => {
         const fetchAddresses = async () => {
+            setLoading(true);
             try {
                 const response = await userServices.getUserAddress();
                 if (response.status === 200) {
@@ -159,6 +162,7 @@ function AddressUser() {
                 console.error('Failed to fetch addresses', error);
                 // Handle error
             }
+            setLoading(false);
         };
 
         fetchAddresses();
@@ -181,6 +185,14 @@ function AddressUser() {
             console.error('Failed to remove address', error);
         }
     };
+
+    if (loading) {
+        return (
+            <div className={cx('wrapper')}>
+                <Loading />
+            </div>
+        );
+    }
 
     return (
         <div className={cx('wrapper')}>

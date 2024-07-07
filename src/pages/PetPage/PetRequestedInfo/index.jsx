@@ -55,10 +55,10 @@ function PetRequestedInfo() {
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
                     {
-                        title: <a href="/">Home</a>,
+                        title: <a href="/">Trang chủ</a>,
                     },
                     {
-                        title: <a href="/">Pets</a>,
+                        title: <a href="/">Thú cưng</a>,
                     },
                     {
                         title: (
