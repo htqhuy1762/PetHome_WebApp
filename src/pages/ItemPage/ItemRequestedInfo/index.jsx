@@ -87,10 +87,10 @@ function ItemRequestedInfo() {
                 style={{ fontSize: '1.5rem', marginTop: '20px' }}
                 items={[
                     {
-                        title: <a href="/">Home</a>,
+                        title: <a href="/">Trang chủ</a>,
                     },
                     {
-                        title: <a href="/items">Items</a>,
+                        title: <a href="/items">Vật phẩm</a>,
                     },
                     {
                         title: (

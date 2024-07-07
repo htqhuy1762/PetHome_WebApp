@@ -5,7 +5,7 @@ import * as searchServices from '~/services/searchServices';
 import * as petServices from '~/services/petServices';
 import CardPet from '~/components/CardPet';
 import { useState, useEffect } from 'react';
-import { Pagination, Checkbox, Button, Empty } from 'antd';
+import { Pagination, Checkbox, Button, Empty, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -97,6 +97,8 @@ function SearchPet() {
     const [selectedSpecies, setSelectedSpecies] = useState([]);
     const [selectedAges, setSelectedAges] = useState([]);
     const [selectedProvinces, setSelectedProvinces] = useState([]);
+    const [sortPriceValue, setSortPriceValue] = useState('NONE');
+    const [sortStarValue, setSortStarValue] = useState('NONE');
 
     const handleSpeciesChange = (checkedValues) => {
         setSelectedSpecies(checkedValues);
@@ -124,15 +126,16 @@ function SearchPet() {
     useEffect(() => {
         const fetchData = async () => {
             const query = new URLSearchParams(location.search).get('q');
-            if (query !== lastQuery || !data[currentPage]) {
+            if (query !== lastQuery || !data[currentPage] || sortPriceValue !== 'NONE' || sortStarValue !== 'NONE') {
                 const response = await searchServices.searchPets({
                     name: query,
                     limit: limit,
                     start: (currentPage - 1) * limit,
+                    priceOrder: sortPriceValue,
+                    ratingOrder: sortStarValue,
                 });
                 if (response.status === 200) {
                     setData((prevData) => ({ ...prevData, [currentPage]: response.data.data }));
-                    // Đang đợi bên backend xử lý trả về count khi query search
                     setTotal(response.data.count);
                     setLastQuery(query);
                 }
@@ -140,7 +143,7 @@ function SearchPet() {
         };
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, location.search]);
+    }, [currentPage, location.search, sortPriceValue, sortStarValue]);
 
     const filteredData = data[currentPage]?.filter(
         (pet) =>
@@ -240,6 +243,66 @@ function SearchPet() {
                 </div>
             </div>
             <div className={cx('contents')}>
+                <div className={cx('sort-header')}>
+                    <p>Sắp xếp theo</p>
+                    <div className={cx('sort-price')}>
+                        <p>Giá</p>
+                        <Select
+                            style={{
+                                backgroundColor: '#e6e6e6',
+                                width: '150px',
+                                height: '35px',
+                                borderRadius: '8px',
+                                marginLeft: '8px',
+                            }}
+                            value={sortPriceValue}
+                            onChange={(value) => setSortPriceValue(value)}
+                            options={[
+                                {
+                                    value: 'NONE',
+                                    label: 'Mặc định',
+                                },
+                                {
+                                    value: 'ASC',
+                                    label: 'Thấp đến Cao',
+                                },
+                                {
+                                    value: 'DESC',
+                                    label: 'Cao đến Thấp',
+                                },
+                            ]}
+                        ></Select>
+                    </div>
+
+                    <div className={cx('sort-star')}>
+                        <p>Đánh giá sao</p>
+                        <Select
+                            style={{
+                                backgroundColor: '#e6e6e6',
+                                width: '150px',
+                                height: '35px',
+                                borderRadius: '8px',
+                                marginLeft: '8px',
+                            }}
+                            value={sortStarValue}
+                            onChange={(value) => setSortStarValue(value)}
+                            options={[
+                                {
+                                    value: 'NONE',
+                                    label: 'Mặc định',
+                                },
+                                {
+                                    value: 'ASC',
+                                    label: 'Thấp đến Cao',
+                                },
+                                {
+                                    value: 'DESC',
+                                    label: 'Cao đến Thấp',
+                                },
+                            ]}
+                        ></Select>
+                    </div>
+                </div>
                 <div className={cx('container')}>
                     {filteredData?.length > 0 ? (
                         filteredData.map((pet) => (

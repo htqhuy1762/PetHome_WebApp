@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './ServicePet.module.scss';
 import { useState, useEffect } from 'react';
 import * as servicePetServices from '~/services/servicePetServices';
-import { Menu, Pagination, Empty } from 'antd';
+import { Menu, Pagination, Empty, Select } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Loading from '~/components/Loading';
 import CardService from '~/components/CardService';
@@ -25,6 +25,7 @@ function ServicePet() {
     const [currentId, setCurrentId] = useState(null);
     const [total, setTotal] = useState(0);
     const [selectedKeys, setSelectedKeys] = useState([]);
+    const [sortStarValue, setSortStarValue] = useState('NONE');
 
     const fetchServices = async (id, page = 1) => {
         setLoadingServices(true);
@@ -34,6 +35,7 @@ function ServicePet() {
                     serviceTypeDetailID: id,
                     limit: limit,
                     start: (page - 1) * limit,
+                    ratingOrder: sortStarValue,
                 });
                 if (response.status === 200) {
                     setServices(response.data.data);
@@ -132,7 +134,7 @@ function ServicePet() {
             fetchServices(detailId, newPage);
             setSelectedKeys([selectedDetail.key]);
         }
-    }, [location]);
+    }, [location, sortStarValue]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -148,17 +150,6 @@ function ServicePet() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
-                {/* {loading ? (
-                    <Loading />
-                ) : (
-                    <Menu
-                        style={{ width: 256 }}
-                        defaultOpenKeys={items.map((item) => item.key)}
-                        mode="inline"
-                        items={items}
-                        selectedKeys={selectedKeys}
-                    />
-                )} */}
                 <Menu
                     style={{ width: 256 }}
                     defaultOpenKeys={items.map((item) => item.key)}
@@ -174,6 +165,40 @@ function ServicePet() {
                     <>
                         {services && services.length > 0 ? (
                             <>
+                                <div className={cx('sort-header')}>
+                                    <p>Sắp xếp theo</p>
+                                    <div className={cx('sort-star')}>
+                                        <p>Đánh giá sao</p>
+                                        <Select
+                                            style={{
+                                                backgroundColor: '#e6e6e6',
+                                                width: '150px',
+                                                height: '35px',
+                                                borderRadius: '8px',
+                                                marginLeft: '8px',
+                                            }}
+                                            value={sortStarValue}
+                                            onChange={(value) => {
+                                                setSortStarValue(value);
+                                                fetchServices(currentId, currentPage);
+                                            }}
+                                            options={[
+                                                {
+                                                    value: 'NONE',
+                                                    label: 'Mặc định',
+                                                },
+                                                {
+                                                    value: 'ASC',
+                                                    label: 'Thấp đến Cao',
+                                                },
+                                                {
+                                                    value: 'DESC',
+                                                    label: 'Cao đến Thấp',
+                                                },
+                                            ]}
+                                        ></Select>
+                                    </div>
+                                </div>
                                 {services.map((service) => (
                                     <CardService
                                         key={service.id_service}

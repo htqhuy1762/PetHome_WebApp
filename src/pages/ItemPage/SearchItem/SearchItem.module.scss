@@ -39,3 +39,22 @@
         margin-bottom: 20px;
     }
 }
+
+.sort-header {
+    display: flex;
+    width: 100%;
+    background-color: #ededed;
+    padding: 10px;
+    align-items: center;
+    justify-content: space-between;
+
+    .sort-price{
+        display: flex;
+        align-items: center;
+    }
+
+    .sort-star{
+        display: flex;
+        align-items: center;
+    }
+}
