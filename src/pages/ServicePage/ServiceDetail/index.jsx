@@ -135,6 +135,13 @@ function ServiceDetail() {
 
     const handleOk = async () => {
         try {
+            if (rating < 1) {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Đánh giá thất bại. Vui lòng chọn số sao (ít nhất là 1)!',
+                });
+                return;
+            }
             // Replace with your actual API call
             await servicePetServices.postServiceRating(id, { rate: rating, comment: review });
             setIsModalVisible(false);

@@ -182,6 +182,13 @@ function ItemDetail() {
 
     const handleOk = async () => {
         try {
+            if (rating < 1) {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Đánh giá thất bại. Vui lòng chọn số sao (ít nhất là 1)!',
+                });
+                return;
+            }
             await itemServices.postItemRating(id, { rate: rating, comment: review });
             setIsModalVisible(false);
             setHasReviewed('rated');

@@ -117,7 +117,7 @@ function ChatBox({ shopInfo }) {
                         setMessages([]);
                         setIdUser(id_user);
 
-                        const wsURL = `wss://chat-service-uukxkowwha-as.a.run.app/ws/joinRoom/${id_room}?id_user=${id_user}`;
+                        const wsURL = `${import.meta.env.VITE_APP_BASE_URL_CHAT_WS}/${id_room}?id_user=${id_user}`;
                         socketRef.current = new WebSocket(wsURL);
 
                         socketRef.current.onopen = () => {
@@ -169,7 +169,7 @@ function ChatBox({ shopInfo }) {
                 if (response.status === 200) {
                     const { id_room, id_user } = response.data;
                     setIdUser(id_user);
-                    const wsURL = `wss://chat-service-uukxkowwha-as.a.run.app/ws/joinRoom/${id_room}?id_user=${id_user}`;
+                    const wsURL = `${import.meta.env.VITE_APP_BASE_URL_CHAT_WS}/${id_room}?id_user=${id_user}`;
                     socketRef.current = new WebSocket(wsURL);
 
                     socketRef.current.onopen = () => {
@@ -211,7 +211,7 @@ function ChatBox({ shopInfo }) {
                 if (response.status === 200) {
                     const { id_room, id_shop } = response.data;
                     setIdShop(id_shop);
-                    const wsURL = `wss://chat-service-uukxkowwha-as.a.run.app/ws/joinRoom/${id_room}?id_shop=${id_shop}`;
+                    const wsURL = `${import.meta.env.VITE_APP_BASE_URL_CHAT_WS}/${id_room}?id_shop=${id_shop}`;
                     socketRef.current = new WebSocket(wsURL);
 
                     socketRef.current.onopen = () => {
