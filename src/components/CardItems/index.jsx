@@ -42,7 +42,7 @@ function CardItems({ item, onClick }) {
                 />
                 <Card.Meta
                     style={{ marginBottom: '10px' }}
-                    title={<span style={{ color: 'red' }}>{item.min_price.toLocaleString('vi-VN')}đ</span>}
+                    title={<span style={{ color: 'red' }}>{item.min_price.toLocaleString('vi-VN')} đ</span>}
                 />
                 <Card.Meta
                     style={{ marginBottom: '7px' }}

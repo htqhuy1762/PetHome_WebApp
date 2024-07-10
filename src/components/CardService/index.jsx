@@ -25,8 +25,8 @@ function CardService({ service, onClick }) {
                     <>
                         <p style={{ fontSize: '1.6rem', fontWeight: 500 }}>{service?.areas.join(', ')}</p>
                         <p style={{ fontSize: '1.6rem', fontWeight: 500, color: 'var(--button-next-color)' }}>
-                            {service?.min_price.toLocaleString('vi-VN')}đ - {service?.max_price.toLocaleString('vi-VN')}
-                            đ
+                            {service?.min_price.toLocaleString('vi-VN')}đ -{' '}
+                            {service?.max_price.toLocaleString('vi-VN')}đ
                         </p>
                     </>
                 }

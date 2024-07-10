@@ -43,7 +43,7 @@ function CardPet({ pet, onClick }) {
                 />
                 <Card.Meta
                     style={{ marginBottom: '10px' }}
-                    title={<span style={{ color: 'red' }}>{pet.price.toLocaleString('vi-VN')}đ</span>}
+                    title={<span style={{ color: 'red' }}>{pet.price.toLocaleString('vi-VN')} đ</span>}
                 />
                 <Card.Meta
                     style={{ marginBottom: '7px' }}
