@@ -42,7 +42,7 @@ function ShopIncome() {
             </div>
             <div className={cx('content')}>
                 <div className={cx('header')}>
-                    <DatePicker.RangePicker size="large" onChange={handleDateChange} />
+                    <DatePicker.RangePicker format="DD-MM-YYYY" size="large" onChange={handleDateChange} />
                     <ConfigProvider
                         theme={{
                             components: {
@@ -79,7 +79,7 @@ function ShopIncome() {
                     </Col>
                     <Col span={5} style={{ display: 'flex', alignItems: 'center' }}>
                         <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                            <p style={{ fontSize: '2.4rem', color: 'var(--button-next-color)', fontWeight: '500' }}>
+                            <p style={{ fontSize: '3rem', color: 'var(--button-next-color)', fontWeight: '700' }}>
                                 {totalIncome.toLocaleString('it-IT')} đ
                             </p>
                         </Row>

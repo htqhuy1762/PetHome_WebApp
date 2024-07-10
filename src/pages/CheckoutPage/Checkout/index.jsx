@@ -217,7 +217,7 @@ function Checkout() {
 
     return (
         <div className={cx('wrapper')}>
-            <h1>Thanh toán</h1>
+            <h1 style={{ color: 'var(--primary)' }}>Thanh toán</h1>
             <div className={cx('address')}>
                 <div className={cx('address-title')}>
                     <EnvironmentFilled style={{ fontSize: '2rem' }} />
@@ -278,7 +278,7 @@ function Checkout() {
                 ))}
             </div>
             <div className={cx('payment-method')}>
-                <h2>Phương thức thanh toán</h2>
+                <h2 style={{ color: 'var(--button-next-color)' }}>Phương thức thanh toán</h2>
                 <Radio.Group
                     onChange={handlePaymentChange}
                     style={{ display: 'flex', justifyContent: 'space-around', padding: '30px 0' }}

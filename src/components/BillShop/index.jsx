@@ -106,7 +106,7 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered, onDone
             </div>
             <div className={cx('action')}>
                 <p style={{ display: 'flex', alignItems: 'center' }}>
-                    <SafetyCertificateOutlined />
+                    <SafetyCertificateOutlined style={{ marginRight: 3 }} />
                     Tổng cộng:
                     <span
                         style={{

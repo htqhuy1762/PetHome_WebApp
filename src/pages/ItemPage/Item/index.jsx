@@ -66,7 +66,7 @@ function Item() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('carousel-container')}>
+            {/* <div className={cx('carousel-container')}>
                 <Carousel autoplay={true} autoplaySpeed={5000} arrows infinite={true}>
                     <div>
                         <h3 style={contentStyle}>1</h3>
@@ -81,15 +81,15 @@ function Item() {
                         <h3 style={contentStyle}>4</h3>
                     </div>
                 </Carousel>
-            </div>
-            <div className={cx('sales-item-container')}>
+            </div> */}
+            {/* <div className={cx('sales-item-container')}>
                 <div className={cx('sales-header')}>
                     <h2>Flash sale</h2>
                 </div>
                 <div className={cx('content')}>
 
                 </div>
-            </div>
+            </div> */}
             <div className={cx('container')}>
                 {data[currentPage]?.map((item) => (
                     <CardItems key={item.id_item} item={item} onClick={() => goToItemDetail(item.id_item)} />

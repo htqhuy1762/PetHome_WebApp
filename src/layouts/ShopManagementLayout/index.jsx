@@ -13,7 +13,7 @@ function ShopManagementLayout({ children }) {
             <Header fixedHeader={false} />
             <div className={cx('container')}>
                 <div className={cx('header')}>
-                    <h1 style={{ marginTop: 0 }}>Quản lý cửa hàng</h1>
+                    <h1 style={{ marginTop: 0, color: 'var(--button-next-color)' }}>Quản lý cửa hàng</h1>
                 </div>
                 <div className={cx('content')}>
                     <SidebarShopManagement />

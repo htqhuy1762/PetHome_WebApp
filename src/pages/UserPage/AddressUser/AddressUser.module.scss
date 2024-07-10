@@ -11,13 +11,14 @@
     justify-content: space-between;
     width: 100%;
     border-bottom: 1px solid #e0e0e0;
+    padding: 15px 0;
 }
 
 .btn-add-address {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 23px;
+    padding: 20px;
     font-size: 1.6rem;
     background-color: var(--button-next-color);
     color: white;

@@ -54,7 +54,7 @@ function ChangePass() {
                     layout="vertical"
                     form={form}
                 >
-                    <h1 style={{ textAlign: 'center', fontSize: '4.5rem' }}>Đổi mật khẩu</h1>
+                    <p style={{ textAlign: 'center', fontSize: '4rem', fontWeight: '500', padding: '15px 0' }}>Đổi mật khẩu</p>
                     <Form.Item
                         label={<label style={{ fontSize: '1.6rem' }}>Mật khẩu cũ</label>}
                         name="password"

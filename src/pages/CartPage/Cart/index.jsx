@@ -40,7 +40,7 @@ function Cart() {
 
     return (
         <div className={cx('wrapper')}>
-            <h1>Giỏ hàng</h1>
+            <h1 style={{ color: 'var(--button-next-color)' }}>Giỏ hàng</h1>
             <Tabs
                 defaultActiveKey={activeTabKey}
                 activeKey={activeTabKey}

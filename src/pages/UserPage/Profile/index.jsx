@@ -171,7 +171,7 @@ function Profile() {
                             label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Ngày sinh</label>}
                             name="day_of_birth"
                         >
-                            <DatePicker />
+                            <DatePicker format="DD-MM-YYYY" />
                         </Form.Item>
                         <Form.Item>
                             <Button

@@ -198,7 +198,7 @@ function AddressUser() {
         <div className={cx('wrapper')}>
             {contextHolder}
             <div className={cx('header')}>
-                <h1>Địa chỉ của tôi</h1>
+                <p style={{ fontSize: '2.5rem' }}>Địa chỉ của tôi</p>
                 <ConfigProvider
                     theme={{
                         components: {

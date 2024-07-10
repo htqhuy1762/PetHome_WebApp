@@ -104,7 +104,7 @@ function Bill({ bill, onCancel, onPayment }) {
             </div>
             <div className={cx('action')}>
                 <p style={{ display: 'flex', alignItems: 'center' }}>
-                    <SafetyCertificateOutlined /> Tổng cộng:
+                    <SafetyCertificateOutlined style={{ marginRight: 3 }} /> Tổng cộng:
                     <span
                         style={{
                             fontSize: '2.4rem',

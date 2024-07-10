@@ -62,7 +62,7 @@ function ManagementBill() {
 
     return (
         <div className={cx('wrapper')}>
-            <h1>Danh sách đơn hàng</h1>
+            <h1 style={{ color: 'var(--button-next-color)' }}>Danh sách đơn hàng</h1>
             <Tabs
                 defaultActiveKey={activeTabKey}
                 activeKey={activeTabKey}

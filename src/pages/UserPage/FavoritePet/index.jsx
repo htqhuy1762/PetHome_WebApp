@@ -27,14 +27,14 @@ function FavoritePet() {
             content: 'Xóa thú cưng thất bại',
         });
     };
-    
+
     useEffect(() => {
         const fetchPets = async () => {
             setIsLoading(true);
             try {
                 const response = await cartServices.getPetsCart();
                 if (response.status === 200 && response.data.data) {
-                    setPets(response.data.data.map((pet) => ({ ...pet})));
+                    setPets(response.data.data.map((pet) => ({ ...pet })));
                 }
             } catch (error) {
                 console.log(error);
@@ -80,20 +80,24 @@ function FavoritePet() {
     return (
         <div className={cx('wrapper')}>
             {contextHolder}
-            <h1>Thú cưng yêu thích</h1>
+            <p style={{ fontSize: '2.8rem'}}>Thú cưng yêu thích</p>
             <div className={cx('content')}>
                 <Row className={cx('header')}>
-                    <Col span={12}><p style={{fontSize: '2rem'}}>Thú cưng</p></Col>
-                    <Col span={4}><p style={{fontSize: '2rem'}}>Số tiền</p></Col>
-                    <Col span={4}><p style={{fontSize: '2rem'}}>Tình trạng</p></Col>
-                    <Col span={4}><p style={{fontSize: '2rem'}}>Thao tác</p></Col>
+                    <Col span={12}>
+                        <p style={{ fontSize: '2rem' }}>Thú cưng</p>
+                    </Col>
+                    <Col span={4}>
+                        <p style={{ fontSize: '2rem' }}>Số tiền</p>
+                    </Col>
+                    <Col span={4}>
+                        <p style={{ fontSize: '2rem' }}>Tình trạng</p>
+                    </Col>
+                    <Col span={4}>
+                        <p style={{ fontSize: '2rem' }}>Thao tác</p>
+                    </Col>
                 </Row>
                 {pets.map((pet) => (
-                    <PetCartElement
-                        key={pet.id_pet}
-                        pet={pet}
-                        onRemove={handleRemovePet}
-                    />
+                    <PetCartElement key={pet.id_pet} pet={pet} onRemove={handleRemovePet} />
                 ))}
             </div>
         </div>
