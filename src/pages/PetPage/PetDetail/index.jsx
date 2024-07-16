@@ -176,9 +176,11 @@ function PetDetail() {
             return;
         }
         try {
+            console.log(id);
             const response = await cartServices.addPetToCart({
                 id_pet: id,
             });
+            
             if (response.status === 200) {
                 cartSuccess();
             } else {
@@ -309,7 +311,7 @@ function PetDetail() {
                                 className={cx('button1')}
                                 icon={<HeartOutlined />}
                                 size="large"
-                                onClick={() => handleAddToCart(petData.id_shop)}
+                                onClick={() => handleAddToCart(petData.id_pet)}
                                 type="default"
                             >
                                 Thêm vào mục yêu thích
