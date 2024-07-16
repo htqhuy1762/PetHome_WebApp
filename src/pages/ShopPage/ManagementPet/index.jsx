@@ -299,7 +299,7 @@ function ManagementPet() {
                         </Form.Item>
 
                         <Form.Item
-                            label="Cân nặng"
+                            label="Cân nặng (kg)"
                             name="weight"
                             rules={[{ required: true, message: 'Vui lòng nhập cân nặng thú cưng!' }]}
                         >
@@ -313,7 +313,7 @@ function ManagementPet() {
                         >
                             <Input.TextArea
                                 autoSize="true"
-                                maxLength={200}
+                                maxLength={2000}
                                 showCount
                                 style={{ marginBottom: '25px' }}
                             />

@@ -91,7 +91,11 @@ function ShopProfile() {
     }, [shopData, form]);
 
     if (loading) {
-        return <Loading />;
+        return (
+            <div className={cx('wrapper')}>
+                <Loading />
+            </div>
+        );
     }
 
     return (

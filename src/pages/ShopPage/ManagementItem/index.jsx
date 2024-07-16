@@ -20,7 +20,6 @@ function ManagementItem() {
     const [newItemDetail, setNewItemDetail] = useState({ price: '', size: '', quantity: '' }); // State cho phân loại mới
     const [itemAdded, setItemAdded] = useState(false);
 
-
     const handleAddItemClick = () => {
         setIsModalVisible(true);
     };
@@ -110,7 +109,7 @@ function ManagementItem() {
         {
             key: '2',
             label: 'Đang yêu cầu',
-            children: <ListItemRequest itemAdded={itemAdded}/>,
+            children: <ListItemRequest itemAdded={itemAdded} />,
         },
     ];
 
@@ -300,13 +299,13 @@ function ManagementItem() {
                             name="description"
                             rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
                         >
-                            <Input.TextArea autoSize="true" maxLength={200} showCount />
+                            <Input.TextArea autoSize="true" maxLength={2000} showCount />
                         </Form.Item>
 
                         <Form.Item
                             label="Phân loại vật phẩm"
                             name="item_detail"
-                            rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập phân loại!' }]}
                         >
                             <div>
                                 {itemDetails.map((itemDetail, index) => (

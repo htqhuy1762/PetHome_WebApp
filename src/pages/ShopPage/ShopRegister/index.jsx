@@ -1,19 +1,92 @@
 import classNames from 'classnames/bind';
 import styles from './ShopRegister.module.scss';
 import { useState, useEffect } from 'react';
-import { Form, Button, ConfigProvider, Input, Radio, Upload, Flex, message, Steps } from 'antd';
+import { Form, Button, ConfigProvider, Input, Radio, Upload, Flex, message, Steps, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import * as shopServices from '~/services/shopServices';
 import PropTypes from 'prop-types';
 
 const cx = classNames.bind(styles);
+const areas = [
+    'Hà Nội',
+    'Hồ Chí Minh',
+    'Đà Nẵng',
+    'Hải Phòng',
+    'Cần Thơ',
+    'An Giang',
+    'Bà Rịa - Vũng Tàu',
+    'Bắc Giang',
+    'Bắc Kạn',
+    'Bạc Liêu',
+    'Bắc Ninh',
+    'Bến Tre',
+    'Bình Định',
+    'Bình Dương',
+    'Bình Phước',
+    'Bình Thuận',
+    'Cà Mau',
+    'Cao Bằng',
+    'Đắk Lắk',
+    'Đắk Nông',
+    'Điện Biên',
+    'Đồng Nai',
+    'Đồng Tháp',
+    'Gia Lai',
+    'Hà Giang',
+    'Hà Nam',
+    'Hà Tĩnh',
+    'Hải Dương',
+    'Hậu Giang',
+    'Hòa Bình',
+    'Hưng Yên',
+    'Khánh Hòa',
+    'Kiên Giang',
+    'Kon Tum',
+    'Lai Châu',
+    'Lâm Đồng',
+    'Lạng Sơn',
+    'Lào Cai',
+    'Long An',
+    'Nam Định',
+    'Nghệ An',
+    'Ninh Bình',
+    'Ninh Thuận',
+    'Phú Thọ',
+    'Quảng Bình',
+    'Quảng Nam',
+    'Quảng Ngãi',
+    'Quảng Ninh',
+    'Quảng Trị',
+    'Sóc Trăng',
+    'Sơn La',
+    'Tây Ninh',
+    'Thái Bình',
+    'Thái Nguyên',
+    'Thanh Hóa',
+    'Thừa Thiên Huế',
+    'Tiền Giang',
+    'Trà Vinh',
+    'Tuyên Quang',
+    'Vĩnh Long',
+    'Vĩnh Phúc',
+    'Yên Bái',
+];
 
 function ShopInfor({ onNext, formData, setFormData }) {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const handleBackClick = () => {
         navigate('/user/shop');
+    };
+    const areaOptions = areas.map((area) => ({
+        value: area,
+        label: area,
+    }));
+    const [areaContent, setAreaContent] = useState(formData.area || 'Hà Nội');
+
+    const handleChange = (value) => {
+        setAreaContent(value);
     };
 
     useEffect(() => {
@@ -27,6 +100,8 @@ function ShopInfor({ onNext, formData, setFormData }) {
         }
         if (formData.area) {
             form.setFieldsValue({ shopArea: formData.area });
+        } else {
+            form.setFieldsValue({ shopArea: 'Hà Nội' }); // Đặt giá trị mặc định
         }
     }, [formData, form]);
 
@@ -126,6 +201,7 @@ function ShopInfor({ onNext, formData, setFormData }) {
                     <Form.Item
                         label="Khu vực"
                         name="shopArea"
+                        initialValue={areaContent}
                         rules={[
                             {
                                 required: true,
@@ -133,7 +209,12 @@ function ShopInfor({ onNext, formData, setFormData }) {
                             },
                         ]}
                     >
-                        <Input type="text" placeholder="" />
+                        <Select
+                            value={areaContent}
+                            style={{ width: '100%' }}
+                            onChange={handleChange}
+                            options={areaOptions}
+                        />
                     </Form.Item>
                     <Form.Item
                         label="Logo"

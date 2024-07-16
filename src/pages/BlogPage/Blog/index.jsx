@@ -146,7 +146,7 @@ function Blog() {
 
             const response = await blogServices.addBlog(formData);
             if (response.status === 200) {
-                message.success('Post submitted successfully!');
+                message.success('Đăng bài thành công!');
                 fetchBlogs(true);
                 form.resetFields();
                 setImages([]);
@@ -155,7 +155,7 @@ function Blog() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         } catch (error) {
-            message.error('Failed to submit post. Please try again later.');
+            message.error('Đăng bài thất bại. Làm ơn thử lại!.');
         }
     };
 

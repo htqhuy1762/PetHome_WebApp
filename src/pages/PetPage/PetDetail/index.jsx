@@ -167,8 +167,8 @@ function PetDetail() {
         setIsModalVisible(false);
     };
 
-    const handleAddToCart = async (id) => {
-        if (id === localStorage.getItem('idShop')) {
+    const handleAddToCart = async (idShop, idPet) => {
+        if (idShop === localStorage.getItem('idShop')) {
             messageApi.open({
                 type: 'error',
                 content: 'Xin lỗi, thú cưng này thuộc cửa hàng của bạn!',
@@ -176,9 +176,8 @@ function PetDetail() {
             return;
         }
         try {
-            console.log(id);
             const response = await cartServices.addPetToCart({
-                id_pet: id,
+                id_pet: idPet,
             });
             
             if (response.status === 200) {
@@ -311,7 +310,7 @@ function PetDetail() {
                                 className={cx('button1')}
                                 icon={<HeartOutlined />}
                                 size="large"
-                                onClick={() => handleAddToCart(petData.id_pet)}
+                                onClick={() => handleAddToCart(petData.id_shop, petData.id_pet)}
                                 type="default"
                             >
                                 Thêm vào mục yêu thích

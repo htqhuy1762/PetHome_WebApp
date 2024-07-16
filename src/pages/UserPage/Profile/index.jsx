@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
 import { useState, useEffect } from 'react';
 import * as userServices from '~/services/userServices';
+import * as shopServices from '~/services/shopServices';
 import Loading from '~/components/Loading';
 import { Form, Button, Input, DatePicker, Radio, Upload, message, Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -39,6 +40,23 @@ function Profile() {
         });
         return false; // Ngăn không upload ngay lập tức
     };
+
+    useEffect(() => {
+        const checkShop = async () => {
+            if (!localStorage.getItem('idShop')) {
+                const responseIsRegister = await shopServices.checkIsRegisterShop();
+                const responseIsActive = await shopServices.checkIsActiveShop();
+
+                if (responseIsRegister.status === 200 || responseIsRegister.status === 201) {
+                    if (responseIsRegister.data.message === 'User is shop owner') {
+                        localStorage.setItem('idShop', responseIsActive.data.id_shop);
+                    }
+                }
+            }
+        };
+
+        checkShop();
+    }, []);
 
     const handleSave = async () => {
         try {

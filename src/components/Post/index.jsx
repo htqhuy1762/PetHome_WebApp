@@ -358,7 +358,7 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
                     }}
                 >
                     <Form.Item name="text">
-                        <Input
+                        <Input.TextArea
                             value={editContent}
                             onChange={handleEditContentChange}
                             placeholder="Start a post"

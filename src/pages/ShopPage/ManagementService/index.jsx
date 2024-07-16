@@ -426,7 +426,7 @@ function ManagementService() {
                         >
                             <Input.TextArea
                                 autoSize="true"
-                                maxLength={200}
+                                maxLength={2000}
                                 showCount
                                 style={{ marginBottom: '25px' }}
                             />
