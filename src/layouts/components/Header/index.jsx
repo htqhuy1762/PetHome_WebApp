@@ -2,15 +2,17 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import logo from '~/assets/images/logo.png';
 import logotitle from '~/assets/images/logo-title.png';
-import { Input, Button, Avatar, Select, List, Dropdown } from 'antd';
+import { Input, Button, Avatar, Select, List, Dropdown, Badge } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, SearchOutlined, BellOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import * as notificationServices from '~/services/notificationServices';
+import * as cartServices from '~/services/cartServices';
 import Loading from '~/components/Loading';
 import { AuthContext } from '~/context/AuthProvider/index.jsx';
+import { CartContext } from '~/context/CartProvider/index.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import PropTypes from 'prop-types';
@@ -20,6 +22,8 @@ dayjs.extend(utc);
 const cx = classNames.bind(styles);
 
 function Header({ fixedHeader }) {
+    const { isUpdate } = useContext(CartContext);
+    const [cartItemCount, setCartItemCount] = useState(0);
     const [selectValue, setSelectValue] = useState(localStorage.getItem('selectValue') || 'pets');
     const handleSelectChange = (value) => {
         setSelectValue(value);
@@ -96,6 +100,20 @@ function Header({ fixedHeader }) {
 
         getUser();
     }, []);
+
+    useEffect(() => {
+        const fetchCartItemCount = async () => {
+            try {
+                const response = await cartServices.getItemsCart(); // Đây là hàm mẫu, thay thế bằng hàm thực tế của bạn để lấy số lượng sản phẩm trong giỏ hàng.
+                setCartItemCount(response.data.count); // Thay 'itemCount' bằng trường dữ liệu thích hợp từ API của bạn.
+            } catch (error) {
+                // Xử lý lỗi khi không thể lấy được số lượng sản phẩm.
+                console.error('Failed to fetch cart item count:', error);
+            }
+        };
+
+        fetchCartItemCount();
+    }, [isUpdate]);
 
     useEffect(() => {
         setSearchValue(urlParams.get('q') || '');
@@ -225,15 +243,17 @@ function Header({ fixedHeader }) {
                     ) : (
                         <>
                             <div className={cx('cart')}>
-                                <Button
-                                    style={{ border: 'none', width: '4rem', height: '3rem' }}
-                                    className={cx('cart-btn')}
-                                    size="medium"
-                                    type="text"
-                                    shape="circle"
-                                    icon={<ShoppingCartOutlined style={{ fontSize: '3.5rem', color: 'white' }} />}
-                                    onClick={() => navigate('/cart')}
-                                />
+                                <Badge count={cartItemCount} showZero size="small">
+                                    <Button
+                                        style={{ border: 'none', width: '4rem', height: '3rem' }}
+                                        className={cx('cart-btn')}
+                                        size="medium"
+                                        type="text"
+                                        shape="circle"
+                                        icon={<ShoppingCartOutlined style={{ fontSize: '3.5rem', color: 'white' }} />}
+                                        onClick={() => navigate('/cart')}
+                                    />
+                                </Badge>
                             </div>
                             <div className={cx('notification')}>
                                 <Button

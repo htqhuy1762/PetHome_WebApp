@@ -26,11 +26,13 @@ import React from 'react';
 import { ChatContext } from '~/context/ChatProvider';
 import CryptoJS from 'crypto-js';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '~/context/CartProvider';
 
 const cx = classNames.bind(styles);
 const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
 
 function ItemDetail() {
+    const { isUpdate, setIsUpdate } = useContext(CartContext);
     const [messageApi, contextHolder] = message.useMessage();
     const [options, setOptions] = useState(null);
     const navigate = useNavigate();
@@ -89,6 +91,7 @@ function ItemDetail() {
             type: 'success',
             content: 'Thêm vào giỏ hàng thành công',
         });
+        setIsUpdate(!isUpdate);
     };
 
     const cartError = () => {

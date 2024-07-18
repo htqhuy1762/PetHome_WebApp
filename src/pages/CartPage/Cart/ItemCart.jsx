@@ -2,7 +2,8 @@ import classNames from 'classnames/bind';
 import styles from './ItemCart.module.scss';
 import { Row, Col, Checkbox, Button, message, Empty } from 'antd';
 import ItemCartElement from '~/components/ItemCartElement';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { CartContext } from '~/context/CartProvider';
 import { useNavigate } from 'react-router-dom';
 import * as cartServices from '~/services/cartServices';
 import Loading from '~/components/Loading';
@@ -13,6 +14,7 @@ const cx = classNames.bind(styles);
 const secretKey = import.meta.env.VITE_APP_SECRET_KEY;
 
 function ItemCart() {
+    const { isUpdate, setIsUpdate } = useContext(CartContext);
     const [messageApi, contextHolder] = message.useMessage();
     const [items, setItems] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -24,6 +26,7 @@ function ItemCart() {
             type: 'success',
             content: 'Xóa vật phẩm thành công',
         });
+        setIsUpdate(!isUpdate);
     };
 
     const errorMessage = () => {
