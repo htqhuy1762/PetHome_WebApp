@@ -15,7 +15,7 @@ import {
     Avatar,
 } from '@chatscope/chat-ui-kit-react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { Button, Card } from 'antd';
+import { Button, Card, Empty } from 'antd';
 import { WechatOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import * as chatServices from '~/services/chatServices';
 import * as shopServices from '~/services/shopServices';
@@ -23,6 +23,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import PropTypes from 'prop-types';
+import img_empty_chat from '~/assets/images/icon_empty_chat.png';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -60,6 +61,12 @@ function ChatBox({ shopInfo }) {
     const [idShop, setIdShop] = useState(null);
     const [isShop, setIsShop] = useState(false);
     const [chatType, setChatType] = useState('user'); // ['user', 'shop']
+    const [isLoadingMessages, setLoadingMessages] = useState(false);
+
+    useEffect(() => {
+        // Reset loading state when messages change
+        setLoadingMessages(messages.length === 0);
+    }, [messages]);
 
     const fetchListRoomUser = async () => {
         try {
@@ -379,6 +386,7 @@ function ChatBox({ shopInfo }) {
                                                     lastActivityTime={<span>{formatDateTime(room.created_at)}</span>}
                                                     active={currentRoomUser && currentRoomUser.id_room === room.id_room}
                                                     onClick={() => handleConversationClickUser(room)}
+                                                    unreadDot={!room.is_read_by_user}
                                                 >
                                                     <Avatar
                                                         src={
@@ -399,6 +407,7 @@ function ChatBox({ shopInfo }) {
                                                     lastActivityTime={<span>{formatDateTime(room.created_at)}</span>}
                                                     active={currentRoomShop && currentRoomShop.id_room === room.id_room}
                                                     onClick={() => handleConversationClickShop(room)}
+                                                    unreadDot={!room.is_read_by_shop}
                                                 >
                                                     <Avatar
                                                         src={
@@ -421,6 +430,7 @@ function ChatBox({ shopInfo }) {
                                             lastActivityTime={<span>{formatDateTime(room.created_at)}</span>}
                                             active={currentRoomUser && currentRoomUser.id_room === room.id_room}
                                             onClick={() => handleConversationClickUser(room)}
+                                            unreadDot={!room.is_read_by_user}
                                         >
                                             <Avatar
                                                 src={
@@ -466,7 +476,7 @@ function ChatBox({ shopInfo }) {
                                 )}
                             </ConversationHeader>
                             <MessageList>
-                                {(currentRoomUser || currentRoomShop) &&
+                                {!isLoadingMessages && (currentRoomUser || currentRoomShop) && messages.length > 0 ? (
                                     messages.map((msg, index) => (
                                         <Message
                                             key={index}
@@ -475,19 +485,38 @@ function ChatBox({ shopInfo }) {
                                                 sender: msg.is_shop ? 'Shop' : 'You',
                                                 sentTime: msg.created_at,
                                                 direction:
-                                                    (chatType === 'shop' && msg.id_sender === idShop) || // Tin nhắn từ shop
-                                                    (chatType === 'user' && msg.id_sender === idUser) // Tin nhắn từ user
+                                                    (chatType === 'shop' && msg.id_sender === idShop) ||
+                                                    (chatType === 'user' && msg.id_sender === idUser)
                                                         ? 'outgoing'
                                                         : 'incoming',
                                                 position: 'single',
                                             }}
                                         />
-                                    ))}
+                                    ))
+                                ) : (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                            height: '100%',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {!currentRoomUser && !currentRoomShop ? null : (
+                                            <Empty
+                                                image={img_empty_chat}
+                                                description="Không có tin nhắn, hãy bắt đầu trò chuyện ngay!"
+                                            />
+                                        )}
+                                    </div>
+                                )}
                             </MessageList>
                             {(currentRoomUser || currentRoomShop) && (
                                 <MessageInput
                                     placeholder="Gõ tin nhắn của bạn ở đây"
                                     onSend={(message) => sendMessage(message)}
+                                    //attachButton={false}
                                 />
                             )}
                         </ChatContainer>
