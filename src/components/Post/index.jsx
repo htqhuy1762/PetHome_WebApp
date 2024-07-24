@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Skeleton, Card, Avatar, Image, Dropdown, Modal, Button, Input, Row, Col, Carousel, Form, Select } from 'antd';
+import { Skeleton, Card, Avatar, Image, Dropdown, Modal, Button, Input, Row, Col, Carousel, Form, Select, message } from 'antd';
 import { HeartOutlined, HeartFilled, EllipsisOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
@@ -101,12 +101,14 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
             if (response.status === 200) {
                 setIsModalVisible(false);
                 setUnsavedChanges(false);
+                message.success('Cập nhật bài viết thành công');
                 // Cập nhật lại UI nếu cần thiết
                 updateUI();
             }
         } catch (error) {
             // Xử lý lỗi
             console.error('Failed to update post', error);
+            message.error('Cập nhật bài viết thất bại');
         } finally {
             setUpdating(false); // Đặt trạng thái updating thành false
         }
@@ -127,12 +129,13 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
             setDeleting(true); // Đặt trạng thái deleting thành true
             const response = await blogServices.deleteBlog(data.id_blog);
             if (response.status === 200) {
-                console.log('Deleted post successfully');
+                message.success('Xóa bài viết thành công');
                 deletePostUI(data.id_blog);
             }
         } catch (error) {
             // Xử lý lỗi
             console.error('Failed to delete post', error);
+            message.error('Xóa bài viết thất bại');
         } finally {
             setDeleting(false); // Đặt trạng thái deleting thành false
         }

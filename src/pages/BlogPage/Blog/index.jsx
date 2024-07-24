@@ -7,11 +7,12 @@ import { useState, useEffect, useCallback } from 'react';
 import * as blogServices from '~/services/blogServices';
 import * as userServices from '~/services/userServices';
 import Loading from '~/components/Loading';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Blog() {
+    const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
     const limit = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +22,18 @@ function Blog() {
     const [loadingUser, setLoadingUser] = useState(true);
     const [loadingBlogs, setLoadingBlogs] = useState(true);
     const [hasMore, setHasMore] = useState(true);
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+
+    useEffect(() => {
+        form.setFieldsValue({ text: '', privillage: 'public' });
+    }, [form]);
+
+    const handleValuesChange = (changedValues, allValues) => {
+        const { text } = allValues;
+        const hasText = text && text.trim().length > 0;
+        const hasImages = images.length > 0;
+        setIsSubmitDisabled(!hasText && !hasImages);
+    };
 
     const beforeUploadImages = (file) => {
         if (images.length >= 10) {
@@ -166,28 +179,35 @@ function Blog() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
-                <Link
-                    to={`/blogs/myblog`}
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textDecoration: 'none',
-                        color: 'inherit',
+                <Avatar style={{ marginTop: '40px' }} size={80} icon={<UserOutlined />} src={userData?.avatar}></Avatar>
+                <h3 style={{ marginTop: '15px' }}>{userData?.name}</h3>
+                <ConfigProvider
+                    theme={{
+                        components: {
+                            Button: {
+                                defaultColor: 'white',
+                                defaultBg: 'var(--button-next-color)',
+                                defaultBorderColor: 'var(--button-next-color)',
+                                defaultHoverBorderColor: 'var(--button-next-color)',
+                                defaultHoverBg: 'var(--button-next-color)',
+                                defaultHoverColor: 'white',
+                            },
+                        },
                     }}
                 >
-                    <Avatar
-                        style={{ marginTop: '40px' }}
-                        size={80}
-                        icon={<UserOutlined />}
-                        src={userData?.avatar}
-                    ></Avatar>
-                    <h3 style={{ marginTop: '15px' }}>{userData?.name}</h3>
-                </Link>
+                    <Button style={{ marginTop: '20px' }} onClick={() => navigate('/blogs/myblog')}>
+                        Xem trang cá nhân
+                    </Button>
+                </ConfigProvider>
             </div>
             <div className={cx('content')}>
                 <div className={cx('form-post')}>
-                    <Form onFinish={handlePostSubmit} form={form} initialValues={{ privillage: 'public' }}>
+                    <Form
+                        onFinish={handlePostSubmit}
+                        form={form}
+                        initialValues={{ privillage: 'public' }}
+                        onValuesChange={handleValuesChange}
+                    >
                         <div className={cx('form-header')}>
                             <Avatar
                                 style={{ marginRight: '10px' }}
@@ -235,7 +255,7 @@ function Blog() {
                                         },
                                     }}
                                 >
-                                    <Button htmlType="submit" style={{ width: '70px', height: '35px' }}>
+                                    <Button htmlType="submit" key="delete" disabled={isSubmitDisabled}>
                                         Đăng
                                     </Button>
                                 </ConfigProvider>

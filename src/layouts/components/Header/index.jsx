@@ -270,7 +270,7 @@ function Header({ fixedHeader }) {
                     ) : (
                         <>
                             <div className={cx('cart')}>
-                                <Badge count={cartItemCount} showZero size="small">
+                                <Badge count={cartItemCount} size="small">
                                     <Button
                                         style={{ border: 'none', width: '4rem', height: '3rem' }}
                                         className={cx('cart-btn')}
@@ -283,7 +283,7 @@ function Header({ fixedHeader }) {
                                 </Badge>
                             </div>
                             <div className={cx('notification')}>
-                                <Badge count={unReadNoti} showZero size="small" offset={[-8, 0]}>
+                                <Badge count={unReadNoti} size="small" offset={[-8, 0]}>
                                     <Button
                                         style={{ border: 'none', width: '4rem', height: '3rem' }}
                                         className={cx('cart-btn')}
