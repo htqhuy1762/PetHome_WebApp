@@ -123,24 +123,26 @@ function BillShop({ bill, onCancel, onConfirm, onDelivering, onDelivered, onDone
                 <div className={cx('list-button')}>
                     {bill.status === 'pending' && (
                         <>
-                            <ConfigProvider
-                                theme={{
-                                    components: {
-                                        Button: {
-                                            defaultColor: 'white',
-                                            defaultBg: 'var(--button-next-color)',
-                                            defaultBorderColor: 'var(--button-next-color)',
-                                            defaultHoverBorderColor: 'var(--button-next-color)',
-                                            defaultHoverBg: 'var(--button-next-color)',
-                                            defaultHoverColor: 'white',
+                            {(bill.payment_status !== 'pending' || bill.payment_description !== 'Ví điện tử VNPAY') && (
+                                <ConfigProvider
+                                    theme={{
+                                        components: {
+                                            Button: {
+                                                defaultColor: 'white',
+                                                defaultBg: 'var(--button-next-color)',
+                                                defaultBorderColor: 'var(--button-next-color)',
+                                                defaultHoverBorderColor: 'var(--button-next-color)',
+                                                defaultHoverBg: 'var(--button-next-color)',
+                                                defaultHoverColor: 'white',
+                                            },
                                         },
-                                    },
-                                }}
-                            >
-                                <Button style={{ marginLeft: 10 }} onClick={() => onConfirm(bill.id_bill)}>
-                                    Nhận đơn hàng
-                                </Button>
-                            </ConfigProvider>
+                                    }}
+                                >
+                                    <Button style={{ marginLeft: 10 }} onClick={() => onConfirm(bill.id_bill)}>
+                                        Nhận đơn hàng
+                                    </Button>
+                                </ConfigProvider>
+                            )}
 
                             <ConfigProvider
                                 theme={{

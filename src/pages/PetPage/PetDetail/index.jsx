@@ -179,9 +179,13 @@ function PetDetail() {
             const response = await cartServices.addPetToCart({
                 id_pet: idPet,
             });
-            
             if (response.status === 200) {
                 cartSuccess();
+            } else if (response.status === 400 && response.data.error === 'Pet already in cart') {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Thú cưng này đã có trong mục yêu thích!',
+                });
             } else {
                 cartError();
             }

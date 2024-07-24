@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import logo from '~/assets/images/logo.png';
 import logotitle from '~/assets/images/logo-title.png';
-import { Input, Button, Avatar, Select, List, Dropdown, Badge } from 'antd';
+import { Input, Button, Avatar, Select, List, Dropdown, Badge, notification } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, SearchOutlined, BellOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -52,12 +52,44 @@ function Header({ fixedHeader }) {
         localStorage.removeItem('selectValue');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('idShop');
+        localStorage.removeItem('previousUnReadNoti');
         setIsLoggedIn(false);
         navigate('/login');
     };
     const onChange = (e) => {
         setSearchValue(e.target.value);
     };
+
+    const [unReadNoti, setUnReadNoti] = useState(0);
+
+    useEffect(() => {
+        const getUnreadNotification = async () => {
+            try {
+                const response = await notificationServices.getUnreadNotification();
+                if (response.status === 200) {
+                    const newCount = response.data.count;
+                    const previousUnReadNoti = parseInt(localStorage.getItem('previousUnReadNoti') || '0');
+                    if (newCount > previousUnReadNoti) {
+                        notification.open({
+                            message: 'Thông báo mới',
+                            description: 'Bạn có thông báo mới',
+                            duration: 5,
+                            placement: 'bottomLeft',
+                        });
+                        localStorage.setItem('previousUnReadNoti', newCount.toString());
+                    }
+                    setUnReadNoti(newCount);
+                }
+            } catch (error) {
+                // Handle error
+            }
+        };
+    
+        getUnreadNotification();
+        const intervalId = setInterval(getUnreadNotification, 10000);
+    
+        return () => clearInterval(intervalId);
+    }, []);
 
     const urlParams = new URLSearchParams(location.search);
     const [searchValue, setSearchValue] = useState(urlParams.get('q') || '');
@@ -135,17 +167,12 @@ function Header({ fixedHeader }) {
 
     useEffect(() => {
         getNotifications();
-
-        // Update notifications every 10 seconds
-        const intervalId = setInterval(() => {
-            getNotifications();
-        }, 30000); // 30 seconds
-
-        // Cleanup the interval on component unmount
-        return () => clearInterval(intervalId);
     }, []);
 
     const handleBellClick = () => {
+        if (!notificationVisible) {
+            getNotifications();
+        }
         setNotificationVisible(!notificationVisible);
     };
 
@@ -256,15 +283,17 @@ function Header({ fixedHeader }) {
                                 </Badge>
                             </div>
                             <div className={cx('notification')}>
-                                <Button
-                                    style={{ border: 'none', width: '4rem', height: '3rem' }}
-                                    className={cx('cart-btn')}
-                                    size="medium"
-                                    type="text"
-                                    shape="circle"
-                                    icon={<BellOutlined style={{ fontSize: '3.1rem', color: 'white' }} />}
-                                    onClick={handleBellClick}
-                                />
+                                <Badge count={unReadNoti} showZero size="small" offset={[-8, 0]}>
+                                    <Button
+                                        style={{ border: 'none', width: '4rem', height: '3rem' }}
+                                        className={cx('cart-btn')}
+                                        size="medium"
+                                        type="text"
+                                        shape="circle"
+                                        icon={<BellOutlined style={{ fontSize: '3.1rem', color: 'white' }} />}
+                                        onClick={handleBellClick}
+                                    />
+                                </Badge>
                                 {notificationVisible && (
                                     <>
                                         <div className={cx('arrow')}></div>

@@ -39,9 +39,7 @@ function ItemCart() {
     const handleSelectAll = () => {
         const newSelectAll = !selectAll;
         setSelectAll(newSelectAll);
-        setItems((prevItems) =>
-            prevItems.map((item) => (item.instock ? { ...item, selected: newSelectAll } : item))
-        );
+        setItems((prevItems) => prevItems.map((item) => (item.instock ? { ...item, selected: newSelectAll } : item)));
     };
 
     const handleSelectItem = (id) => {
@@ -55,7 +53,7 @@ function ItemCart() {
                     return { ...item, quantityWant };
                 }
                 return item;
-            })
+            }),
         );
     };
 
@@ -76,6 +74,12 @@ function ItemCart() {
         };
         fetchItems();
     }, []);
+
+    useEffect(() => {
+        const allSelected = items.every((item) => item.instock && item.selected);
+        const noneSelected = items.every((item) => !item.selected);
+        setSelectAll(!noneSelected && allSelected);
+    }, [items]);
 
     const handleRemoveItem = async (id) => {
         try {
@@ -146,7 +150,10 @@ function ItemCart() {
             ))}
             <Row className={cx('cal-all')}>
                 <Col span={1} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Checkbox checked={selectAll} onChange={handleSelectAll} indeterminate={items.some((item) => item.instock && !item.selected) && items.some((item) => item.selected)}/>
+                    <Checkbox
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                    />
                 </Col>
                 <Col span={4} style={{ display: 'flex', alignItems: 'center' }}>
                     <p style={{ fontSize: '1.7rem' }}>Chọn tất cả</p>

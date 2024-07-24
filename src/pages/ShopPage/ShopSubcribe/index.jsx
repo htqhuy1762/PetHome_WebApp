@@ -1,10 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './ShopSubcribe.module.scss';
-import { Image, Button, ConfigProvider, Row, Col } from 'antd';
-import healthcarePetHome from '~/assets/images/healthcarePetHome.png';
-import otherPetHome from '~/assets/images/otherPetHome.png';
-import spaPetHome from '~/assets/images/spaPetHome.png';
-import trainingPetHome from '~/assets/images/trainingPetHome.png';
+import { Image, Button, ConfigProvider } from 'antd';
+import shopSubcribe from '~/assets/images/shop_subcribe.png';
 import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
@@ -14,22 +11,7 @@ function ShopSubcribe() {
         <div className={cx('wrapper')}>
             <h1>Bắt đầu bán hàng với PetHome</h1>
             <div className={cx('image-container')}>
-                <Row gutter={3} style={{ marginBottom: '4px' }}>
-                    <Col span={12}>
-                        <Image preview={false} width={350} height={250} src={healthcarePetHome} />
-                    </Col>
-                    <Col span={12}>
-                        <Image preview={false} width={350} height={250} src={otherPetHome} />
-                    </Col>
-                </Row>
-                <Row gutter={5}>
-                    <Col span={12}>
-                        <Image preview={false} width={350} height={250} src={spaPetHome} />
-                    </Col>
-                    <Col span={12}>
-                        <Image preview={false} width={350} height={250} src={trainingPetHome} />
-                    </Col>
-                </Row>
+                <Image preview={false} width={500} height={500} src={shopSubcribe} />
             </div>
             <div className={cx('sign-container')}>
                 <ConfigProvider

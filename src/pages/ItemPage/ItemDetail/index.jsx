@@ -255,6 +255,11 @@ function ItemDetail() {
                 });
                 if (response.status === 200) {
                     cartSuccess();
+                } else if (response.status === 400 && response.data.error === 'Item already in cart') {
+                    messageApi.open({
+                        type: 'error',
+                        content: 'Sản phẩm đã có trong giỏ hàng!',
+                    });
                 } else {
                     cartError();
                 }

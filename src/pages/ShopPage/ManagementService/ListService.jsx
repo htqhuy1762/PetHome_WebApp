@@ -449,6 +449,7 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
                         rules={[{ required: true, message: 'Vui lòng chọn địa chỉ để cập nhật!' }]}
                     >
                         <Checkbox.Group
+                            style={{ display: 'flex', flexDirection: 'column' }}
                             options={listAddress?.map((address) => ({
                                 label: address.address,
                                 value: address.id_address,

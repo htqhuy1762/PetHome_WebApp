@@ -27,3 +27,12 @@ export const updateShowNotification = async(id) => {
         return error.response;
     }
 }
+
+export const getUnreadNotification = async() => {
+    try {
+        const response = await authRequest.get('/api/user/notifications/count');
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}

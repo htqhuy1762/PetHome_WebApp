@@ -6,6 +6,7 @@ import { Tabs } from 'antd';
 import ListAllBill from './ListAllBill';
 import ListDoneBill from './ListDoneBill';
 import ListCanceledBill from './ListCanceledBill';
+import ListNewBill from './ListNewBill';
 
 const cx = classNames.bind(styles);
 
@@ -20,17 +21,22 @@ function Purchase() {
     const items = [
         {
             key: '1',
-            label: 'Tất cả',
-            children: <ListAllBill isCanceled={isCanceled} setIsCanceled={setIsCanceled} />,
+            label: 'Đơn hàng đã đặt',
+            children: <ListNewBill isCanceled={isCanceled} setIsCanceled={setIsCanceled} />,
         },
         {
             key: '2',
-            label: 'Đã nhận hàng',
-            children: <ListDoneBill />,
+            label: 'Đơn hàng chờ xử lý',
+            children: <ListAllBill/>,
         },
         {
             key: '3',
-            label: 'Hủy đơn',
+            label: 'Đơn hàng thành công',
+            children: <ListDoneBill />,
+        },
+        {
+            key: '4',
+            label: 'Đơn hàng bị hủy',
             children: <ListCanceledBill isCanceled={isCanceled} />,
         },
     ];
@@ -56,7 +62,7 @@ function Purchase() {
                 items={items}
                 size="large"
                 centered
-                tabBarGutter={250}
+                tabBarGutter={100}
             />
         </div>
     );

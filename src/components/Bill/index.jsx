@@ -103,20 +103,27 @@ function Bill({ bill, onCancel, onPayment }) {
                 </div>
             </div>
             <div className={cx('action')}>
-                <p style={{ display: 'flex', alignItems: 'center' }}>
-                    <SafetyCertificateOutlined style={{ marginRight: 3 }} /> Tổng cộng:
-                    <span
-                        style={{
-                            fontSize: '2.4rem',
-                            color: 'var(--primary)',
-                            lineHeight: '30px',
-                            fontWeight: 600,
-                            marginLeft: 7,
-                        }}
-                    >
-                        {bill.total_price.toLocaleString('vi-VN')}đ
-                    </span>
-                </p>
+                <div>
+                    {bill.payment_status === 'pending' && bill.payment_description === 'Ví điện tử VNPAY' && (
+                        <span style={{ color: 'red' }}>
+                            Bạn cần phải thanh toán đơn hàng này trước khi đơn hàng tiếp tục được xử lý!
+                        </span>
+                    )}
+                    <p style={{ display: 'flex', alignItems: 'center' }}>
+                        <SafetyCertificateOutlined style={{ marginRight: 3 }} /> Tổng cộng:
+                        <span
+                            style={{
+                                fontSize: '2.4rem',
+                                color: 'var(--primary)',
+                                lineHeight: '30px',
+                                fontWeight: 600,
+                                marginLeft: 7,
+                            }}
+                        >
+                            {bill.total_price.toLocaleString('vi-VN')}đ
+                        </span>
+                    </p>
+                </div>
                 <div className={cx('list-button')}>
                     {bill.payment_description === 'Ví điện tử VNPAY' && bill.payment_status === 'pending' && (
                         <ConfigProvider

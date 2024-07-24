@@ -25,7 +25,7 @@ function ListAllBill({ isCanceled, setIsCanceled }) {
             const response = await billServices.getUserBills({
                 start,
                 limit,
-                status: "'pending','preparing','delivering','delivered'",
+                status: "'preparing','delivering','delivered'",
                 payment_status: "'paid', 'pending'",
             });
 

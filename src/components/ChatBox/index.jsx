@@ -72,18 +72,26 @@ function ChatBox({ shopInfo }) {
         try {
             const response = await chatServices.getUserRooms();
             if (response.status === 200) {
-                setRooms(response.data);
+                // Filter out rooms with an empty last_message
+                const filteredRooms = response.data.filter(room => room.last_message !== "");
+                // Sort rooms by created_at in descending order (newest to oldest)
+                const sortedRooms = filteredRooms.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                setRooms(sortedRooms);
             }
         } catch (error) {
             console.error('Error fetching rooms:', error);
         }
     };
-
+    
     const fetchListRoomShop = async () => {
         try {
             const response = await chatServices.getShopRooms();
             if (response.status === 200) {
-                setRooms(response.data);
+                // Filter out rooms with an empty last_message
+                const filteredRooms = response.data.filter(room => room.last_message !== "");
+                // Sort rooms by created_at in descending order (newest to oldest)
+                const sortedRooms = filteredRooms.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                setRooms(sortedRooms);
             }
         } catch (error) {
             console.error('Error fetching shop rooms:', error);

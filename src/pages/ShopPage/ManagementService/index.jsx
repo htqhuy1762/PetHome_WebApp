@@ -37,7 +37,6 @@ function ManagementService() {
     const [itemMenu, setItemMenu] = useState([]);
     const [serviceAdded, setServiceAdded] = useState(false);
 
-
     const [selectedServiceTypeDetailId, setSelectedServiceTypeDetailId] = useState(1);
     const [selectedServiceTypeDetailName, setSelectedServiceTypeDetailName] = useState('Tắm và vệ sinh');
     useEffect(() => {
@@ -412,6 +411,7 @@ function ManagementService() {
                             rules={[{ required: true, message: 'Vui lòng chọn khu vực cung cấp dịch vụ!' }]}
                         >
                             <Checkbox.Group
+                                style={{ display: 'flex', flexDirection: 'column' }}
                                 options={listAddress?.map((address) => ({
                                     label: address.address,
                                     value: address.id_address,
