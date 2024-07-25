@@ -84,10 +84,10 @@ function Header({ fixedHeader }) {
                 // Handle error
             }
         };
-    
+
         getUnreadNotification();
         const intervalId = setInterval(getUnreadNotification, 10000);
-    
+
         return () => clearInterval(intervalId);
     }, []);
 
@@ -299,7 +299,7 @@ function Header({ fixedHeader }) {
                                         <div className={cx('arrow')}></div>
                                         <div className={cx('notification-container')}>
                                             <div className={cx('noti-header')}>
-                                                <span>Thông báo</span>
+                                                <span style={{ marginLeft: '5px' }}>Thông báo</span>
                                                 <Button
                                                     type="text"
                                                     icon={<ReloadOutlined />}

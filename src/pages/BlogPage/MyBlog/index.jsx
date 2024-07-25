@@ -1,9 +1,9 @@
 import Post from '~/components/Post';
 import classNames from 'classnames/bind';
 import styles from './MyBlog.module.scss';
-import { Avatar, Button, ConfigProvider, Modal, message, Form, Input, Select, Upload } from 'antd';
+import { Avatar, Button, Spin, Empty, ConfigProvider, Modal, message, Form, Input, Select, Upload } from 'antd';
 import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import backgroundImg from '~/assets/images/BackgroundBlog.png';
 import { useNavigate } from 'react-router-dom';
@@ -18,11 +18,12 @@ function MyBlog() {
     const [userData, setUserData] = useState(null);
     const [images, setImages] = useState([]);
     const [posts, setPosts] = useState([]);
+    const allPostsLoaded = useRef(false);
+    const [start, setStart] = useState(0);
     const navigate = useNavigate();
     const limit = 5;
-    const [currentPage, setCurrentPage] = useState(1);
-    const [loadingUser, setLoadingUser] = useState(true);
-    const [loadingBlogs, setLoadingBlogs] = useState(true);
+    const [loadingUser, setLoadingUser] = useState(false);
+    const [loadingBlogs, setLoadingBlogs] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [addPostVisible, setAddPostVisible] = useState(false);
     const [adding, setAdding] = useState(false);
@@ -92,36 +93,33 @@ function MyBlog() {
         getUser();
     }, []);
 
-    const fetchBlogs = useCallback(
-        async (reset = false) => {
-            setLoadingBlogs(true);
-            try {
-                const response = await blogServices.getUserBlogs({
-                    limit: limit,
-                    start: reset ? 0 : (currentPage - 1) * limit,
-                });
-                if (response.status === 200) {
-                    const totalCount = response.data.count;
-                    const newPosts = response.data.data;
-                    if (Array.isArray(newPosts) && newPosts.length > 0) {
-                        setPosts((prevPosts) => (reset ? newPosts : [...prevPosts, ...newPosts]));
-                        if (totalCount <= currentPage * limit) {
-                            setHasMore(false);
-                        }
+    const fetchBlogs = async (start) => {
+        setLoadingBlogs(true);
+        try {
+            const response = await blogServices.getUserBlogs({
+                start,
+                limit,
+            });
+            if (response.status === 200) {
+                const newPosts = response.data.data || [];
+                if (newPosts.length > 0) {
+                    if (start === 0) {
+                        setPosts(newPosts);
                     } else {
-                        setHasMore(false);
+                        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
                     }
-                    if (!reset) {
-                        setCurrentPage((prevPage) => prevPage + 1);
-                    }
+                    setHasMore(newPosts.length === limit);
+                } else {
+                    setHasMore(false);
+                    allPostsLoaded.current = true;
                 }
-            } catch (error) {
-                // Handle error
             }
+        } catch (error) {
+            console.error('Failed to fetch blogs:', error);
+        } finally {
             setLoadingBlogs(false);
-        },
-        [currentPage],
-    );
+        }
+    };
 
     const handleValuesChange = (changedValues, allValues) => {
         const { text } = allValues;
@@ -131,34 +129,36 @@ function MyBlog() {
     };
 
     useEffect(() => {
-        fetchBlogs(true);
-    }, [fetchBlogs]);
+        fetchBlogs(start);
+    }, [start]);
+
+    const handleScroll = () => {
+        const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+        const scrollHeight =
+            (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+        const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+        console.log(hasMore, loadingBlogs, !allPostsLoaded.current);
+        if (scrolledToBottom && hasMore && !loadingBlogs && !allPostsLoaded.current) {
+            setStart((prevStart) => prevStart + limit);
+        }
+    };
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight ||
-                loadingBlogs ||
-                !hasMore
-            ) {
-                return;
-            }
-            fetchBlogs();
-        };
-
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [fetchBlogs, loadingBlogs, hasMore]);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const updateUI = () => {
-        setCurrentPage(1);
         setHasMore(true);
         fetchBlogs(true);
     };
 
     const deletePostUI = (deletedPostId) => {
         setPosts((prevPosts) => prevPosts.filter((post) => post.id_blog !== deletedPostId));
-        setCurrentPage(1);
         setHasMore(true);
         fetchBlogs(true);
     };
@@ -188,7 +188,6 @@ function MyBlog() {
                 fetchBlogs(true);
                 form.resetFields();
                 setImages([]);
-                setCurrentPage(1);
                 setHasMore(true);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -199,7 +198,7 @@ function MyBlog() {
         setAddPostVisible(false);
     };
 
-    if (loadingUser || (loadingBlogs && currentPage === 1)) {
+    if (loadingUser) {
         return <Loading />;
     }
 
@@ -252,7 +251,10 @@ function MyBlog() {
                         deletePostUI={deletePostUI}
                     />
                 ))}
-                {!hasMore && <div className={cx('end-message')}>Bạn đã xem hết các bài post</div>}
+                {loadingBlogs && <Spin className={cx('spin')} />}
+                {!loadingBlogs && !hasMore && posts.length >= 0 && (
+                    <div className={cx('end-message')}>Bạn đã xem hết các bài viết</div>
+                )}
             </div>
             <Modal
                 title="Thêm bài viết"
@@ -262,9 +264,16 @@ function MyBlog() {
                     <Button key="cancel" onClick={handleCancelAdd}>
                         Hủy
                     </Button>,
-                    <Button htmlType="submit" key="delete" type="primary" onClick={handleAddPost} loading={adding} disabled={isSubmitDisabled}>
-                    Đăng
-                </Button>
+                    <Button
+                        htmlType="submit"
+                        key="delete"
+                        type="primary"
+                        onClick={handleAddPost}
+                        loading={adding}
+                        disabled={isSubmitDisabled}
+                    >
+                        Đăng
+                    </Button>,
                 ]}
             >
                 <Form

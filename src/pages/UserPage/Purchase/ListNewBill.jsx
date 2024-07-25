@@ -112,6 +112,7 @@ function ListNewBill({ isCanceled, setIsCanceled }) {
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
+        console.log(hasMore, loading, allBillsLoaded.current);
         if (scrolledToBottom && hasMore && !loading && !allBillsLoaded.current) {
             setStart((prevStart) => prevStart + limit);
         }

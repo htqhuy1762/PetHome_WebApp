@@ -29,7 +29,7 @@ function Post({ data, showMenu, updateUI, deletePostUI }) {
     const formattedDate = dayjs.utc(data.created_at).utcOffset(7).format('DD/MM/YYYY HH:mm');
 
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 2000); // Giả lập hiệu ứng tải trong 2 giây
+        const timer = setTimeout(() => setLoading(false), 1500); // Giả lập hiệu ứng tải trong 2 giây
         return () => clearTimeout(timer);
     }, []);
 

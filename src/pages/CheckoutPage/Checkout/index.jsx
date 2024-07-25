@@ -171,8 +171,12 @@ function Checkout() {
 
     const handleOrder = async () => {
         try {
-            if (!selectedArea || !selectedAddress || !selectedPhoneNum) {
-                message.error('Bạn cần hoàn tất các thông tin cá nhân trước khi thanh toán');
+            if (!selectedPhoneNum) {
+                message.error('Vui lòng cập nhật số điện thoại');
+                return;
+            }
+            if (!selectedArea || !selectedAddress) {
+                message.error('Vui lòng cập nhật địa chỉ nhận hàng');
                 return;
             }
             const formData = new FormData();
@@ -221,24 +225,35 @@ function Checkout() {
             <div className={cx('address')}>
                 <div className={cx('address-title')}>
                     <EnvironmentFilled style={{ fontSize: '2rem' }} />
-                    <h2 style={{ margin: '5px' }}>Địa chỉ nhận hàng</h2>
+                    <h2 style={{ margin: '5px' }}>Thông tin người nhận</h2>
                 </div>
                 <div className={cx('address-content')}>
                     <div className={cx('user')}>
-                        <span style={{ fontWeight: 600, fontSize: '1.8rem' }}>{userData?.name}</span>
-                        <span style={{ marginLeft: 8, fontWeight: 600, fontSize: '1.8rem' }}>{selectedPhoneNum}</span>
-                        <Button
-                            type="link"
-                            style={{ marginLeft: 10, textTransform: 'capitalize' }}
-                            onClick={showModalPhoneNum}
-                        >
-                            Thay đổi
-                        </Button>
+                        <div className={cx('username')}>
+                            <span style={{ fontSize: '1.8rem' }}>Người nhận: </span>
+                            <span style={{ fontWeight: 600, fontSize: '1.8rem' }}>{userData?.name}</span>
+                        </div>
+                        <div className={cx('phone-number')}>
+                            <span style={{ fontSize: '1.8rem' }}>Số điện thoại: </span>
+                            <span style={{ fontWeight: 600, fontSize: '1.8rem' }}>
+                                {selectedPhoneNum ? selectedPhoneNum : 'Cập nhật số điện thoại trong hồ sơ của bạn hoặc bấm thay đổi.'}
+                            </span>
+                            <Button
+                                type="link"
+                                style={{ textTransform: 'capitalize', fontSize: '1.6rem' }}
+                                onClick={showModalPhoneNum}
+                            >
+                                Thay đổi
+                            </Button>
+                        </div>
                     </div>
                     <div className={cx('address-user')}>
                         {addresses && addresses.length > 0 ? (
                             <>
-                                <span>{addresses.find((addr) => addr.address === selectedAddress)?.address}</span>
+                                <span style={{ fontSize: '1.8rem' }}>Địa chỉ: </span>
+                                <span style={{ fontWeight: 600, fontSize: '1.8rem' }}>
+                                    {addresses.find((addr) => addr.address === selectedAddress)?.address}
+                                </span>
                                 <Button
                                     type="link"
                                     style={{ marginLeft: 10, textTransform: 'capitalize' }}
@@ -248,7 +263,12 @@ function Checkout() {
                                 </Button>
                             </>
                         ) : (
-                            <span>Không có địa chỉ</span>
+                            <>
+                                <span style={{ fontSize: '1.8rem' }}>Địa chỉ: </span>
+                                <span style={{ fontWeight: 600, fontSize: '1.8rem' }}>
+                                    Hãy thêm địa chỉ nhận hàng trong hồ sơ của bạn.{' '}
+                                </span>
+                            </>
                         )}
                     </div>
                 </div>

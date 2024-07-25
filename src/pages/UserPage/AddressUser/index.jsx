@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, message, ConfigProvider, Input, Select, Form } from 'antd';
+import { Button, Modal, message, ConfigProvider, Input, Select, Form, Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './AddressUser.module.scss';
@@ -194,6 +194,8 @@ function AddressUser() {
         );
     }
 
+    console.log(addresses);
+
     return (
         <div className={cx('wrapper')}>
             {contextHolder}
@@ -241,9 +243,13 @@ function AddressUser() {
                 </Modal>
             </div>
             <div className={cx('address-list')}>
-                {addresses.map((address) => (
-                    <AddressCard key={address.id_address} address={address} onRemove={handleRemove} />
-                ))}
+                {addresses.length > 0 ? (
+                    addresses.map((address) => (
+                        <AddressCard key={address.id_address} address={address} onRemove={handleRemove} />
+                    ))
+                ) : (
+                    <Empty description="Danh sách trống" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
             </div>
         </div>
     );

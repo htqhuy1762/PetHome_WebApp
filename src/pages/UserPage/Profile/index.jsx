@@ -16,6 +16,7 @@ function Profile() {
     const [form] = Form.useForm();
     const [imageUrl, setImageUrl] = useState(null);
     const [fileList, setFileList] = useState([]);
+    const [saving, setSaving] = useState(false);
 
     const getBase64 = (img, callback) => {
         const reader = new FileReader();
@@ -59,12 +60,22 @@ function Profile() {
     }, []);
 
     const handleSave = async () => {
+        setSaving(true);
         try {
             const values = await form.validateFields();
-            values.day_of_birth = dayjs(values.day_of_birth).format('YYYY-MM-DD');
+            if (values.day_of_birth) {
+                // Sử dụng dayjs để kiểm tra tính hợp lệ của ngày
+                const formattedDate = dayjs(values.day_of_birth).isValid()
+                    ? dayjs(values.day_of_birth).format('YYYY-MM-DD')
+                    : null;
+                values.day_of_birth = formattedDate;
+            } else {
+                values.day_of_birth = null;
+            }
 
             //Gửi thông tin người dùng
             const response = await userServices.updateUser(values);
+            console.log(response);
             // Nếu có file ảnh mới, gửi ảnh lên server
             if (fileList.length > 0) {
                 const response = await userServices.uploadAvatar(fileList[0]);
@@ -84,6 +95,8 @@ function Profile() {
             }
         } catch (error) {
             message.error('Lưu thông tin thất bại');
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -111,7 +124,7 @@ function Profile() {
                 name: userData.name,
                 phone_num: userData.phone_num,
                 gender: userData.gender,
-                day_of_birth: dayjs(userData?.day_of_birth),
+                day_of_birth: userData.day_of_birth ? dayjs(userData.day_of_birth) : null,
             });
         }
     }, [userData, form]);
@@ -136,14 +149,14 @@ function Profile() {
                         form={form}
                         className={cx('form')}
                         name="user-info-form"
-                        initialValues={{
-                            remember: true,
-                            email: userData?.email,
-                            name: userData?.name,
-                            phonenumber: userData?.phone_num,
-                            gender: userData?.gender,
-                            day_of_birth: dayjs(userData?.day_of_birth),
-                        }}
+                        // initialValues={{
+                        //     remember: true,
+                        //     email: userData?.email,
+                        //     name: userData?.name,
+                        //     phonenumber: userData?.phone_num,
+                        //     gender: userData?.gender,
+                        //     day_of_birth: dayjs(userData?.day_of_birth) || "",
+                        // }}
                         layout="horizontal"
                         labelCol={{ span: 6 }}
                         wrapperCol={{ span: 15 }}
@@ -189,7 +202,11 @@ function Profile() {
                             label={<label style={{ fontSize: '1.6rem', textAlign: 'right' }}>Ngày sinh</label>}
                             name="day_of_birth"
                         >
-                            <DatePicker format="DD-MM-YYYY" />
+                            <DatePicker
+                                format="DD/MM/YYYY"
+                                value={userData?.day_of_birth ? dayjs(userData.day_of_birth) : null} // Đảm bảo giá trị hợp lệ hoặc null
+                                onChange={(date) => form.setFieldsValue({ day_of_birth: date })} // Cập nhật giá trị khi người dùng chọn ngày
+                            />
                         </Form.Item>
                         <Form.Item>
                             <Button
@@ -202,6 +219,7 @@ function Profile() {
                                     width: '100px',
                                     marginLeft: '180px',
                                 }}
+                                loading={saving}
                                 disabled={!!form.getFieldsError().filter(({ errors }) => errors.length).length}
                             >
                                 Lưu

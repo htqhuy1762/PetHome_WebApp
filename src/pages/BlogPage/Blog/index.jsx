@@ -1,26 +1,27 @@
 import Post from '~/components/Post';
-import { Form, Input, Button, Upload, Avatar, message, ConfigProvider, Select } from 'antd';
+import { Form, Input, Spin, Button, Upload, Avatar, message, ConfigProvider, Select, Empty } from 'antd';
 import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Blog.module.scss';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as blogServices from '~/services/blogServices';
 import * as userServices from '~/services/userServices';
-import Loading from '~/components/Loading';
 import { useNavigate } from 'react-router-dom';
+import Loading from '~/components/Loading';
 
 const cx = classNames.bind(styles);
 
 function Blog() {
     const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
-    const limit = 5;
-    const [currentPage, setCurrentPage] = useState(1);
+    const allPostsLoaded = useRef(false);
+    const limit = 2;
+    const [start, setStart] = useState(0);
     const [userData, setUserData] = useState(null);
     const [form] = Form.useForm();
     const [images, setImages] = useState([]);
-    const [loadingUser, setLoadingUser] = useState(true);
-    const [loadingBlogs, setLoadingBlogs] = useState(true);
+    const [loadingUser, setLoadingUser] = useState(false);
+    const [loadingBlogs, setLoadingBlogs] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 
@@ -78,37 +79,33 @@ function Blog() {
         </button>
     );
 
-    const fetchBlogs = useCallback(
-        async (reset = false) => {
-            setLoadingBlogs(true);
-            try {
-                const response = await blogServices.getBlogs({
-                    limit: limit,
-                    start: reset ? 0 : (currentPage - 1) * limit,
-                });
-                if (response.status === 200) {
-                    const totalCount = response.data.count;
-                    const newPosts = response.data.data;
-                    if (Array.isArray(newPosts) && newPosts.length > 0) {
-                        setPosts((prevPosts) => (reset ? newPosts : [...prevPosts, ...newPosts]));
-                        console.log(posts);
-                        if (totalCount <= currentPage * limit) {
-                            setHasMore(false);
-                        }
+    const fetchBlogs = async (start) => {
+        setLoadingBlogs(true);
+        try {
+            const response = await blogServices.getBlogs({
+                start,
+                limit,
+            });
+            if (response.status === 200) {
+                const newPosts = response.data.data || [];
+                if (newPosts.length > 0) {
+                    if (start === 0) {
+                        setPosts(newPosts);
                     } else {
-                        setHasMore(false);
+                        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
                     }
-                    if (!reset) {
-                        setCurrentPage((prevPage) => prevPage + 1);
-                    }
+                    setHasMore(newPosts.length === limit);
+                } else {
+                    setHasMore(false);
+                    allPostsLoaded.current = true;
                 }
-            } catch (error) {
-                // Handle error
             }
+        } catch (error) {
+            console.error('Failed to fetch blogs:', error);
+        } finally {
             setLoadingBlogs(false);
-        },
-        [currentPage],
-    );
+        }
+    };
 
     useEffect(() => {
         const getUser = async () => {
@@ -128,24 +125,28 @@ function Blog() {
     }, []);
 
     useEffect(() => {
-        fetchBlogs(true);
-    }, [fetchBlogs]);
+        fetchBlogs(start);
+    }, [start]);
+
+    const handleScroll = () => {
+        const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+        const scrollHeight =
+            (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+        const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+        console.log(hasMore, loadingBlogs, !allPostsLoaded.current);
+        if (scrolledToBottom && hasMore && !loadingBlogs && !allPostsLoaded.current) {
+            setStart((prevStart) => prevStart + limit);
+        }
+    };
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight ||
-                loadingBlogs ||
-                !hasMore
-            ) {
-                return;
-            }
-            fetchBlogs();
-        };
-
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [fetchBlogs, loadingBlogs, hasMore]);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const handlePostSubmit = async () => {
         try {
@@ -163,7 +164,6 @@ function Blog() {
                 fetchBlogs(true);
                 form.resetFields();
                 setImages([]);
-                setCurrentPage(1);
                 setHasMore(true);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -172,7 +172,7 @@ function Blog() {
         }
     };
 
-    if (loadingUser || (loadingBlogs && currentPage === 1)) {
+    if (loadingUser) {
         return <Loading />;
     }
 
@@ -283,7 +283,10 @@ function Blog() {
                     {posts?.map((post) => (
                         <Post key={post.id_blog} data={post} />
                     ))}
-                    {!hasMore && <div className={cx('end-message')}>Bạn đã xem hết các bài post</div>}
+                    {loadingBlogs && <Spin className={cx('spin')} />}
+                    {!loadingBlogs && !hasMore && posts.length >= 0 && (
+                        <div className={cx('end-message')}>Bạn đã xem hết các bài viết</div>
+                    )}
                 </div>
             </div>
         </div>
