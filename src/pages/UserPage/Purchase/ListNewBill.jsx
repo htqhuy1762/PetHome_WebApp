@@ -56,9 +56,7 @@ function ListNewBill({ isCanceled, setIsCanceled }) {
 
     const handleCancelBill = async () => {
         try {
-            console.log('selectedBillId', selectedBillId);
             const response = await billServices.updateUserBillStatus(selectedBillId, { status: 'canceled' });
-            console.log('response', response);
 
             if (response.status === 200) {
                 const newBills = bills.filter((bill) => bill.id_bill !== selectedBillId);
@@ -111,8 +109,6 @@ function ListNewBill({ isCanceled, setIsCanceled }) {
             (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-
-        console.log(hasMore, loading, allBillsLoaded.current);
         if (scrolledToBottom && hasMore && !loading && !allBillsLoaded.current) {
             setStart((prevStart) => prevStart + limit);
         }

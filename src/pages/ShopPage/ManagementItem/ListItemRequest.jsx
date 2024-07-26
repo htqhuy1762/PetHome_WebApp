@@ -65,7 +65,6 @@ function ListItemRequest({ itemAdded }) {
             }
         } catch (error) {
             console.error('Failed to remove item', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisible(false);
             setSelectedItemId(null);

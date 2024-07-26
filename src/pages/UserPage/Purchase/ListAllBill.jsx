@@ -56,9 +56,7 @@ function ListAllBill({ isCanceled, setIsCanceled }) {
 
     const handleCancelBill = async () => {
         try {
-            console.log('selectedBillId', selectedBillId);
             const response = await billServices.updateUserBillStatus(selectedBillId, { status: 'canceled' });
-            console.log('response', response);
 
             if (response.status === 200) {
                 const newBills = bills.filter((bill) => bill.id_bill !== selectedBillId);

@@ -31,7 +31,6 @@ function InputOTP({ onNext }) {
                 localStorage.getItem('resetToken'),
             );
             if (response.status === 401) {
-                //console.log(response.data.error);
                 notification.error({
                     message: 'Error',
                     description: response.data.error,

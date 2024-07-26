@@ -194,8 +194,6 @@ function AddressUser() {
         );
     }
 
-    console.log(addresses);
-
     return (
         <div className={cx('wrapper')}>
             {contextHolder}

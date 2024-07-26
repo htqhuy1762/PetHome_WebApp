@@ -70,7 +70,6 @@ function ListServiceRequest({ idServiceTypeDetail, nameServiceTypeDetail, servic
             }
         } catch (error) {
             console.error('Failed to remove service', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisible(false);
             setSelectedServiceId(null);

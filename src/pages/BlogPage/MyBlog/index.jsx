@@ -1,7 +1,7 @@
 import Post from '~/components/Post';
 import classNames from 'classnames/bind';
 import styles from './MyBlog.module.scss';
-import { Avatar, Button, Spin, Empty, ConfigProvider, Modal, message, Form, Input, Select, Upload } from 'antd';
+import { Avatar, Button, Spin, ConfigProvider, Modal, message, Form, Input, Select, Upload } from 'antd';
 import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState, useEffect, useRef } from 'react';
 import { UserOutlined } from '@ant-design/icons';
@@ -138,8 +138,6 @@ function MyBlog() {
             (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-
-        console.log(hasMore, loadingBlogs, !allPostsLoaded.current);
         if (scrolledToBottom && hasMore && !loadingBlogs && !allPostsLoaded.current) {
             setStart((prevStart) => prevStart + limit);
         }

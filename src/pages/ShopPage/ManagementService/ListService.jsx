@@ -169,7 +169,6 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
             }
         } catch (error) {
             console.error('Failed to remove service', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisibleDelete(false);
             setSelectedServiceId(null);
@@ -201,7 +200,6 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
             }
         } catch (error) {
             console.error('Failed to update price service', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisibleUpdatePrice(false);
             setSelectedServiceId(null);
@@ -227,7 +225,7 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
             });
 
             const response = await shopServices.updateAddressService(selectedServiceId, updatedFormData);
-            console.log(response);
+            
             if (response && response.status === 200) {
                 setServiceData(
                     serviceData.map((service) =>
@@ -252,7 +250,6 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
             }
         } catch (error) {
             console.error('Failed to update price service', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisibleUpdateAddress(false);
             setSelectedServiceId(null);
@@ -271,7 +268,7 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
             });
 
             const response = await shopServices.addServiceGallery(selectedServiceId, formData);
-            console.log(response);
+            
             if (response && response.status === 200) {
                 const responseGallery = await shopServices.getServiceGallery(selectedServiceId);
                 if (responseGallery.status === 200) {
@@ -302,7 +299,6 @@ function ListService({ idServiceTypeDetail, nameServiceTypeDetail }) {
             }
         } catch (error) {
             console.error('Failed to delete image', error);
-            console.log('Error:', error);
         }
     };
 

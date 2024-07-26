@@ -75,7 +75,6 @@ function Profile() {
 
             //Gửi thông tin người dùng
             const response = await userServices.updateUser(values);
-            console.log(response);
             // Nếu có file ảnh mới, gửi ảnh lên server
             if (fileList.length > 0) {
                 const response = await userServices.uploadAvatar(fileList[0]);

@@ -55,9 +55,7 @@ function ListAllBillShop({ isUpdate, isCanceled, setIsUpdate, setIsCanceled }) {
 
     const handleCancelBill = async () => {
         try {
-            console.log('selectedBillId', selectedBillId);
             const response = await billServices.updateShopBillStatus(selectedBillId, { status: 'canceled' });
-            console.log('response', response);
 
             if (response.status === 200) {
                 const newBills = bills.filter((bill) => bill.id_bill !== selectedBillId);
@@ -79,9 +77,7 @@ function ListAllBillShop({ isUpdate, isCanceled, setIsUpdate, setIsCanceled }) {
 
     const handleConfirmBill = async () => {
         try {
-            console.log('selectedBillId', selectedBillId);
             const response = await billServices.updateShopBillStatus(selectedBillId, { status: 'preparing' });
-            console.log('response', response);
 
             if (response.status === 200) {
                 const newBills = bills.filter((bill) => bill.id_bill !== selectedBillId);
@@ -146,8 +142,6 @@ function ListAllBillShop({ isUpdate, isCanceled, setIsUpdate, setIsCanceled }) {
             </div>
         );
     }
-
-    console.log('bills', bills);
 
     return (
         <div className={cx('wrapper')}>

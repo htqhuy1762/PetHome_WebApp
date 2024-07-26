@@ -251,11 +251,9 @@ function ManagementService() {
             });
             updatedFormData.append('description', values.description);
 
-            console.log(updatedFormData);
             // Here you can add the code to send updatedFormData to your backend
             const response = await shopServices.addServiceRequest(updatedFormData);
 
-            console.log(response.data);
             if (response.status === 200) {
                 message.success('Thêm dịch vụ thành công');
                 form.resetFields();

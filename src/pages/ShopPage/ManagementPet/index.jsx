@@ -139,11 +139,9 @@ function ManagementPet() {
             updatedFormData.append('weight', values.weight);
             updatedFormData.append('description', values.description);
 
-            console.log(updatedFormData);
             // Here you can add the code to send updatedFormData to your backend
             const response = await shopServices.addPetRequest(updatedFormData);
 
-            console.log(response.data);
             if (response.status === 200) {
                 message.success('Thêm thú cưng thành công');
                 form.resetFields();

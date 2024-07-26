@@ -266,7 +266,7 @@ function Login() {
                                 style={{ width: '230px' }}
                                 onSuccess={handleGoogleLogin}
                                 onError={() => {
-                                    console.log('Login Failed');
+                                    console.log('Google login failed');
                                 }}
                             />
                             <LoginSocialFacebook

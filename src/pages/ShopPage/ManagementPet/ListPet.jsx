@@ -94,7 +94,6 @@ function ListPet() {
             }
         } catch (error) {
             console.error('Failed to remove pet', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisibleDelete(false);
             setSelectedPetId(null);
@@ -125,7 +124,6 @@ function ListPet() {
             }
         } catch (error) {
             console.error('Failed to update pet', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisibleUpdate(false);
             setSelectedPetId(null);

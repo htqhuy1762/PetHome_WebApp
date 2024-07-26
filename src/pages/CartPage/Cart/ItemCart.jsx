@@ -93,7 +93,6 @@ function ItemCart() {
             }
         } catch (error) {
             console.error('Failed to remove item from cart', error);
-            console.log('Error:', error);
         }
     };
 

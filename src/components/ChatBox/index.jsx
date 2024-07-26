@@ -211,7 +211,7 @@ function ChatBox({ shopInfo }) {
 
         return () => {
             if (socketRef.current) {
-                console.log('Component unmounted or room changed, closing WebSocket');
+                console.log('Closing WebSocket');
                 socketRef.current.close();
                 socketRef.current = null;
             }
@@ -253,7 +253,7 @@ function ChatBox({ shopInfo }) {
 
         return () => {
             if (socketRef.current) {
-                console.log('Component unmounted or room changed, closing WebSocket');
+                console.log('Closing WebSocket');
                 socketRef.current.close();
                 socketRef.current = null;
             }

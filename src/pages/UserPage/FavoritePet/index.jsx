@@ -56,7 +56,6 @@ function FavoritePet() {
             }
         } catch (error) {
             console.error('Failed to remove pet from cart', error);
-            console.log('Error:', error);
         }
     };
 

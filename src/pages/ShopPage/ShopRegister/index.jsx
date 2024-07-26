@@ -502,7 +502,6 @@ function IdentificationInfor({ onBack, formData, setFormData }) {
             const response = await shopServices.registerShop(dataform);
 
             if (response.status === 200) {
-                console.log('Đăng ký shop thành công');
                 navigate('/user/shop/complete');
             } else {
                 console.log('Đăng ký shop thất bại');
@@ -725,7 +724,6 @@ function ShopRegister() {
     });
 
     const handleNext = () => {
-        console.log(formData);
         if (step === 3) {
             return;
         }
@@ -733,7 +731,6 @@ function ShopRegister() {
     };
 
     const handleBack = () => {
-        console.log(formData);
         if (step === 1) {
             return;
         }

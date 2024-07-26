@@ -1,5 +1,5 @@
 import Post from '~/components/Post';
-import { Form, Input, Spin, Button, Upload, Avatar, message, ConfigProvider, Select, Empty } from 'antd';
+import { Form, Input, Spin, Button, Upload, Avatar, message, ConfigProvider, Select } from 'antd';
 import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 import classNames from 'classnames/bind';
 import styles from './Blog.module.scss';
@@ -134,8 +134,6 @@ function Blog() {
             (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
         const clientHeight = document.documentElement.clientHeight || window.innerHeight;
         const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-
-        console.log(hasMore, loadingBlogs, !allPostsLoaded.current);
         if (scrolledToBottom && hasMore && !loadingBlogs && !allPostsLoaded.current) {
             setStart((prevStart) => prevStart + limit);
         }

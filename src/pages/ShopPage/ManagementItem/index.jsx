@@ -145,11 +145,9 @@ function ManagementItem() {
                 }
             });
 
-            console.log(updatedFormData);
             // Here you can add the code to send updatedFormData to your backend
             const response = await shopServices.addItemRequest(updatedFormData);
 
-            console.log(response.data);
             if (response.status === 200) {
                 message.success('Thêm vật phẩm thành công');
                 form.resetFields();
@@ -189,7 +187,6 @@ function ManagementItem() {
             const response = await itemServices.getItemTypes();
             if (response.status === 200) {
                 const sortedData = response.data.sort((a, b) => a.id_item_type - b.id_item_type);
-                //console.log(response.data);
                 setListItemType(sortedData);
             }
         };

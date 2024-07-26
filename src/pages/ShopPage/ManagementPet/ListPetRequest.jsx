@@ -65,7 +65,6 @@ function ListPetRequest({ petAdded }) {
             }
         } catch (error) {
             console.error('Failed to remove pet', error);
-            console.log('Error:', error);
         } finally {
             setIsModalVisible(false);
             setSelectedPetId(null);

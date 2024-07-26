@@ -31,7 +31,6 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
                 const response = await sendCodeEmail({ email });
 
                 if (response.status === 208) {
-                    //console.log('Email already exists');
                     notification.warning({
                         message: 'Warning',
                         description: 'Email already exists',
@@ -45,7 +44,6 @@ function InputEmail({ onNext, setToken, setExpiry, setEmail }) {
 
                 onNext();
             } else {
-                //console.log('Invalid email');
                 notification.error({
                     message: 'Error',
                     description: 'Invalid email',
@@ -131,7 +129,6 @@ function InputOTP({ onNext, onBack, token, expiry, email, setToken, setExpiry })
 
             const response = await verifyCodeEmail({ code: otp }, token);
             if (response.status === 401) {
-                //console.log(response.data.error);
                 notification.error({
                     message: 'Error',
                     description: response.data.error,
@@ -273,14 +270,12 @@ function RegisterForm({ onBack, email }) {
         try {
             const response = await register({ name: values.username, email: email, password: values.password });
             if (response.status === 201) {
-                // console.log('Register successful');
                 notification.success({
                     message: 'Success',
                     description: 'Đăng ký tài khoản thành công!',
                 });
                 navigate('/login');
             } else {
-                //console.log('Register failed:', response.data.error);
                 notification.error({
                     message: 'Error',
                     description: response.data.error,
